@@ -1,0 +1,5 @@
+{
+  "usingComponents": {
+    "tfjs-wechat": "plugin://myPlugin/tfjs-wechat"
+  }
+}

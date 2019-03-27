@@ -1,0 +1,16 @@
+<view class="container">
+<camera
+  device-position="back"
+  flash="off"
+  binderror="error"
+  style="width: 224px; height: 224px;"
+></camera>
+<button type="primary" bindtap="takePhoto">Classify</button>
+  <canvas
+  class="image-canvas"
+  id="image-canvas"
+  canvas-id="image-canvas"
+  ></canvas>
+  <text class="result">{{result}}</text>
+</view>
+<tfjs-wechat />

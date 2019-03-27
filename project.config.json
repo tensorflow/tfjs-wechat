@@ -1,0 +1,34 @@
+{
+	"packOptions": {
+		"ignore": [
+			{
+				"type": "folder",
+				"value": ".vscode"
+			},
+			{
+				"type": "folder",
+				"value": "plugin/node_modules"
+			}
+		]
+	},
+	"miniprogramRoot": "miniprogram/",
+	"pluginRoot": "plugin/",
+	"compileType": "plugin",
+	"setting": {
+		"urlCheck": false,
+		"es6": true,
+		"postcss": true,
+		"minified": true,
+		"newFeature": true,
+		"nodeModules": true,
+		"autoAudits": false
+	},
+	"appid": "wx2483d99d066bd53b",
+	"projectname": "tfjs-wechat",
+	"scripts": {
+		"beforeCompile": "",
+		"beforePreview": "",
+		"beforeUpload": ""
+	},
+	"condition": {}
+}

@@ -1,0 +1,6 @@
+{
+  "publicComponents": {
+    "tfjs-wechat": "components/tfjs-wechat/tfjs-wechat"
+  },
+  "main": "index.js"
+}
