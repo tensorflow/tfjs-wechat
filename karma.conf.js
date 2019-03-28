@@ -19,24 +19,22 @@ module.exports = function(config) {
     frameworks: ['jasmine', 'karma-typescript'],
     files: [
       'node_modules/miniprogram-simulate/build.js',
-      'dist/plugin/test/*_test.js',
-      'dist/plugin/utils/**/*.js',
+      {pattern: 'src/plugin/components/**/*.ts', serve: false},
+      {pattern: 'src/plugin/utils/**/*.ts'},
+      {pattern: 'src/plugin/test/**/*.ts'},
       'dist/plugin/components/**/*',
     ],
-    exclude: ["dist/plugin/**/*.d.ts"],
+    exclude: ["src/plugin/**/*.d.ts", "dist/plugin/**/*.d.ts"],
     preprocessors: {
-      'dist/plugin/components/tfjs-wechat/*': ['filemap'], // 组件文件使用 filemap 将各个文件内容注入到浏览器
-      'dist/plugin/test/*_test.js': ['webpack', 'dirname'],
-      'dist/plugin/miniprogram_npm/@tensorflow/tfjs/index.js': ['webpack', 'dirname']
+      'src/plugin/**/*.ts': ['karma-typescript'],
+      'dist/plugin/components/tfjs-wechat/*.*': ['filemap'], // 组件文件使用 filemap 将各个文件内容注入到浏览器
     },
-    webpack: {
-      mode: 'development',
-      optimization: {
-          minimize: false, // 不做压缩，方便调试
-      },
-      node: {
-          __dirname: false, // 不注入 __dirname，由 preprocessor 来处理
-      },
+    karmaTypescriptConfig: {
+      tsconfig: 'tsconfig.json',
+      // Disable coverage reports and instrumentation by default for tests
+      coverageOptions: {instrumentation: false},
+      reports: {},
+      bundlerOptions: {sourceMap: true}
     },
     reporters: ['progress'],
     autoWatch: true,

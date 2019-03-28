@@ -17,5 +17,10 @@
  */
  -->
 
-<canvas id="webgl" type="webgl" canvas-id="webgl" style="width: 1px; height: 1px;" bindtouchstart="touchstart" bindtouchmove="touchmove" bindtouchend="touchend" bindtouchcancel="touchcancel">
+<canvas id="webgl" type="webgl" canvas-id="webgl"
+style="width: 1px; height: 1px;"
+bindtouchstart="touchstart"
+bindtouchmove="touchmove"
+bindtouchend="touchend"
+bindtouchcancel="touchcancel">
 </canvas>

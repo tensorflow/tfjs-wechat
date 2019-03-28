@@ -4,7 +4,7 @@ var __DEFINE__ = function(modId, func, req) { var m = { exports: {} }; __MODS__[
 var __REQUIRE__ = function(modId, source) { if(!__MODS__[modId]) return require(source); if(!__MODS__[modId].status) { var m = { exports: {} }; __MODS__[modId].status = 1; __MODS__[modId].func(__MODS__[modId].req, m, m.exports); if(typeof m.exports === "object") { Object.keys(m.exports).forEach(function(k) { __MODS__[modId].m.exports[k] = m.exports[k]; }); if(m.exports.__esModule) Object.defineProperty(__MODS__[modId].m.exports, "__esModule", { value: true }); } else { __MODS__[modId].m.exports = m.exports; } } return __MODS__[modId].m.exports; };
 var __REQUIRE_WILDCARD__ = function(obj) { if(obj && obj.__esModule) { return obj; } else { var newObj = {}; if(obj != null) { for(var k in obj) { if (Object.prototype.hasOwnProperty.call(obj, k)) newObj[k] = obj[k]; } } newObj.default = obj; return newObj; } };
 var __REQUIRE_DEFAULT__ = function(obj) { return obj && obj.__esModule ? obj.default : obj; };
-__DEFINE__(1553229508422, function(require, module, exports) {
+__DEFINE__(1553811080226, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -56,8 +56,8 @@ exports.LayerVariable = variables_1.LayerVariable;
 var version_1 = require("./version");
 exports.version_layers = version_1.version;
 //# sourceMappingURL=index.js.map
-}, function(modId) {var map = {"./exports_constraints":1553229508423,"./exports_initializers":1553229508429,"./exports_layers":1553229508436,"./exports_metrics":1553229508473,"./exports_models":1553229508474,"./exports_regularizers":1553229508475,"./base_callbacks":1553229508443,"./callbacks":1553229508476,"./engine/topology":1553229508438,"./engine/training":1553229508445,"./exports":1553229508442,"./layers/recurrent":1553229508470,"./models":1553229508457,"./variables":1553229508441,"./version":1553229508450}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508423, function(require, module, exports) {
+}, function(modId) {var map = {"./exports_constraints":1553811080227,"./exports_initializers":1553811080233,"./exports_layers":1553811080240,"./exports_metrics":1553811080277,"./exports_models":1553811080278,"./exports_regularizers":1553811080279,"./base_callbacks":1553811080247,"./callbacks":1553811080280,"./engine/topology":1553811080242,"./engine/training":1553811080249,"./exports":1553811080246,"./layers/recurrent":1553811080274,"./models":1553811080261,"./variables":1553811080245,"./version":1553811080254}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080227, function(require, module, exports) {
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 /**
@@ -116,8 +116,8 @@ function minMaxNorm(config) {
 }
 exports.minMaxNorm = minMaxNorm;
 //# sourceMappingURL=exports_constraints.js.map
-}, function(modId) { var map = {"./constraints":1553229508424}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508424, function(require, module, exports) {
+}, function(modId) { var map = {"./constraints":1553811080228}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080228, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -330,8 +330,8 @@ function getConstraint(identifier) {
 }
 exports.getConstraint = getConstraint;
 //# sourceMappingURL=constraints.js.map
-}, function(modId) { var map = {"./backend/common":1553229508425,"./backend/state":1553229508426,"./utils/generic_utils":1553229508427}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508425, function(require, module, exports) {
+}, function(modId) { var map = {"./backend/common":1553811080229,"./backend/state":1553811080230,"./utils/generic_utils":1553811080231}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080229, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -372,7 +372,7 @@ function imageDataFormat() {
 exports.imageDataFormat = imageDataFormat;
 //# sourceMappingURL=common.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508426, function(require, module, exports) {
+__DEFINE__(1553811080230, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -443,7 +443,7 @@ function disposeScalarCache() {
 exports.disposeScalarCache = disposeScalarCache;
 //# sourceMappingURL=state.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508427, function(require, module, exports) {
+__DEFINE__(1553811080231, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -595,8 +595,8 @@ function serializeKerasObject(instance) {
         return null;
     }
     var dict = {};
-    dict.className = instance.getClassName();
-    dict.config = instance.getConfig();
+    dict['className'] = instance.getClassName();
+    dict['config'] = instance.getConfig();
     return dict;
 }
 exports.serializeKerasObject = serializeKerasObject;
@@ -683,18 +683,18 @@ function deserializeKerasObject(identifier, moduleObjects, customObjects, printa
     else {
         // In this case we are dealing with a Keras config dictionary.
         var config = identifier;
-        if (config.className == null || config.config == null) {
+        if (config['className'] == null || config['config'] == null) {
             throw new errors_1.ValueError(printableModuleName + ": Improper config format: " +
                 (JSON.stringify(config) + ".\n") +
                 "'className' and 'config' must set.");
         }
-        var className = config.className;
+        var className = config['className'];
         var cls = void 0, fromConfig = void 0;
         if (className in customObjects) {
-            _a = customObjects.get(className), cls = _a[0], fromConfig = _a[1];
+            _a = customObjects[className], cls = _a[0], fromConfig = _a[1];
         }
         else if (className in _GLOBAL_CUSTOM_OBJECTS) {
-            _b = _GLOBAL_CUSTOM_OBJECTS.className, cls = _b[0], fromConfig = _b[1];
+            _b = _GLOBAL_CUSTOM_OBJECTS['className'], cls = _b[0], fromConfig = _b[1];
         }
         else if (className in moduleObjects) {
             _c = moduleObjects[className], cls = _c[0], fromConfig = _c[1];
@@ -713,8 +713,8 @@ function deserializeKerasObject(identifier, moduleObjects, customObjects, printa
         if (fromConfig != null) {
             // Porting notes: Instead of checking to see whether fromConfig accepts
             // customObjects, we create a customObjects dictionary and tack it on to
-            // config.config as config.config.customObjects. Objects can use it, if
-            // they want.
+            // config['config'] as config['config'].customObjects. Objects can use it,
+            // if they want.
             // tslint:disable-next-line:no-any
             var customObjectsCombined = {};
             for (var _i = 0, _d = Object.keys(_GLOBAL_CUSTOM_OBJECTS); _i < _d.length; _i++) {
@@ -726,15 +726,15 @@ function deserializeKerasObject(identifier, moduleObjects, customObjects, printa
                 customObjectsCombined[key] = customObjects[key];
             }
             // Add the customObjects to config
-            var nestedConfig = config.config;
-            nestedConfig.customObjects = customObjectsCombined;
+            var nestedConfig = config['config'];
+            nestedConfig['customObjects'] = customObjectsCombined;
             var backupCustomObjects = __assign({}, _GLOBAL_CUSTOM_OBJECTS);
             for (var _g = 0, _h = Object.keys(customObjects); _g < _h.length; _g++) {
                 var key = _h[_g];
                 _GLOBAL_CUSTOM_OBJECTS[key] = customObjects[key];
             }
-            convertNDArrayScalarsInConfig(config.config);
-            var returnObj = fromConfig(cls, config.config, customObjects, fastWeightInit);
+            convertNDArrayScalarsInConfig(config['config']);
+            var returnObj = fromConfig(cls, config['config'], customObjects, fastWeightInit);
             _GLOBAL_CUSTOM_OBJECTS = __assign({}, backupCustomObjects);
             return returnObj;
         }
@@ -750,7 +750,7 @@ function deserializeKerasObject(identifier, moduleObjects, customObjects, printa
             // In python this is **config['config'], for tfjs-layers we require
             // classes that use this fall-through construction method to take
             // a config interface that mimics the expansion of named parameters.
-            var returnObj = new cls(config.config);
+            var returnObj = new cls(config['config']);
             _GLOBAL_CUSTOM_OBJECTS = __assign({}, backupCustomObjects);
             return returnObj;
         }
@@ -934,8 +934,8 @@ function formatAsFriendlyString(value) {
 }
 exports.formatAsFriendlyString = formatAsFriendlyString;
 //# sourceMappingURL=generic_utils.js.map
-}, function(modId) { var map = {"../errors":1553229508428}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508428, function(require, module, exports) {
+}, function(modId) { var map = {"../errors":1553811080232}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080232, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -1055,7 +1055,7 @@ var IndexError = /** @class */ (function (_super) {
 exports.IndexError = IndexError;
 //# sourceMappingURL=errors.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508429, function(require, module, exports) {
+__DEFINE__(1553811080233, function(require, module, exports) {
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 /**
@@ -1235,8 +1235,8 @@ function orthogonal(args) {
 }
 exports.orthogonal = orthogonal;
 //# sourceMappingURL=exports_initializers.js.map
-}, function(modId) { var map = {"./initializers":1553229508430}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508430, function(require, module, exports) {
+}, function(modId) { var map = {"./initializers":1553811080234}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080234, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -1549,9 +1549,10 @@ var VarianceScaling = /** @class */ (function (_super) {
             throw new errors_1.ValueError("scale must be a positive float. Got: " + args.scale);
         }
         _this.scale = args.scale == null ? 1.0 : args.scale;
-        _this.mode = args.mode;
+        _this.mode = args.mode == null ? 'fanIn' : args.mode;
         checkFanMode(_this.mode);
-        _this.distribution = args.distribution;
+        _this.distribution =
+            args.distribution == null ? 'normal' : args.distribution;
         checkDistribution(_this.distribution);
         _this.seed = args.seed;
         return _this;
@@ -1909,8 +1910,8 @@ function getInitializer(identifier) {
         }
         else {
             var config = {};
-            config.className = className;
-            config.config = {};
+            config['className'] = className;
+            config['config'] = {};
             return deserializeInitializer(config);
         }
     }
@@ -1923,8 +1924,8 @@ function getInitializer(identifier) {
 }
 exports.getInitializer = getInitializer;
 //# sourceMappingURL=initializers.js.map
-}, function(modId) { var map = {"./backend/state":1553229508426,"./backend/tfjs_backend":1553229508431,"./common":1553229508432,"./errors":1553229508428,"./keras_format/initializer_config":1553229508435,"./utils/generic_utils":1553229508427,"./utils/math_utils":1553229508434}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508431, function(require, module, exports) {
+}, function(modId) { var map = {"./backend/state":1553811080230,"./backend/tfjs_backend":1553811080235,"./common":1553811080236,"./errors":1553811080232,"./keras_format/initializer_config":1553811080239,"./utils/generic_utils":1553811080231,"./utils/math_utils":1553811080238}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080235, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -2596,8 +2597,8 @@ function inTrainPhase(x, alt, training) {
 }
 exports.inTrainPhase = inTrainPhase;
 //# sourceMappingURL=tfjs_backend.js.map
-}, function(modId) { var map = {"../backend/state":1553229508426,"../common":1553229508432,"../errors":1553229508428,"../utils/math_utils":1553229508434,"./common":1553229508425}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508432, function(require, module, exports) {
+}, function(modId) { var map = {"../backend/state":1553811080230,"../common":1553811080236,"../errors":1553811080232,"../utils/math_utils":1553811080238,"./common":1553811080229}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080236, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -2713,8 +2714,8 @@ function isValidTensorName(name) {
 }
 exports.isValidTensorName = isValidTensorName;
 //# sourceMappingURL=common.js.map
-}, function(modId) { var map = {"./keras_format/common":1553229508433,"./utils/generic_utils":1553229508427}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508433, function(require, module, exports) {
+}, function(modId) { var map = {"./keras_format/common":1553811080237,"./utils/generic_utils":1553811080231}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080237, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -2733,7 +2734,7 @@ exports.VALID_BIDIRECTIONAL_MERGE_MODES = ['sum', 'mul', 'concat', 'ave'];
 exports.VALID_SAMPLE_WEIGHT_MODES = ['temporal'];
 //# sourceMappingURL=common.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508434, function(require, module, exports) {
+__DEFINE__(1553811080238, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -2876,8 +2877,8 @@ function range(begin, end) {
 }
 exports.range = range;
 //# sourceMappingURL=math_utils.js.map
-}, function(modId) { var map = {"../errors":1553229508428}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508435, function(require, module, exports) {
+}, function(modId) { var map = {"../errors":1553811080232}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080239, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -2905,7 +2906,7 @@ exports.initializerClassNames = [
 ];
 //# sourceMappingURL=initializer_config.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508436, function(require, module, exports) {
+__DEFINE__(1553811080240, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -3612,8 +3613,8 @@ function alphaDropout(args) {
 }
 exports.alphaDropout = alphaDropout;
 //# sourceMappingURL=exports_layers.js.map
-}, function(modId) { var map = {"./engine/input_layer":1553229508437,"./engine/topology":1553229508438,"./exports":1553229508442,"./layers/advanced_activations":1553229508458,"./layers/convolutional":1553229508461,"./layers/convolutional_depthwise":1553229508463,"./layers/core":1553229508464,"./layers/embeddings":1553229508465,"./layers/merge":1553229508466,"./layers/normalization":1553229508467,"./layers/padding":1553229508468,"./layers/pooling":1553229508469,"./layers/recurrent":1553229508470,"./layers/wrappers":1553229508471,"./layers/noise":1553229508472}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508437, function(require, module, exports) {
+}, function(modId) { var map = {"./engine/input_layer":1553811080241,"./engine/topology":1553811080242,"./exports":1553811080246,"./layers/advanced_activations":1553811080262,"./layers/convolutional":1553811080265,"./layers/convolutional_depthwise":1553811080267,"./layers/core":1553811080268,"./layers/embeddings":1553811080269,"./layers/merge":1553811080270,"./layers/normalization":1553811080271,"./layers/padding":1553811080272,"./layers/pooling":1553811080273,"./layers/recurrent":1553811080274,"./layers/wrappers":1553811080275,"./layers/noise":1553811080276}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080241, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -3772,7 +3773,7 @@ tfjs_core_1.serialization.registerClass(InputLayer);
  * // and 3 dimensional output.
  * const x = tf.input({shape: [32]});
  * const y = tf.layers.dense({units: 3, activation: 'softmax'}).apply(x);
- * const model = tf.LayersModel({inputs: x, outputs: y});
+ * const model = tf.model({inputs: x, outputs: y});
  * model.predict(tf.ones([2, 32])).print();
  * ```
  *
@@ -3811,8 +3812,8 @@ function Input(config) {
 }
 exports.Input = Input;
 //# sourceMappingURL=input_layer.js.map
-}, function(modId) { var map = {"../backend/state":1553229508426,"../errors":1553229508428,"./topology":1553229508438}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508438, function(require, module, exports) {
+}, function(modId) { var map = {"../backend/state":1553811080230,"../errors":1553811080232,"./topology":1553811080242}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080242, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -4493,7 +4494,7 @@ var Layer = /** @class */ (function (_super) {
      *
      * // The input and output and be used to construct a model that consists
      * // of the flatten and dense layers.
-     * const model = tf.LayersModel({inputs: input, outputs: output2});
+     * const model = tf.model({inputs: input, outputs: output2});
      * ```
      *
      * @param inputs a `tf.Tensor` or `tf.SymbolicTensor` or an Array of them.
@@ -5137,8 +5138,8 @@ function getSourceInputs(tensor, layer, nodeIndex) {
 }
 exports.getSourceInputs = getSourceInputs;
 //# sourceMappingURL=topology.js.map
-}, function(modId) { var map = {"../backend/state":1553229508426,"../common":1553229508432,"../errors":1553229508428,"../initializers":1553229508430,"../utils/generic_utils":1553229508427,"../utils/types_utils":1553229508439,"../utils/variable_utils":1553229508440,"../variables":1553229508441}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508439, function(require, module, exports) {
+}, function(modId) { var map = {"../backend/state":1553811080230,"../common":1553811080236,"../errors":1553811080232,"../initializers":1553811080234,"../utils/generic_utils":1553811080231,"../utils/types_utils":1553811080243,"../utils/variable_utils":1553811080244,"../variables":1553811080245}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080243, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -5221,8 +5222,8 @@ function getExactlyOneShape(shapes) {
 }
 exports.getExactlyOneShape = getExactlyOneShape;
 //# sourceMappingURL=types_utils.js.map
-}, function(modId) { var map = {"../errors":1553229508428}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508440, function(require, module, exports) {
+}, function(modId) { var map = {"../errors":1553811080232}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080244, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -5257,7 +5258,7 @@ function countParamsInWeights(weights) {
 exports.countParamsInWeights = countParamsInWeights;
 //# sourceMappingURL=variable_utils.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508441, function(require, module, exports) {
+__DEFINE__(1553811080245, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -5582,8 +5583,8 @@ function gradients(lossFn, variables) {
 }
 exports.gradients = gradients;
 //# sourceMappingURL=variables.js.map
-}, function(modId) { var map = {"./backend/state":1553229508426,"./common":1553229508432,"./errors":1553229508428}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508442, function(require, module, exports) {
+}, function(modId) { var map = {"./backend/state":1553811080230,"./common":1553811080236,"./errors":1553811080232}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080246, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -5826,8 +5827,8 @@ function registerCallbackConstructor(verbosityLevel, callbackConstructor) {
 }
 exports.registerCallbackConstructor = registerCallbackConstructor;
 //# sourceMappingURL=exports.js.map
-}, function(modId) { var map = {"./base_callbacks":1553229508443,"./engine/input_layer":1553229508437,"./engine/training":1553229508445,"./models":1553229508457}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508443, function(require, module, exports) {
+}, function(modId) { var map = {"./base_callbacks":1553811080247,"./engine/input_layer":1553811080241,"./engine/training":1553811080249,"./models":1553811080261}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080247, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -6739,8 +6740,8 @@ function configureCallbacks(callbacks, yieldEvery, verbose, epochs, initialEpoch
 }
 exports.configureCallbacks = configureCallbacks;
 //# sourceMappingURL=base_callbacks.js.map
-}, function(modId) { var map = {"./backend/state":1553229508426,"./errors":1553229508428,"./logs":1553229508444,"./utils/generic_utils":1553229508427}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508444, function(require, module, exports) {
+}, function(modId) { var map = {"./backend/state":1553811080230,"./errors":1553811080232,"./logs":1553811080248,"./utils/generic_utils":1553811080231}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080248, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -6848,7 +6849,7 @@ function disposeTensorsInLogs(logs) {
 exports.disposeTensorsInLogs = disposeTensorsInLogs;
 //# sourceMappingURL=logs.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508445, function(require, module, exports) {
+__DEFINE__(1553811080249, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -7281,7 +7282,7 @@ var LayersModel = /** @class */ (function (_super) {
      * const output =
      *     tf.layers.dense({units: 3, activation: 'softmax'}).apply(concat);
      *
-     * const model = tf.LayersModel({inputs: [input1, input2], outputs: output});
+     * const model = tf.model({inputs: [input1, input2], outputs: output});
      * model.summary();
      * ```
      *
@@ -8234,7 +8235,7 @@ var LayersModel = /** @class */ (function (_super) {
          * ```js
          * const input = tf.input({shape: [10]});
          * const output = tf.layers.dense({units: 1}).apply(input);
-         * const model = tf.LayersModel({inputs: [input], outputs: [output]});
+         * const model = tf.model({inputs: [input], outputs: [output]});
          * model.compile({loss: 'meanSquaredError', optimizer: 'sgd'});
          * const xs = tf.ones([8, 10]);
          * const ys = tf.zeros([8, 1]);
@@ -8416,8 +8417,8 @@ var LayersModel = /** @class */ (function (_super) {
 exports.LayersModel = LayersModel;
 tfjs_core_1.serialization.registerClass(LayersModel);
 //# sourceMappingURL=training.js.map
-}, function(modId) { var map = {"../backend/state":1553229508426,"../backend/tfjs_backend":1553229508431,"../common":1553229508432,"../errors":1553229508428,"../losses":1553229508446,"../metrics":1553229508447,"../optimizers":1553229508448,"../utils/generic_utils":1553229508427,"../utils/layer_utils":1553229508449,"../utils/math_utils":1553229508434,"../version":1553229508450,"./container":1553229508451,"./executor":1553229508454,"./training_dataset":1553229508455,"./training_tensors":1553229508456}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508446, function(require, module, exports) {
+}, function(modId) { var map = {"../backend/state":1553811080230,"../backend/tfjs_backend":1553811080235,"../common":1553811080236,"../errors":1553811080232,"../losses":1553811080250,"../metrics":1553811080251,"../optimizers":1553811080252,"../utils/generic_utils":1553811080231,"../utils/layer_utils":1553811080253,"../utils/math_utils":1553811080238,"../version":1553811080254,"./container":1553811080255,"./executor":1553811080258,"./training_dataset":1553811080259,"./training_tensors":1553811080260}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080250, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -8759,8 +8760,8 @@ function get(identifierOrFn) {
 }
 exports.get = get;
 //# sourceMappingURL=losses.js.map
-}, function(modId) { var map = {"./backend/common":1553229508425,"./backend/state":1553229508426,"./backend/tfjs_backend":1553229508431,"./errors":1553229508428}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508447, function(require, module, exports) {
+}, function(modId) { var map = {"./backend/common":1553811080229,"./backend/state":1553811080230,"./backend/tfjs_backend":1553811080235,"./errors":1553811080232}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080251, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -9042,8 +9043,8 @@ function get(identifier) {
 }
 exports.get = get;
 //# sourceMappingURL=metrics.js.map
-}, function(modId) { var map = {"./backend/state":1553229508426,"./backend/tfjs_backend":1553229508431,"./errors":1553229508428,"./losses":1553229508446}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508448, function(require, module, exports) {
+}, function(modId) { var map = {"./backend/state":1553811080230,"./backend/tfjs_backend":1553811080235,"./errors":1553811080232,"./losses":1553811080250}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080252, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -9086,8 +9087,8 @@ function getOptimizer(identifier) {
 }
 exports.getOptimizer = getOptimizer;
 //# sourceMappingURL=optimizers.js.map
-}, function(modId) { var map = {"./backend/common":1553229508425,"./errors":1553229508428}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508449, function(require, module, exports) {
+}, function(modId) { var map = {"./backend/common":1553811080229,"./errors":1553811080232}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080253, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -9294,8 +9295,8 @@ printFn) {
     }
 }
 //# sourceMappingURL=layer_utils.js.map
-}, function(modId) { var map = {"./variable_utils":1553229508440}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508450, function(require, module, exports) {
+}, function(modId) { var map = {"./variable_utils":1553811080244}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080254, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -9308,11 +9309,11 @@ __DEFINE__(1553229508450, function(require, module, exports) {
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 // This code is auto-generated, do not modify this file!
-var version = '1.0.2';
+var version = '1.0.3';
 exports.version = version;
 //# sourceMappingURL=version.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508451, function(require, module, exports) {
+__DEFINE__(1553811080255, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -9866,12 +9867,12 @@ var Container = /** @class */ (function (_super) {
     Container.prototype.updatedConfig = function () {
         var theConfig = this.getConfig();
         var modelConfig = {};
-        modelConfig.className = this.getClassName();
-        modelConfig.config = theConfig;
-        modelConfig.kerasVersion = "tfjs-layers " + version_1.version;
+        modelConfig['className'] = this.getClassName();
+        modelConfig['config'] = theConfig;
+        modelConfig['kerasVersion'] = "tfjs-layers " + version_1.version;
         // TODO(nielsene): Replace something like K.backend() once
         // possible.
-        modelConfig.backend = 'TensorFlow.js';
+        modelConfig['backend'] = 'TensorFlow.js';
         return modelConfig;
     };
     /**
@@ -10079,7 +10080,7 @@ var Container = /** @class */ (function (_super) {
                     }
                     if (computedData.length === 1) {
                         var _c = computedData[0], computedTensor = _c[0], computedMask = _c[1];
-                        if (kwargs.mask == null) {
+                        if (kwargs['mask'] == null) {
                             kwargs['mask'] = computedMask;
                         }
                         outputTensors_1 =
@@ -10091,7 +10092,7 @@ var Container = /** @class */ (function (_super) {
                     else {
                         computedTensors = computedData.map(function (x) { return x[0]; });
                         computedMasks = computedData.map(function (x) { return x[1]; });
-                        if (kwargs.mask == null) {
+                        if (kwargs['mask'] == null) {
                             kwargs['mask'] = computedMasks;
                         }
                         outputTensors_1 =
@@ -10273,10 +10274,10 @@ var Container = /** @class */ (function (_super) {
                 }
             }
             var dict = {};
-            dict.name = layer.name;
-            dict.className = layerClassName;
-            dict.config = layerConfig;
-            dict.inboundNodes = filteredInboundNodes;
+            dict['name'] = layer.name;
+            dict['className'] = layerClassName;
+            dict['config'] = layerConfig;
+            dict['inboundNodes'] = filteredInboundNodes;
             layerConfigs.push(dict);
         }
         config['layers'] = layerConfigs;
@@ -10353,17 +10354,18 @@ var Container = /** @class */ (function (_super) {
             var kwargs;
             for (var _i = 0, nodeData_1 = nodeData; _i < nodeData_1.length; _i++) {
                 var inputData = nodeData_1[_i];
-                var inboundLayerName = inputData[0];
-                var inboundNodeIndex = inputData[1];
-                var inboundTensorIndex = inputData[2];
-                if (inputData.length === 3) {
+                var inputDataArray = inputData;
+                var inboundLayerName = inputDataArray[0];
+                var inboundNodeIndex = inputDataArray[1];
+                var inboundTensorIndex = inputDataArray[2];
+                if (inputDataArray.length === 3) {
                     kwargs = {};
                 }
-                else if (inputData.length === 4) {
-                    kwargs = inputData[3];
+                else if (inputDataArray.length === 4) {
+                    kwargs = inputDataArray[3];
                 }
                 else {
-                    throw new errors_1.ValueError("Improperly formatted model config for layer " + JSON.stringify(layer) + ": " + JSON.stringify(inputData));
+                    throw new errors_1.ValueError("Improperly formatted model config for layer " + JSON.stringify(layer) + ": " + JSON.stringify(inputDataArray));
                 }
                 if (!(inboundLayerName in createdLayers)) {
                     addUnprocessedNode(layer, nodeData);
@@ -10391,15 +10393,15 @@ var Container = /** @class */ (function (_super) {
          * dict.
          */
         function processLayer(layerData) {
-            var layerName = layerData.name;
+            var layerName = layerData['name'];
             // Instantiate layer.
-            var layer = serialization_1.deserialize(layerData, config.customObjects != null ?
-                config.customObjects :
+            var layer = serialization_1.deserialize(layerData, config['customObjects'] != null ?
+                config['customObjects'] :
                 {});
             layer.setFastWeightInitDuringBuild(fastWeightInit);
             createdLayers[layerName] = layer;
             // Gather layer inputs.
-            var inboundNodesData = layerData.inboundNodes;
+            var inboundNodesData = layerData['inboundNodes'];
             for (var _i = 0, inboundNodesData_1 = inboundNodesData; _i < inboundNodesData_1.length; _i++) {
                 var nodeData = inboundNodesData_1[_i];
                 if (!(nodeData instanceof Array)) {
@@ -10413,8 +10415,8 @@ var Container = /** @class */ (function (_super) {
             }
         }
         // First, we create all layers and enqueue nodes to be processed.
-        var name = config.name;
-        var layersFromConfig = config.layers;
+        var name = config['name'];
+        var layersFromConfig = config['layers'];
         for (var _i = 0, layersFromConfig_1 = layersFromConfig; _i < layersFromConfig_1.length; _i++) {
             var layerData = layersFromConfig_1[_i];
             processLayer(layerData);
@@ -10426,7 +10428,7 @@ var Container = /** @class */ (function (_super) {
         while (!generic_utils.isObjectEmpty(unprocessedNodes)) {
             for (var _a = 0, layersFromConfig_2 = layersFromConfig; _a < layersFromConfig_2.length; _a++) {
                 var layerData = layersFromConfig_2[_a];
-                var layer = createdLayers[layerData.name];
+                var layer = createdLayers[layerData['name']];
                 if (layer.name in unprocessedNodes) {
                     var currentUnprocessedNodesForLayer = unprocessedNodes[layer.name];
                     delete unprocessedNodes[layer.name];
@@ -10439,7 +10441,7 @@ var Container = /** @class */ (function (_super) {
         }
         var inputTensors = [];
         var outputTensors = [];
-        var inputLayersFromConfig = config.inputLayers;
+        var inputLayersFromConfig = config['inputLayers'];
         for (var _c = 0, inputLayersFromConfig_1 = inputLayersFromConfig; _c < inputLayersFromConfig_1.length; _c++) {
             var layerData = inputLayersFromConfig_1[_c];
             var layerName = layerData[0];
@@ -10450,7 +10452,7 @@ var Container = /** @class */ (function (_super) {
             var layerOutputTensors = layer.inboundNodes[nodeIndex].outputTensors;
             inputTensors.push(layerOutputTensors[tensorIndex]);
         }
-        var outputLayersFromConfig = config.outputLayers;
+        var outputLayersFromConfig = config['outputLayers'];
         for (var _d = 0, outputLayersFromConfig_1 = outputLayersFromConfig; _d < outputLayersFromConfig_1.length; _d++) {
             var layerData = outputLayersFromConfig_1[_d];
             var layerName = layerData[0];
@@ -10511,8 +10513,8 @@ var Container = /** @class */ (function (_super) {
 }(topology_1.Layer));
 exports.Container = Container;
 //# sourceMappingURL=container.js.map
-}, function(modId) { var map = {"../backend/state":1553229508426,"../errors":1553229508428,"../layers/serialization":1553229508452,"../utils/generic_utils":1553229508427,"../utils/serialization_utils":1553229508453,"../utils/types_utils":1553229508439,"../variables":1553229508441,"../version":1553229508450,"./executor":1553229508454,"./input_layer":1553229508437,"./topology":1553229508438}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508452, function(require, module, exports) {
+}, function(modId) { var map = {"../backend/state":1553811080230,"../errors":1553811080232,"../layers/serialization":1553811080256,"../utils/generic_utils":1553811080231,"../utils/serialization_utils":1553811080257,"../utils/types_utils":1553811080243,"../variables":1553811080245,"../version":1553811080254,"./executor":1553811080258,"./input_layer":1553811080241,"./topology":1553811080242}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080256, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -10545,8 +10547,8 @@ function deserialize(config, customObjects, fastWeightInit) {
 }
 exports.deserialize = deserialize;
 //# sourceMappingURL=serialization.js.map
-}, function(modId) { var map = {"../utils/generic_utils":1553229508427}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508453, function(require, module, exports) {
+}, function(modId) { var map = {"../utils/generic_utils":1553811080231}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080257, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -10677,8 +10679,8 @@ function convertTsToPythonic(tsConfig, key) {
 }
 exports.convertTsToPythonic = convertTsToPythonic;
 //# sourceMappingURL=serialization_utils.js.map
-}, function(modId) { var map = {"../utils/generic_utils":1553229508427}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508454, function(require, module, exports) {
+}, function(modId) { var map = {"../utils/generic_utils":1553811080231}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080258, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -11139,8 +11141,8 @@ function getNodeOutputs(fetch) {
     return layerOutputs;
 }
 //# sourceMappingURL=executor.js.map
-}, function(modId) { var map = {"../errors":1553229508428,"../utils/generic_utils":1553229508427,"./input_layer":1553229508437,"./topology":1553229508438}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508455, function(require, module, exports) {
+}, function(modId) { var map = {"../errors":1553811080232,"../utils/generic_utils":1553811080231,"./input_layer":1553811080241,"./topology":1553811080242}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080259, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -11596,8 +11598,8 @@ model, dataset, args) {
 }
 exports.evaluateDataset = evaluateDataset;
 //# sourceMappingURL=training_dataset.js.map
-}, function(modId) { var map = {"../backend/state":1553229508426,"../base_callbacks":1553229508443,"../errors":1553229508428,"../logs":1553229508444,"../utils/generic_utils":1553229508427}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508456, function(require, module, exports) {
+}, function(modId) { var map = {"../backend/state":1553811080230,"../base_callbacks":1553811080247,"../errors":1553811080232,"../logs":1553811080248,"../utils/generic_utils":1553811080231}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080260, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -12122,8 +12124,8 @@ function disposeNewTensors(tensors, refTensors) {
 }
 exports.disposeNewTensors = disposeNewTensors;
 //# sourceMappingURL=training_tensors.js.map
-}, function(modId) { var map = {"../backend/tfjs_backend":1553229508431,"../base_callbacks":1553229508443,"../errors":1553229508428,"../logs":1553229508444,"../utils/math_utils":1553229508434}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508457, function(require, module, exports) {
+}, function(modId) { var map = {"../backend/tfjs_backend":1553811080235,"../base_callbacks":1553811080247,"../errors":1553811080232,"../logs":1553811080248,"../utils/math_utils":1553811080238}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080261, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -13103,8 +13105,8 @@ var Sequential = /** @class */ (function (_super) {
         for (var _i = 0, _a = this.layers; _i < _a.length; _i++) {
             var layer = _a[_i];
             var dict = {};
-            dict.className = layer.getClassName();
-            dict.config = layer.getConfig();
+            dict['className'] = layer.getClassName();
+            dict['config'] = layer.getConfig();
             config.push(dict);
         }
         return config;
@@ -13116,8 +13118,8 @@ var Sequential = /** @class */ (function (_super) {
 exports.Sequential = Sequential;
 tfjs_core_1.serialization.registerClass(Sequential);
 //# sourceMappingURL=models.js.map
-}, function(modId) { var map = {"./backend/state":1553229508426,"./engine/input_layer":1553229508437,"./engine/topology":1553229508438,"./engine/training":1553229508445,"./errors":1553229508428,"./layers/serialization":1553229508452,"./utils/generic_utils":1553229508427,"./utils/serialization_utils":1553229508453,"./utils/types_utils":1553229508439}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508458, function(require, module, exports) {
+}, function(modId) { var map = {"./backend/state":1553811080230,"./engine/input_layer":1553811080241,"./engine/topology":1553811080242,"./engine/training":1553811080249,"./errors":1553811080232,"./layers/serialization":1553811080256,"./utils/generic_utils":1553811080231,"./utils/serialization_utils":1553811080257,"./utils/types_utils":1553811080243}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080262, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -13473,8 +13475,8 @@ var Softmax = /** @class */ (function (_super) {
 exports.Softmax = Softmax;
 tfjs_core_1.serialization.registerClass(Softmax);
 //# sourceMappingURL=advanced_activations.js.map
-}, function(modId) { var map = {"../activations":1553229508459,"../backend/state":1553229508426,"../backend/tfjs_backend":1553229508431,"../constraints":1553229508424,"../engine/topology":1553229508438,"../errors":1553229508428,"../initializers":1553229508430,"../regularizers":1553229508460,"../utils/types_utils":1553229508439}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508459, function(require, module, exports) {
+}, function(modId) { var map = {"../activations":1553811080263,"../backend/state":1553811080230,"../backend/tfjs_backend":1553811080235,"../constraints":1553811080228,"../engine/topology":1553811080242,"../errors":1553811080232,"../initializers":1553811080234,"../regularizers":1553811080264,"../utils/types_utils":1553811080243}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080263, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -13746,14 +13748,14 @@ exports.deserializeActivation = deserializeActivation;
 function getActivation(identifier) {
     if (identifier == null) {
         var config = {};
-        config.className = 'linear';
-        config.config = {};
+        config['className'] = 'linear';
+        config['config'] = {};
         return deserializeActivation(config);
     }
     if (typeof identifier === 'string') {
         var config = {};
-        config.className = identifier;
-        config.config = {};
+        config['className'] = identifier;
+        config['config'] = {};
         return deserializeActivation(config);
     }
     else if (identifier instanceof Activation) {
@@ -13765,8 +13767,8 @@ function getActivation(identifier) {
 }
 exports.getActivation = getActivation;
 //# sourceMappingURL=activations.js.map
-}, function(modId) { var map = {"./backend/state":1553229508426,"./backend/tfjs_backend":1553229508431,"./utils/generic_utils":1553229508427}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508460, function(require, module, exports) {
+}, function(modId) { var map = {"./backend/state":1553811080230,"./backend/tfjs_backend":1553811080235,"./utils/generic_utils":1553811080231}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080264, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -13850,7 +13852,7 @@ var L1L2 = /** @class */ (function (_super) {
     };
     /** @nocollapse */
     L1L2.fromConfig = function (cls, config) {
-        return new cls({ l1: config.l1, l2: config.l2 });
+        return new cls({ l1: config['l1'], l2: config['l2'] });
     };
     /** @nocollapse */
     L1L2.className = 'L1L2';
@@ -13913,8 +13915,8 @@ function getRegularizer(identifier) {
 }
 exports.getRegularizer = getRegularizer;
 //# sourceMappingURL=regularizers.js.map
-}, function(modId) { var map = {"./backend/state":1553229508426,"./backend/tfjs_backend":1553229508431,"./utils/generic_utils":1553229508427}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508461, function(require, module, exports) {
+}, function(modId) { var map = {"./backend/state":1553811080230,"./backend/tfjs_backend":1553811080235,"./utils/generic_utils":1553811080231}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080265, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -14977,8 +14979,8 @@ var UpSampling2D = /** @class */ (function (_super) {
 exports.UpSampling2D = UpSampling2D;
 tfjs_core_1.serialization.registerClass(UpSampling2D);
 //# sourceMappingURL=convolutional.js.map
-}, function(modId) { var map = {"../activations":1553229508459,"../backend/common":1553229508425,"../backend/tfjs_backend":1553229508431,"../common":1553229508432,"../constraints":1553229508424,"../engine/topology":1553229508438,"../errors":1553229508428,"../initializers":1553229508430,"../regularizers":1553229508460,"../utils/conv_utils":1553229508462,"../utils/generic_utils":1553229508427,"../utils/types_utils":1553229508439}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508462, function(require, module, exports) {
+}, function(modId) { var map = {"../activations":1553811080263,"../backend/common":1553811080229,"../backend/tfjs_backend":1553811080235,"../common":1553811080236,"../constraints":1553811080228,"../engine/topology":1553811080242,"../errors":1553811080232,"../initializers":1553811080234,"../regularizers":1553811080264,"../utils/conv_utils":1553811080266,"../utils/generic_utils":1553811080231,"../utils/types_utils":1553811080243}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080266, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -15062,8 +15064,8 @@ function deconvLength(dimSize, strideSize, kernelSize, padding) {
 }
 exports.deconvLength = deconvLength;
 //# sourceMappingURL=conv_utils.js.map
-}, function(modId) { var map = {"../errors":1553229508428,"./generic_utils":1553229508427,"./math_utils":1553229508434}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508463, function(require, module, exports) {
+}, function(modId) { var map = {"../errors":1553811080232,"./generic_utils":1553811080231,"./math_utils":1553811080238}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080267, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -15234,8 +15236,8 @@ var DepthwiseConv2D = /** @class */ (function (_super) {
 exports.DepthwiseConv2D = DepthwiseConv2D;
 tfjs_core_1.serialization.registerClass(DepthwiseConv2D);
 //# sourceMappingURL=convolutional_depthwise.js.map
-}, function(modId) { var map = {"../backend/common":1553229508425,"../backend/tfjs_backend":1553229508431,"../common":1553229508432,"../constraints":1553229508424,"../errors":1553229508428,"../initializers":1553229508430,"../regularizers":1553229508460,"../utils/conv_utils":1553229508462,"../utils/types_utils":1553229508439,"./convolutional":1553229508461}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508464, function(require, module, exports) {
+}, function(modId) { var map = {"../backend/common":1553811080229,"../backend/tfjs_backend":1553811080235,"../common":1553811080236,"../constraints":1553811080228,"../errors":1553811080232,"../initializers":1553811080234,"../regularizers":1553811080264,"../utils/conv_utils":1553811080266,"../utils/types_utils":1553811080243,"./convolutional":1553811080265}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080268, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -15844,8 +15846,8 @@ var Permute = /** @class */ (function (_super) {
 exports.Permute = Permute;
 tfjs_core_1.serialization.registerClass(Permute);
 //# sourceMappingURL=core.js.map
-}, function(modId) { var map = {"../activations":1553229508459,"../backend/state":1553229508426,"../backend/tfjs_backend":1553229508431,"../constraints":1553229508424,"../engine/topology":1553229508438,"../errors":1553229508428,"../initializers":1553229508430,"../regularizers":1553229508460,"../utils/generic_utils":1553229508427,"../utils/math_utils":1553229508434,"../utils/types_utils":1553229508439}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508465, function(require, module, exports) {
+}, function(modId) { var map = {"../activations":1553811080263,"../backend/state":1553811080230,"../backend/tfjs_backend":1553811080235,"../constraints":1553811080228,"../engine/topology":1553811080242,"../errors":1553811080232,"../initializers":1553811080234,"../regularizers":1553811080264,"../utils/generic_utils":1553811080231,"../utils/math_utils":1553811080238,"../utils/types_utils":1553811080243}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080269, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -16015,8 +16017,8 @@ var Embedding = /** @class */ (function (_super) {
 exports.Embedding = Embedding;
 tfjs_core_1.serialization.registerClass(Embedding);
 //# sourceMappingURL=embeddings.js.map
-}, function(modId) { var map = {"../backend/tfjs_backend":1553229508431,"../constraints":1553229508424,"../engine/topology":1553229508438,"../errors":1553229508428,"../initializers":1553229508430,"../regularizers":1553229508460,"../utils/generic_utils":1553229508427,"../utils/types_utils":1553229508439}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508466, function(require, module, exports) {
+}, function(modId) { var map = {"../backend/tfjs_backend":1553811080235,"../constraints":1553811080228,"../engine/topology":1553811080242,"../errors":1553811080232,"../initializers":1553811080234,"../regularizers":1553811080264,"../utils/generic_utils":1553811080231,"../utils/types_utils":1553811080243}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080270, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -17178,8 +17180,8 @@ exports.Dot = Dot;
 tfjs_core_1.serialization.registerClass(Dot);
 // TODO(cais): Add functional interfaces for the merge layers.
 //# sourceMappingURL=merge.js.map
-}, function(modId) { var map = {"../backend/state":1553229508426,"../backend/tfjs_backend":1553229508431,"../engine/topology":1553229508438,"../errors":1553229508428,"../losses":1553229508446,"../utils/generic_utils":1553229508427,"../utils/math_utils":1553229508434,"../utils/types_utils":1553229508439}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508467, function(require, module, exports) {
+}, function(modId) { var map = {"../backend/state":1553811080230,"../backend/tfjs_backend":1553811080235,"../engine/topology":1553811080242,"../errors":1553811080232,"../losses":1553811080250,"../utils/generic_utils":1553811080231,"../utils/math_utils":1553811080238,"../utils/types_utils":1553811080243}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080271, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -17489,8 +17491,8 @@ var BatchNormalization = /** @class */ (function (_super) {
 exports.BatchNormalization = BatchNormalization;
 tfjs_core_1.serialization.registerClass(BatchNormalization);
 //# sourceMappingURL=normalization.js.map
-}, function(modId) { var map = {"../backend/state":1553229508426,"../constraints":1553229508424,"../engine/topology":1553229508438,"../errors":1553229508428,"../initializers":1553229508430,"../regularizers":1553229508460,"../utils/generic_utils":1553229508427,"../utils/math_utils":1553229508434,"../utils/types_utils":1553229508439}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508468, function(require, module, exports) {
+}, function(modId) { var map = {"../backend/state":1553811080230,"../constraints":1553811080228,"../engine/topology":1553811080242,"../errors":1553811080232,"../initializers":1553811080234,"../regularizers":1553811080264,"../utils/generic_utils":1553811080231,"../utils/math_utils":1553811080238,"../utils/types_utils":1553811080243}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080272, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -17718,8 +17720,8 @@ var ZeroPadding2D = /** @class */ (function (_super) {
 exports.ZeroPadding2D = ZeroPadding2D;
 tfjs_core_1.serialization.registerClass(ZeroPadding2D);
 //# sourceMappingURL=padding.js.map
-}, function(modId) { var map = {"../backend/common":1553229508425,"../engine/topology":1553229508438,"../errors":1553229508428,"../utils/types_utils":1553229508439}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508469, function(require, module, exports) {
+}, function(modId) { var map = {"../backend/common":1553811080229,"../engine/topology":1553811080242,"../errors":1553811080232,"../utils/types_utils":1553811080243}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080273, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -18260,8 +18262,8 @@ var GlobalMaxPooling2D = /** @class */ (function (_super) {
 exports.GlobalMaxPooling2D = GlobalMaxPooling2D;
 tfjs_core_1.serialization.registerClass(GlobalMaxPooling2D);
 //# sourceMappingURL=pooling.js.map
-}, function(modId) { var map = {"../backend/common":1553229508425,"../backend/tfjs_backend":1553229508431,"../common":1553229508432,"../engine/topology":1553229508438,"../errors":1553229508428,"../utils/conv_utils":1553229508462,"../utils/generic_utils":1553229508427,"../utils/types_utils":1553229508439,"./convolutional":1553229508461}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508470, function(require, module, exports) {
+}, function(modId) { var map = {"../backend/common":1553811080229,"../backend/tfjs_backend":1553811080235,"../common":1553811080236,"../engine/topology":1553811080242,"../errors":1553811080232,"../utils/conv_utils":1553811080266,"../utils/generic_utils":1553811080231,"../utils/types_utils":1553811080243,"./convolutional":1553811080265}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080274, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -18971,12 +18973,12 @@ var RNN = /** @class */ (function (_super) {
             unroll: this.unroll,
         };
         if (this.numConstants != null) {
-            config.numConstants = this.numConstants;
+            config['numConstants'] = this.numConstants;
         }
         var cellConfig = this.cell.getConfig();
-        config.cell = {
-            className: this.cell.getClassName(),
-            config: cellConfig,
+        config['cell'] = {
+            'className': this.cell.getClassName(),
+            'config': cellConfig,
         };
         var baseConfig = _super.prototype.getConfig.call(this);
         Object.assign(config, baseConfig);
@@ -20346,8 +20348,8 @@ function generateDropoutMask(ones, rate, training, count) {
     }
 }
 //# sourceMappingURL=recurrent.js.map
-}, function(modId) { var map = {"../activations":1553229508459,"../backend/state":1553229508426,"../backend/tfjs_backend":1553229508431,"../constraints":1553229508424,"../engine/topology":1553229508438,"../errors":1553229508428,"../initializers":1553229508430,"../regularizers":1553229508460,"../utils/generic_utils":1553229508427,"../utils/math_utils":1553229508434,"../utils/types_utils":1553229508439,"../variables":1553229508441,"./serialization":1553229508452}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508471, function(require, module, exports) {
+}, function(modId) { var map = {"../activations":1553811080263,"../backend/state":1553811080230,"../backend/tfjs_backend":1553811080235,"../constraints":1553811080228,"../engine/topology":1553811080242,"../errors":1553811080232,"../initializers":1553811080234,"../regularizers":1553811080264,"../utils/generic_utils":1553811080231,"../utils/math_utils":1553811080238,"../utils/types_utils":1553811080243,"../variables":1553811080245,"./serialization":1553811080256}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080275, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -20625,14 +20627,14 @@ var Bidirectional = /** @class */ (function (_super) {
         //   methods.
         var layerConfig = args.layer.getConfig();
         var forwDict = {};
-        forwDict.className = args.layer.getClassName();
-        forwDict.config = layerConfig;
+        forwDict['className'] = args.layer.getClassName();
+        forwDict['config'] = layerConfig;
         _this.forwardLayer = serialization_1.deserialize(forwDict);
         layerConfig['goBackwards'] =
             layerConfig['goBackwards'] === true ? false : true;
         var backDict = {};
-        backDict.className = args.layer.getClassName();
-        backDict.config = layerConfig;
+        backDict['className'] = args.layer.getClassName();
+        backDict['config'] = layerConfig;
         _this.backwardLayer = serialization_1.deserialize(backDict);
         _this.forwardLayer.name = 'forward_' + _this.forwardLayer.name;
         _this.backwardLayer.name = 'backward_' + _this.backwardLayer.name;
@@ -20913,8 +20915,8 @@ var Bidirectional = /** @class */ (function (_super) {
 exports.Bidirectional = Bidirectional;
 tfjs_core_1.serialization.registerClass(Bidirectional);
 //# sourceMappingURL=wrappers.js.map
-}, function(modId) { var map = {"../backend/state":1553229508426,"../backend/tfjs_backend":1553229508431,"../common":1553229508432,"../engine/topology":1553229508438,"../errors":1553229508428,"../keras_format/common":1553229508433,"../utils/generic_utils":1553229508427,"../utils/types_utils":1553229508439,"./recurrent":1553229508470,"./serialization":1553229508452}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508472, function(require, module, exports) {
+}, function(modId) { var map = {"../backend/state":1553811080230,"../backend/tfjs_backend":1553811080235,"../common":1553811080236,"../engine/topology":1553811080242,"../errors":1553811080232,"../keras_format/common":1553811080237,"../utils/generic_utils":1553811080231,"../utils/types_utils":1553811080243,"./recurrent":1553811080274,"./serialization":1553811080256}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080276, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -20992,7 +20994,7 @@ var GaussianNoise = /** @class */ (function (_super) {
             var noised = function () {
                 return K.randomNormal(input.shape, 0, _this.stddev).add(input);
             };
-            var output = K.inTrainPhase(noised, function () { return input; }, kwargs.training || false);
+            var output = K.inTrainPhase(noised, function () { return input; }, kwargs['training'] || false);
             return output;
         });
     };
@@ -21051,7 +21053,7 @@ var GaussianDropout = /** @class */ (function (_super) {
                     var stddev = Math.sqrt(_this.rate / (1 - _this.rate));
                     return K.dot(input, K.randomNormal(input.shape, 1, stddev));
                 };
-                return K.inTrainPhase(noised, function () { return input; }, kwargs.training || false);
+                return K.inTrainPhase(noised, function () { return input; }, kwargs['training'] || false);
             }
             return input;
         });
@@ -21131,7 +21133,7 @@ var AlphaDropout = /** @class */ (function (_super) {
                     var x = K.dot(input, keptIdx).add(keptIdx.add(-1).mul(alphaP));
                     return x.mul(a).add(b);
                 };
-                return K.inTrainPhase(droppedInputs, function () { return types_utils_1.getExactlyOneTensor(inputs); }, kwargs.training || false);
+                return K.inTrainPhase(droppedInputs, function () { return types_utils_1.getExactlyOneTensor(inputs); }, kwargs['training'] || false);
             }
             return inputs;
         });
@@ -21142,8 +21144,8 @@ var AlphaDropout = /** @class */ (function (_super) {
 exports.AlphaDropout = AlphaDropout;
 tfjs_core_1.serialization.registerClass(AlphaDropout);
 //# sourceMappingURL=noise.js.map
-}, function(modId) { var map = {"../backend/tfjs_backend":1553229508431,"../engine/topology":1553229508438,"../utils/types_utils":1553229508439}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508473, function(require, module, exports) {
+}, function(modId) { var map = {"../backend/tfjs_backend":1553811080235,"../engine/topology":1553811080242,"../utils/types_utils":1553811080243}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080277, function(require, module, exports) {
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var losses = require("./losses");
@@ -21286,8 +21288,8 @@ function mse(yTrue, yPred) {
 }
 exports.mse = mse;
 //# sourceMappingURL=exports_metrics.js.map
-}, function(modId) { var map = {"./losses":1553229508446,"./metrics":1553229508447}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508474, function(require, module, exports) {
+}, function(modId) { var map = {"./losses":1553811080250,"./metrics":1553811080251}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080278, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -21302,8 +21304,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var models_1 = require("./models");
 exports.modelFromJSON = models_1.modelFromJSON;
 //# sourceMappingURL=exports_models.js.map
-}, function(modId) { var map = {"./models":1553229508457}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508475, function(require, module, exports) {
+}, function(modId) { var map = {"./models":1553811080261}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080279, function(require, module, exports) {
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 /**
@@ -21352,8 +21354,8 @@ function l2(config) {
 }
 exports.l2 = l2;
 //# sourceMappingURL=exports_regularizers.js.map
-}, function(modId) { var map = {"./regularizers":1553229508460}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508476, function(require, module, exports) {
+}, function(modId) { var map = {"./regularizers":1553811080264}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080280, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -21399,7 +21401,7 @@ var Callback = /** @class */ (function (_super) {
 }(base_callbacks_1.BaseCallback));
 exports.Callback = Callback;
 //# sourceMappingURL=callbacks.js.map
-}, function(modId) { var map = {"./base_callbacks":1553229508443,"./engine/training":1553229508445}; return __REQUIRE__(map[modId], modId); })
-return __REQUIRE__(1553229508422);
+}, function(modId) { var map = {"./base_callbacks":1553811080247,"./engine/training":1553811080249}; return __REQUIRE__(map[modId], modId); })
+return __REQUIRE__(1553811080226);
 })()
 //# sourceMappingURL=index.js.map

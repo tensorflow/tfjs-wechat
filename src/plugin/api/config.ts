@@ -14,5 +14,17 @@
  * limitations under the License.
  * =============================================================================
  */
-export * from '@tensorflow/tfjs';
-export {configPlugin} from './api/config';
+
+export interface SystemConfig {
+  /**
+   * A function used to override the `window.fetch` function.
+   */
+  fetchFunc?: Function;
+}
+export function configPlugin(config: SystemConfig) {
+  if (config.fetchFunc) {
+    // tslint:disable-next-line:no-any
+    const typedGlobal = global as any;
+    typedGlobal.fetch = config.fetchFunc;
+  }
+}

@@ -15,13 +15,16 @@
  * =============================================================================
  */
 
-import { Classifier } from '../../model/classifier';
+import * as tfjs from '@tensorflow/tfjs';
+import {fetchFunc} from 'fetch-wechat';
+
+import {Classifier} from '../../model/classifier';
+
+const tf = requirePlugin('myPlugin') as typeof tfjs;
 
 const CANVAS_ID = 'image-canvas';
 Page({
-  data: {
-    result: ''
-  },
+  data: {result: ''},
   model: undefined,
   canvas: undefined,
   takePhoto() {
@@ -31,7 +34,7 @@ Page({
         quality: 'high',
         success: (res) => {
           this.canvas.drawImage(res.tempImagePath, 0, 0, 224, 224);
-          this.canvas.draw(false, () =>  {
+          this.canvas.draw(false, () => {
             wx.canvasGetImageData({
               canvasId: CANVAS_ID,
               x: 0,
@@ -41,8 +44,9 @@ Page({
               success: (res) => {
                 // tslint:disable-next-line:no-any
                 const result = (res as any) as ImageData;
-                this.model.classify(result.data.buffer,
-                  { width: result.width, height: result.height });
+                this.model.classify(
+                    result.data.buffer,
+                    {width: result.width, height: result.height});
               }
             });
           });
@@ -51,6 +55,8 @@ Page({
     }
   },
   async onReady() {
+    // tslint:disable-next-line:no-any
+    (tf as any).configPlugin({fetchFunc: fetchFunc()});
     this.canvas = wx.createCanvasContext(CANVAS_ID);
     const model = new Classifier(this);
     await model.load();

@@ -4,7 +4,7 @@ var __DEFINE__ = function(modId, func, req) { var m = { exports: {} }; __MODS__[
 var __REQUIRE__ = function(modId, source) { if(!__MODS__[modId]) return require(source); if(!__MODS__[modId].status) { var m = { exports: {} }; __MODS__[modId].status = 1; __MODS__[modId].func(__MODS__[modId].req, m, m.exports); if(typeof m.exports === "object") { Object.keys(m.exports).forEach(function(k) { __MODS__[modId].m.exports[k] = m.exports[k]; }); if(m.exports.__esModule) Object.defineProperty(__MODS__[modId].m.exports, "__esModule", { value: true }); } else { __MODS__[modId].m.exports = m.exports; } } return __MODS__[modId].m.exports; };
 var __REQUIRE_WILDCARD__ = function(obj) { if(obj && obj.__esModule) { return obj; } else { var newObj = {}; if(obj != null) { for(var k in obj) { if (Object.prototype.hasOwnProperty.call(obj, k)) newObj[k] = obj[k]; } } newObj.default = obj; return newObj; } };
 var __REQUIRE_DEFAULT__ = function(obj) { return obj && obj.__esModule ? obj.default : obj; };
-__DEFINE__(1553229508180, function(require, module, exports) {
+__DEFINE__(1553811079992, function(require, module, exports) {
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 /**
@@ -29,8 +29,8 @@ exports.loadGraphModel = graph_model_1.loadGraphModel;
 var version_1 = require("./version");
 exports.version_converter = version_1.version;
 //# sourceMappingURL=index.js.map
-}, function(modId) {var map = {"./executor/graph_model":1553229508181,"./version":1553229508221}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508181, function(require, module, exports) {
+}, function(modId) {var map = {"./executor/graph_model":1553811079993,"./version":1553811080033}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811079993, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -417,8 +417,8 @@ function loadGraphModel(modelUrl, options) {
 }
 exports.loadGraphModel = loadGraphModel;
 //# sourceMappingURL=graph_model.js.map
-}, function(modId) { var map = {"../operations/operation_mapper":1553229508182,"./graph_executor":1553229508201}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508182, function(require, module, exports) {
+}, function(modId) { var map = {"../operations/operation_mapper":1553811079994,"./graph_executor":1553811080013}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811079994, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -437,7 +437,8 @@ __DEFINE__(1553229508182, function(require, module, exports) {
  * =============================================================================
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-var compiled_api_1 = require("../data/compiled_api");
+var tfjs_core_1 = require("@tensorflow/tfjs-core");
+var tensorflow = require("../data/compiled_api");
 var utils_1 = require("./executors/utils");
 var arithmetic = require("./op_list/arithmetic");
 var basicMath = require("./op_list/basic_math");
@@ -619,8 +620,10 @@ var OperationMapper = /** @class */ (function () {
         return newNode;
     };
     OperationMapper.prototype.decodeBase64 = function (text) {
-        if (typeof atob !== 'undefined') {
-            return atob(text);
+        // tslint:disable-next-line:no-any
+        var global = tfjs_core_1.ENV.global;
+        if (typeof global.atob !== 'undefined') {
+            return global.atob(text);
         }
         else if (typeof Buffer !== 'undefined') {
             return new Buffer(text, 'base64').toString();
@@ -658,14 +661,14 @@ var OperationMapper = /** @class */ (function () {
             // tslint:disable-next-line:no-any
             var type = param.type;
             if (typeof (param.type) === 'string') {
-                type = compiled_api_1.tensorflow.DataType[param.type];
+                type = tensorflow.DataType[param.type];
             }
             switch (type) {
-                case compiled_api_1.tensorflow.DataType.DT_FLOAT:
+                case tensorflow.DataType.DT_FLOAT:
                     return 'float32';
-                case compiled_api_1.tensorflow.DataType.DT_INT32:
+                case tensorflow.DataType.DT_INT32:
                     return 'int32';
-                case compiled_api_1.tensorflow.DataType.DT_BOOL:
+                case tensorflow.DataType.DT_BOOL:
                     return 'bool';
                 default:
                     return def;
@@ -702,60 +705,56 @@ var OperationMapper = /** @class */ (function () {
 }());
 exports.OperationMapper = OperationMapper;
 //# sourceMappingURL=operation_mapper.js.map
-}, function(modId) { var map = {"../data/compiled_api":1553229508183,"./executors/utils":1553229508184,"./op_list/arithmetic":1553229508185,"./op_list/basic_math":1553229508186,"./op_list/control":1553229508187,"./op_list/convolution":1553229508188,"./op_list/creation":1553229508189,"./op_list/dynamic":1553229508190,"./op_list/evaluation":1553229508191,"./op_list/graph":1553229508192,"./op_list/image":1553229508193,"./op_list/logical":1553229508194,"./op_list/matrices":1553229508195,"./op_list/normalization":1553229508196,"./op_list/reduction":1553229508197,"./op_list/slice_join":1553229508198,"./op_list/spectral":1553229508199,"./op_list/transformation":1553229508200}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508183, function(require, module, exports) {
+}, function(modId) { var map = {"../data/compiled_api":1553811079995,"./executors/utils":1553811079996,"./op_list/arithmetic":1553811079997,"./op_list/basic_math":1553811079998,"./op_list/control":1553811079999,"./op_list/convolution":1553811080000,"./op_list/creation":1553811080001,"./op_list/dynamic":1553811080002,"./op_list/evaluation":1553811080003,"./op_list/graph":1553811080004,"./op_list/image":1553811080005,"./op_list/logical":1553811080006,"./op_list/matrices":1553811080007,"./op_list/normalization":1553811080008,"./op_list/reduction":1553811080009,"./op_list/slice_join":1553811080010,"./op_list/spectral":1553811080011,"./op_list/transformation":1553811080012}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811079995, function(require, module, exports) {
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-/** Namespace tensorflow. */
-var tensorflow;
-(function (tensorflow) {
-    /** DataType enum. */
-    var DataType;
-    (function (DataType) {
-        DataType[DataType["DT_INVALID"] = 0] = "DT_INVALID";
-        DataType[DataType["DT_FLOAT"] = 1] = "DT_FLOAT";
-        DataType[DataType["DT_DOUBLE"] = 2] = "DT_DOUBLE";
-        DataType[DataType["DT_INT32"] = 3] = "DT_INT32";
-        DataType[DataType["DT_UINT8"] = 4] = "DT_UINT8";
-        DataType[DataType["DT_INT16"] = 5] = "DT_INT16";
-        DataType[DataType["DT_INT8"] = 6] = "DT_INT8";
-        DataType[DataType["DT_STRING"] = 7] = "DT_STRING";
-        DataType[DataType["DT_COMPLEX64"] = 8] = "DT_COMPLEX64";
-        DataType[DataType["DT_INT64"] = 9] = "DT_INT64";
-        DataType[DataType["DT_BOOL"] = 10] = "DT_BOOL";
-        DataType[DataType["DT_QINT8"] = 11] = "DT_QINT8";
-        DataType[DataType["DT_QUINT8"] = 12] = "DT_QUINT8";
-        DataType[DataType["DT_QINT32"] = 13] = "DT_QINT32";
-        DataType[DataType["DT_BFLOAT16"] = 14] = "DT_BFLOAT16";
-        DataType[DataType["DT_FLOAT_REF"] = 101] = "DT_FLOAT_REF";
-        DataType[DataType["DT_DOUBLE_REF"] = 102] = "DT_DOUBLE_REF";
-        DataType[DataType["DT_INT32_REF"] = 103] = "DT_INT32_REF";
-        DataType[DataType["DT_UINT8_REF"] = 104] = "DT_UINT8_REF";
-        DataType[DataType["DT_INT16_REF"] = 105] = "DT_INT16_REF";
-        DataType[DataType["DT_INT8_REF"] = 106] = "DT_INT8_REF";
-        DataType[DataType["DT_STRING_REF"] = 107] = "DT_STRING_REF";
-        DataType[DataType["DT_COMPLEX64_REF"] = 108] = "DT_COMPLEX64_REF";
-        DataType[DataType["DT_INT64_REF"] = 109] = "DT_INT64_REF";
-        DataType[DataType["DT_BOOL_REF"] = 110] = "DT_BOOL_REF";
-        DataType[DataType["DT_QINT8_REF"] = 111] = "DT_QINT8_REF";
-        DataType[DataType["DT_QUINT8_REF"] = 112] = "DT_QUINT8_REF";
-        DataType[DataType["DT_QINT32_REF"] = 113] = "DT_QINT32_REF";
-        DataType[DataType["DT_BFLOAT16_REF"] = 114] = "DT_BFLOAT16_REF";
-    })(DataType = tensorflow.DataType || (tensorflow.DataType = {}));
-    var SaverDef;
-    (function (SaverDef) {
-        /** CheckpointFormatVersion enum. */
-        var CheckpointFormatVersion;
-        (function (CheckpointFormatVersion) {
-            CheckpointFormatVersion[CheckpointFormatVersion["LEGACY"] = 0] = "LEGACY";
-            CheckpointFormatVersion[CheckpointFormatVersion["V1"] = 1] = "V1";
-            CheckpointFormatVersion[CheckpointFormatVersion["V2"] = 2] = "V2";
-        })(CheckpointFormatVersion = SaverDef.CheckpointFormatVersion || (SaverDef.CheckpointFormatVersion = {}));
-    })(SaverDef = tensorflow.SaverDef || (tensorflow.SaverDef = {}));
-})(tensorflow = exports.tensorflow || (exports.tensorflow = {}));
+/** DataType enum. */
+var DataType;
+(function (DataType) {
+    DataType[DataType["DT_INVALID"] = 0] = "DT_INVALID";
+    DataType[DataType["DT_FLOAT"] = 1] = "DT_FLOAT";
+    DataType[DataType["DT_DOUBLE"] = 2] = "DT_DOUBLE";
+    DataType[DataType["DT_INT32"] = 3] = "DT_INT32";
+    DataType[DataType["DT_UINT8"] = 4] = "DT_UINT8";
+    DataType[DataType["DT_INT16"] = 5] = "DT_INT16";
+    DataType[DataType["DT_INT8"] = 6] = "DT_INT8";
+    DataType[DataType["DT_STRING"] = 7] = "DT_STRING";
+    DataType[DataType["DT_COMPLEX64"] = 8] = "DT_COMPLEX64";
+    DataType[DataType["DT_INT64"] = 9] = "DT_INT64";
+    DataType[DataType["DT_BOOL"] = 10] = "DT_BOOL";
+    DataType[DataType["DT_QINT8"] = 11] = "DT_QINT8";
+    DataType[DataType["DT_QUINT8"] = 12] = "DT_QUINT8";
+    DataType[DataType["DT_QINT32"] = 13] = "DT_QINT32";
+    DataType[DataType["DT_BFLOAT16"] = 14] = "DT_BFLOAT16";
+    DataType[DataType["DT_FLOAT_REF"] = 101] = "DT_FLOAT_REF";
+    DataType[DataType["DT_DOUBLE_REF"] = 102] = "DT_DOUBLE_REF";
+    DataType[DataType["DT_INT32_REF"] = 103] = "DT_INT32_REF";
+    DataType[DataType["DT_UINT8_REF"] = 104] = "DT_UINT8_REF";
+    DataType[DataType["DT_INT16_REF"] = 105] = "DT_INT16_REF";
+    DataType[DataType["DT_INT8_REF"] = 106] = "DT_INT8_REF";
+    DataType[DataType["DT_STRING_REF"] = 107] = "DT_STRING_REF";
+    DataType[DataType["DT_COMPLEX64_REF"] = 108] = "DT_COMPLEX64_REF";
+    DataType[DataType["DT_INT64_REF"] = 109] = "DT_INT64_REF";
+    DataType[DataType["DT_BOOL_REF"] = 110] = "DT_BOOL_REF";
+    DataType[DataType["DT_QINT8_REF"] = 111] = "DT_QINT8_REF";
+    DataType[DataType["DT_QUINT8_REF"] = 112] = "DT_QUINT8_REF";
+    DataType[DataType["DT_QINT32_REF"] = 113] = "DT_QINT32_REF";
+    DataType[DataType["DT_BFLOAT16_REF"] = 114] = "DT_BFLOAT16_REF";
+})(DataType = exports.DataType || (exports.DataType = {}));
+var SaverDef;
+(function (SaverDef) {
+    /** CheckpointFormatVersion enum. */
+    var CheckpointFormatVersion;
+    (function (CheckpointFormatVersion) {
+        CheckpointFormatVersion[CheckpointFormatVersion["LEGACY"] = 0] = "LEGACY";
+        CheckpointFormatVersion[CheckpointFormatVersion["V1"] = 1] = "V1";
+        CheckpointFormatVersion[CheckpointFormatVersion["V2"] = 2] = "V2";
+    })(CheckpointFormatVersion = SaverDef.CheckpointFormatVersion || (SaverDef.CheckpointFormatVersion = {}));
+})(SaverDef = exports.SaverDef || (exports.SaverDef = {}));
 //# sourceMappingURL=compiled_api.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508184, function(require, module, exports) {
+__DEFINE__(1553811079996, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -857,7 +856,7 @@ function split(arr, size) {
 exports.split = split;
 //# sourceMappingURL=utils.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508185, function(require, module, exports) {
+__DEFINE__(1553811079997, function(require, module, exports) {
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 /**
@@ -1025,7 +1024,7 @@ exports.json = [
 ];
 //# sourceMappingURL=arithmetic.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508186, function(require, module, exports) {
+__DEFINE__(1553811079998, function(require, module, exports) {
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 /**
@@ -1449,7 +1448,7 @@ exports.json = [
 ];
 //# sourceMappingURL=basic_math.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508187, function(require, module, exports) {
+__DEFINE__(1553811079999, function(require, module, exports) {
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 /**
@@ -1633,7 +1632,7 @@ exports.json = [
 ];
 //# sourceMappingURL=control.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508188, function(require, module, exports) {
+__DEFINE__(1553811080000, function(require, module, exports) {
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 /**
@@ -1789,7 +1788,7 @@ exports.json = [
 ];
 //# sourceMappingURL=convolution.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508189, function(require, module, exports) {
+__DEFINE__(1553811080001, function(require, module, exports) {
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 /**
@@ -1954,7 +1953,7 @@ exports.json = [
 ];
 //# sourceMappingURL=creation.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508190, function(require, module, exports) {
+__DEFINE__(1553811080002, function(require, module, exports) {
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 /**
@@ -2022,7 +2021,7 @@ exports.json = [
 ];
 //# sourceMappingURL=dynamic.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508191, function(require, module, exports) {
+__DEFINE__(1553811080003, function(require, module, exports) {
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 /**
@@ -2052,7 +2051,7 @@ exports.json = [{
     }];
 //# sourceMappingURL=evaluation.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508192, function(require, module, exports) {
+__DEFINE__(1553811080004, function(require, module, exports) {
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 /**
@@ -2167,7 +2166,7 @@ exports.json = [
 ];
 //# sourceMappingURL=graph.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508193, function(require, module, exports) {
+__DEFINE__(1553811080005, function(require, module, exports) {
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 /**
@@ -2231,7 +2230,7 @@ exports.json = [
 ];
 //# sourceMappingURL=image.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508194, function(require, module, exports) {
+__DEFINE__(1553811080006, function(require, module, exports) {
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 /**
@@ -2367,7 +2366,7 @@ exports.json = [
 ];
 //# sourceMappingURL=logical.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508195, function(require, module, exports) {
+__DEFINE__(1553811080007, function(require, module, exports) {
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 /**
@@ -2450,7 +2449,7 @@ exports.json = [
 ];
 //# sourceMappingURL=matrices.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508196, function(require, module, exports) {
+__DEFINE__(1553811080008, function(require, module, exports) {
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 /**
@@ -2578,7 +2577,7 @@ exports.json = [
 ];
 //# sourceMappingURL=normalization.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508197, function(require, module, exports) {
+__DEFINE__(1553811080009, function(require, module, exports) {
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 /**
@@ -2680,7 +2679,7 @@ exports.json = [
 ];
 //# sourceMappingURL=reduction.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508198, function(require, module, exports) {
+__DEFINE__(1553811080010, function(require, module, exports) {
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 /**
@@ -2902,7 +2901,7 @@ exports.json = [
 ];
 //# sourceMappingURL=slice_join.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508199, function(require, module, exports) {
+__DEFINE__(1553811080011, function(require, module, exports) {
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 /**
@@ -2959,7 +2958,7 @@ exports.json = [
 ];
 //# sourceMappingURL=spectral.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508200, function(require, module, exports) {
+__DEFINE__(1553811080012, function(require, module, exports) {
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 /**
@@ -3083,7 +3082,7 @@ exports.json = [
 ];
 //# sourceMappingURL=transformation.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508201, function(require, module, exports) {
+__DEFINE__(1553811080013, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -3596,8 +3595,8 @@ var GraphExecutor = /** @class */ (function () {
 }());
 exports.GraphExecutor = GraphExecutor;
 //# sourceMappingURL=graph_executor.js.map
-}, function(modId) { var map = {"../operations/executors/utils":1553229508184,"../operations/operation_executor":1553229508202,"./execution_context":1553229508220}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508202, function(require, module, exports) {
+}, function(modId) { var map = {"../operations/executors/utils":1553811079996,"../operations/operation_executor":1553811080014,"./execution_context":1553811080032}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080014, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -3683,8 +3682,8 @@ function executeOp(node, tensorMap, context) {
 }
 exports.executeOp = executeOp;
 //# sourceMappingURL=operation_executor.js.map
-}, function(modId) { var map = {"./executors/arithmetic_executor":1553229508203,"./executors/basic_math_executor":1553229508204,"./executors/control_executor":1553229508205,"./executors/convolution_executor":1553229508207,"./executors/creation_executor":1553229508208,"./executors/dynamic_executor":1553229508209,"./executors/evaluation_executor":1553229508210,"./executors/graph_executor":1553229508211,"./executors/image_executor":1553229508212,"./executors/logical_executor":1553229508213,"./executors/matrices_executor":1553229508214,"./executors/normalization_executor":1553229508215,"./executors/reduction_executor":1553229508216,"./executors/slice_join_executor":1553229508217,"./executors/spectral_executor":1553229508218,"./executors/transformation_executor":1553229508219}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508203, function(require, module, exports) {
+}, function(modId) { var map = {"./executors/arithmetic_executor":1553811080015,"./executors/basic_math_executor":1553811080016,"./executors/control_executor":1553811080017,"./executors/convolution_executor":1553811080019,"./executors/creation_executor":1553811080020,"./executors/dynamic_executor":1553811080021,"./executors/evaluation_executor":1553811080022,"./executors/graph_executor":1553811080023,"./executors/image_executor":1553811080024,"./executors/logical_executor":1553811080025,"./executors/matrices_executor":1553811080026,"./executors/normalization_executor":1553811080027,"./executors/reduction_executor":1553811080028,"./executors/slice_join_executor":1553811080029,"./executors/spectral_executor":1553811080030,"./executors/transformation_executor":1553811080031}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080015, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -3747,8 +3746,8 @@ exports.executeOp = function (node, tensorMap, context) {
 };
 exports.CATEGORY = 'arithmetic';
 //# sourceMappingURL=arithmetic_executor.js.map
-}, function(modId) { var map = {"./utils":1553229508184}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508204, function(require, module, exports) {
+}, function(modId) { var map = {"./utils":1553811079996}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080016, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -3860,8 +3859,8 @@ exports.executeOp = function (node, tensorMap, context) {
 };
 exports.CATEGORY = 'basic_math';
 //# sourceMappingURL=basic_math_executor.js.map
-}, function(modId) { var map = {"./utils":1553229508184}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508205, function(require, module, exports) {
+}, function(modId) { var map = {"./utils":1553811079996}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080017, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -4036,8 +4035,8 @@ function executeOp(node, tensorMap, context) {
 exports.executeOp = executeOp;
 exports.CATEGORY = 'control';
 //# sourceMappingURL=control_executor.js.map
-}, function(modId) { var map = {"../../executor/tensor_array":1553229508206,"./utils":1553229508184}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508206, function(require, module, exports) {
+}, function(modId) { var map = {"../../executor/tensor_array":1553811080018,"./utils":1553811079996}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080018, function(require, module, exports) {
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 /**
@@ -4299,7 +4298,7 @@ var TensorArray = /** @class */ (function () {
 exports.TensorArray = TensorArray;
 //# sourceMappingURL=tensor_array.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508207, function(require, module, exports) {
+__DEFINE__(1553811080019, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -4372,8 +4371,8 @@ exports.executeOp = function (node, tensorMap, context) {
 };
 exports.CATEGORY = 'convolution';
 //# sourceMappingURL=convolution_executor.js.map
-}, function(modId) { var map = {"./utils":1553229508184}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508208, function(require, module, exports) {
+}, function(modId) { var map = {"./utils":1553811079996}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080020, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -4451,8 +4450,8 @@ exports.executeOp = function (node, tensorMap, context) {
 };
 exports.CATEGORY = 'creation';
 //# sourceMappingURL=creation_executor.js.map
-}, function(modId) { var map = {"./utils":1553229508184}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508209, function(require, module, exports) {
+}, function(modId) { var map = {"./utils":1553811079996}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080021, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -4542,8 +4541,8 @@ function executeOp(node, tensorMap, context) {
 exports.executeOp = executeOp;
 exports.CATEGORY = 'dynamic';
 //# sourceMappingURL=dynamic_executor.js.map
-}, function(modId) { var map = {"./utils":1553229508184}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508210, function(require, module, exports) {
+}, function(modId) { var map = {"./utils":1553811079996}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080022, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -4579,8 +4578,8 @@ exports.executeOp = function (node, tensorMap, context) {
 };
 exports.CATEGORY = 'evaluation';
 //# sourceMappingURL=evaluation_executor.js.map
-}, function(modId) { var map = {"./utils":1553229508184}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508211, function(require, module, exports) {
+}, function(modId) { var map = {"./utils":1553811079996}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080023, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -4652,8 +4651,8 @@ exports.executeOp = function (node, tensorMap, context) {
 };
 exports.CATEGORY = 'graph';
 //# sourceMappingURL=graph_executor.js.map
-}, function(modId) { var map = {"./utils":1553229508184}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508212, function(require, module, exports) {
+}, function(modId) { var map = {"./utils":1553811079996}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080024, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -4703,8 +4702,8 @@ exports.executeOp = function (node, tensorMap, context) {
 };
 exports.CATEGORY = 'image';
 //# sourceMappingURL=image_executor.js.map
-}, function(modId) { var map = {"./utils":1553229508184}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508213, function(require, module, exports) {
+}, function(modId) { var map = {"./utils":1553811079996}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080025, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -4763,8 +4762,8 @@ exports.executeOp = function (node, tensorMap, context) {
 };
 exports.CATEGORY = 'logical';
 //# sourceMappingURL=logical_executor.js.map
-}, function(modId) { var map = {"./utils":1553229508184}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508214, function(require, module, exports) {
+}, function(modId) { var map = {"./utils":1553811079996}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080026, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -4798,8 +4797,8 @@ exports.executeOp = function (node, tensorMap, context) {
 };
 exports.CATEGORY = 'matrices';
 //# sourceMappingURL=matrices_executor.js.map
-}, function(modId) { var map = {"./utils":1553229508184}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508215, function(require, module, exports) {
+}, function(modId) { var map = {"./utils":1553811079996}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080027, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -4844,8 +4843,8 @@ exports.executeOp = function (node, tensorMap, context) {
 };
 exports.CATEGORY = 'normalization';
 //# sourceMappingURL=normalization_executor.js.map
-}, function(modId) { var map = {"./utils":1553229508184}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508216, function(require, module, exports) {
+}, function(modId) { var map = {"./utils":1553811079996}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080028, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -4917,8 +4916,8 @@ exports.executeOp = function (node, tensorMap, context) {
 };
 exports.CATEGORY = 'reduction';
 //# sourceMappingURL=reduction_executor.js.map
-}, function(modId) { var map = {"./utils":1553229508184}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508217, function(require, module, exports) {
+}, function(modId) { var map = {"./utils":1553811079996}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080029, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -5047,8 +5046,8 @@ exports.executeOp = function (node, tensorMap, context) {
 };
 exports.CATEGORY = 'slice_join';
 //# sourceMappingURL=slice_join_executor.js.map
-}, function(modId) { var map = {"./utils":1553229508184}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508218, function(require, module, exports) {
+}, function(modId) { var map = {"./utils":1553811079996}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080030, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -5089,8 +5088,8 @@ exports.executeOp = function (node, tensorMap, context) {
 };
 exports.CATEGORY = 'spectral';
 //# sourceMappingURL=spectral_executor.js.map
-}, function(modId) { var map = {"./utils":1553229508184}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508219, function(require, module, exports) {
+}, function(modId) { var map = {"./utils":1553811079996}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080031, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -5152,8 +5151,8 @@ exports.executeOp = function (node, tensorMap, context) {
 };
 exports.CATEGORY = 'transformation';
 //# sourceMappingURL=transformation_executor.js.map
-}, function(modId) { var map = {"./utils":1553229508184}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508220, function(require, module, exports) {
+}, function(modId) { var map = {"./utils":1553811079996}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080032, function(require, module, exports) {
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 /**
@@ -5292,15 +5291,15 @@ var ExecutionContext = /** @class */ (function () {
 exports.ExecutionContext = ExecutionContext;
 //# sourceMappingURL=execution_context.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508221, function(require, module, exports) {
+__DEFINE__(1553811080033, function(require, module, exports) {
 "use strict";
 /** @license See the LICENSE file. */
 Object.defineProperty(exports, "__esModule", { value: true });
 // This code is auto-generated, do not modify this file!
-var version = '1.0.2';
+var version = '1.0.3';
 exports.version = version;
 //# sourceMappingURL=version.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-return __REQUIRE__(1553229508180);
+return __REQUIRE__(1553811079992);
 })()
 //# sourceMappingURL=index.js.map

@@ -22,15 +22,12 @@
     "allowUnreachableCode": false,
     "typeRoots": [
       "plugin/typings",
-      "plugin/node_modules/@types"
+      "node_modules/@types"
     ],
     "types": ["jasmine"],
     "outDir": "dist"
   },
   "include": [
     "src"
-  ],
-  "exclude": [
-    "node_modules"
   ]
 }

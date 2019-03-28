@@ -4,7 +4,7 @@ var __DEFINE__ = function(modId, func, req) { var m = { exports: {} }; __MODS__[
 var __REQUIRE__ = function(modId, source) { if(!__MODS__[modId]) return require(source); if(!__MODS__[modId].status) { var m = { exports: {} }; __MODS__[modId].status = 1; __MODS__[modId].func(__MODS__[modId].req, m, m.exports); if(typeof m.exports === "object") { Object.keys(m.exports).forEach(function(k) { __MODS__[modId].m.exports[k] = m.exports[k]; }); if(m.exports.__esModule) Object.defineProperty(__MODS__[modId].m.exports, "__esModule", { value: true }); } else { __MODS__[modId].m.exports = m.exports; } } return __MODS__[modId].m.exports; };
 var __REQUIRE_WILDCARD__ = function(obj) { if(obj && obj.__esModule) { return obj; } else { var newObj = {}; if(obj != null) { for(var k in obj) { if (Object.prototype.hasOwnProperty.call(obj, k)) newObj[k] = obj[k]; } } newObj.default = obj; return newObj; } };
 var __REQUIRE_DEFAULT__ = function(obj) { return obj && obj.__esModule ? obj.default : obj; };
-__DEFINE__(1553229508404, function(require, module, exports) {
+__DEFINE__(1553811080208, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -42,8 +42,8 @@ exports.URLDataSource = url_data_source_1.URLDataSource;
 var version_1 = require("./version");
 exports.version_data = version_1.version;
 //# sourceMappingURL=index.js.map
-}, function(modId) {var map = {"./dataset":1553229508405,"./datasets/csv_dataset":1553229508410,"./datasets/text_line_dataset":1553229508411,"./readers":1553229508412,"./sources/file_data_source":1553229508420,"./sources/url_data_source":1553229508413,"./version":1553229508421}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508405, function(require, module, exports) {
+}, function(modId) {var map = {"./dataset":1553811080209,"./datasets/csv_dataset":1553811080214,"./datasets/text_line_dataset":1553811080215,"./readers":1553811080216,"./sources/file_data_source":1553811080224,"./sources/url_data_source":1553811080217,"./version":1553811080225}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080209, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -866,8 +866,8 @@ function batchConcat(arrays) {
     }
 }
 //# sourceMappingURL=dataset.js.map
-}, function(modId) { var map = {"./iterators/lazy_iterator":1553229508406,"./util/deep_map":1553229508407}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508406, function(require, module, exports) {
+}, function(modId) { var map = {"./iterators/lazy_iterator":1553811080210,"./util/deep_map":1553811080211}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080210, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -936,7 +936,6 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var tf = require("@tensorflow/tfjs-core");
-var tensor_util_1 = require("@tensorflow/tfjs-core/dist/tensor_util");
 var seedrandom = require("seedrandom");
 var deep_map_1 = require("../util/deep_map");
 var growing_ring_buffer_1 = require("../util/growing_ring_buffer");
@@ -1708,14 +1707,14 @@ var MapIterator = /** @class */ (function (_super) {
                         if (item.done) {
                             return [2 /*return*/, { value: null, done: true }];
                         }
-                        inputTensors = tensor_util_1.getTensorsInContainer(item.value);
+                        inputTensors = tf.tensor_util.getTensorsInContainer(item.value);
                         mapped = this.transform(item.value);
-                        outputTensors = tensor_util_1.getTensorsInContainer(mapped);
+                        outputTensors = tf.tensor_util.getTensorsInContainer(mapped);
                         // TODO(soergel) faster intersection
                         // TODO(soergel) move to tf.disposeExcept(in, out)?
                         for (_i = 0, inputTensors_1 = inputTensors; _i < inputTensors_1.length; _i++) {
                             t = inputTensors_1[_i];
-                            if (!tensor_util_1.isTensorInList(t, outputTensors)) {
+                            if (!tf.tensor_util.isTensorInList(t, outputTensors)) {
                                 t.dispose();
                             }
                         }
@@ -1800,16 +1799,16 @@ var AsyncMapIterator = /** @class */ (function (_super) {
                         if (item.done) {
                             return [2 /*return*/, { value: null, done: true }];
                         }
-                        inputTensors = tensor_util_1.getTensorsInContainer(item.value);
+                        inputTensors = tf.tensor_util.getTensorsInContainer(item.value);
                         return [4 /*yield*/, this.transform(item.value)];
                     case 2:
                         mapped = _a.sent();
-                        outputTensors = tensor_util_1.getTensorsInContainer(mapped);
+                        outputTensors = tf.tensor_util.getTensorsInContainer(mapped);
                         // TODO(soergel) faster intersection
                         // TODO(soergel) move to tf.disposeExcept(in, out)?
                         for (_i = 0, inputTensors_2 = inputTensors; _i < inputTensors_2.length; _i++) {
                             t = inputTensors_2[_i];
-                            if (!tensor_util_1.isTensorInList(t, outputTensors)) {
+                            if (!tf.tensor_util.isTensorInList(t, outputTensors)) {
                                 t.dispose();
                             }
                         }
@@ -1894,15 +1893,15 @@ var FlatmapIterator = /** @class */ (function (_super) {
                         if (item.done) {
                             return [2 /*return*/, false];
                         }
-                        inputTensors = tensor_util_1.getTensorsInContainer(item.value);
+                        inputTensors = tf.tensor_util.getTensorsInContainer(item.value);
                         mappedArray = this.transform(item.value);
-                        outputTensors = tensor_util_1.getTensorsInContainer(mappedArray);
+                        outputTensors = tf.tensor_util.getTensorsInContainer(mappedArray);
                         this.outputQueue.pushAll(mappedArray);
                         // TODO(soergel) faster intersection, and deduplicate outputTensors
                         // TODO(soergel) move to tf.disposeExcept(in, out)?
                         for (_i = 0, inputTensors_3 = inputTensors; _i < inputTensors_3.length; _i++) {
                             t = inputTensors_3[_i];
-                            if (!tensor_util_1.isTensorInList(t, outputTensors)) {
+                            if (!tf.tensor_util.isTensorInList(t, outputTensors)) {
                                 t.dispose();
                             }
                         }
@@ -2228,8 +2227,8 @@ var ShuffleIterator = /** @class */ (function (_super) {
 }(PrefetchIterator));
 exports.ShuffleIterator = ShuffleIterator;
 //# sourceMappingURL=lazy_iterator.js.map
-}, function(modId) { var map = {"../util/deep_map":1553229508407,"../util/growing_ring_buffer":1553229508408,"../util/ring_buffer":1553229508409}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508407, function(require, module, exports) {
+}, function(modId) { var map = {"../util/deep_map":1553811080211,"../util/growing_ring_buffer":1553811080212,"../util/ring_buffer":1553811080213}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080211, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -2285,8 +2284,6 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var tf = require("@tensorflow/tfjs-core");
-var util_1 = require("@tensorflow/tfjs-core/dist/util");
-var util_2 = require("util");
 /**
  * Apply a mapping function to a nested structure in a recursive manner.
  *
@@ -2507,14 +2504,22 @@ exports.isIterable = isIterable;
  */
 // tslint:disable-next-line:no-any
 function canTensorify(obj) {
-    return obj == null || util_2.isPrimitive(obj) || Array.isArray(obj) ||
+    return obj == null || isPrimitive(obj) || Array.isArray(obj) ||
         (typeof obj === 'object' && (obj instanceof tf.Tensor)) ||
-        util_1.isTypedArray(obj);
+        tf.util.isTypedArray(obj);
 }
 exports.canTensorify = canTensorify;
+/**
+ * Returns true if the given `value` is a primitive type. Otherwise returns
+ * false. This is equivalant to node util.isPrimitive
+ */
+function isPrimitive(value) {
+    return ((typeof value !== 'object' && typeof value !== 'function') ||
+        value === null);
+}
 //# sourceMappingURL=deep_map.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508408, function(require, module, exports) {
+__DEFINE__(1553811080212, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -2594,8 +2599,8 @@ var GrowingRingBuffer = /** @class */ (function (_super) {
 }(ring_buffer_1.RingBuffer));
 exports.GrowingRingBuffer = GrowingRingBuffer;
 //# sourceMappingURL=growing_ring_buffer.js.map
-}, function(modId) { var map = {"./ring_buffer":1553229508409}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508409, function(require, module, exports) {
+}, function(modId) { var map = {"./ring_buffer":1553811080213}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080213, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -2763,7 +2768,7 @@ var RingBuffer = /** @class */ (function () {
 exports.RingBuffer = RingBuffer;
 //# sourceMappingURL=ring_buffer.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508410, function(require, module, exports) {
+__DEFINE__(1553811080214, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -3219,8 +3224,8 @@ exports.CSVDataset = CSVDataset;
 // tf.data.FixedLengthRecordDataset()
 // tf.data.TFRecordDataset()
 //# sourceMappingURL=csv_dataset.js.map
-}, function(modId) { var map = {"../dataset":1553229508405,"./text_line_dataset":1553229508411}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508411, function(require, module, exports) {
+}, function(modId) { var map = {"../dataset":1553811080209,"./text_line_dataset":1553811080215}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080215, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -3325,8 +3330,8 @@ var TextLineDataset = /** @class */ (function (_super) {
 }(dataset_1.Dataset));
 exports.TextLineDataset = TextLineDataset;
 //# sourceMappingURL=text_line_dataset.js.map
-}, function(modId) { var map = {"../dataset":1553229508405}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508412, function(require, module, exports) {
+}, function(modId) { var map = {"../dataset":1553811080209}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080216, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -3578,8 +3583,8 @@ function generator(generator) {
 }
 exports.generator = generator;
 //# sourceMappingURL=readers.js.map
-}, function(modId) { var map = {"./dataset":1553229508405,"./datasets/csv_dataset":1553229508410,"./iterators/lazy_iterator":1553229508406,"./sources/url_data_source":1553229508413}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508413, function(require, module, exports) {
+}, function(modId) { var map = {"./dataset":1553811080209,"./datasets/csv_dataset":1553811080214,"./iterators/lazy_iterator":1553811080210,"./sources/url_data_source":1553811080217}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080217, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -3692,8 +3697,8 @@ var URLDataSource = /** @class */ (function (_super) {
 }(datasource_1.DataSource));
 exports.URLDataSource = URLDataSource;
 //# sourceMappingURL=url_data_source.js.map
-}, function(modId) { var map = {"../datasource":1553229508414,"../iterators/url_chunk_iterator":1553229508415,"../util/source_util":1553229508419,"./file_data_source":1553229508420}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508414, function(require, module, exports) {
+}, function(modId) { var map = {"../datasource":1553811080218,"../iterators/url_chunk_iterator":1553811080219,"../util/source_util":1553811080223,"./file_data_source":1553811080224}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080218, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -3731,7 +3736,7 @@ exports.DataSource = DataSource;
 // tf.data.url(...).asCsvDataset().shuffle().batch()
 //# sourceMappingURL=datasource.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508415, function(require, module, exports) {
+__DEFINE__(1553811080219, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -3835,8 +3840,8 @@ function urlChunkIterator(url, options) {
 }
 exports.urlChunkIterator = urlChunkIterator;
 //# sourceMappingURL=url_chunk_iterator.js.map
-}, function(modId) { var map = {"./file_chunk_iterator":1553229508416}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508416, function(require, module, exports) {
+}, function(modId) { var map = {"./file_chunk_iterator":1553811080220}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080220, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -3997,8 +4002,8 @@ var FileChunkIterator = /** @class */ (function (_super) {
 }(byte_chunk_iterator_1.ByteChunkIterator));
 exports.FileChunkIterator = FileChunkIterator;
 //# sourceMappingURL=file_chunk_iterator.js.map
-}, function(modId) { var map = {"./byte_chunk_iterator":1553229508417}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508417, function(require, module, exports) {
+}, function(modId) { var map = {"./byte_chunk_iterator":1553811080221}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080221, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -4187,8 +4192,8 @@ var Utf8IteratorImpl = /** @class */ (function (_super) {
     return Utf8IteratorImpl;
 }(lazy_iterator_1.OneToManyIterator));
 //# sourceMappingURL=byte_chunk_iterator.js.map
-}, function(modId) { var map = {"./lazy_iterator":1553229508406,"./string_iterator":1553229508418}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508418, function(require, module, exports) {
+}, function(modId) { var map = {"./lazy_iterator":1553811080210,"./string_iterator":1553811080222}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080222, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -4364,8 +4369,8 @@ var SplitIteratorImpl = /** @class */ (function (_super) {
     return SplitIteratorImpl;
 }(lazy_iterator_1.OneToManyIterator));
 //# sourceMappingURL=string_iterator.js.map
-}, function(modId) { var map = {"./lazy_iterator":1553229508406}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508419, function(require, module, exports) {
+}, function(modId) { var map = {"./lazy_iterator":1553811080210}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080223, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -4394,7 +4399,7 @@ function isLocalPath(source) {
 exports.isLocalPath = isLocalPath;
 //# sourceMappingURL=source_util.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508420, function(require, module, exports) {
+__DEFINE__(1553811080224, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -4505,16 +4510,16 @@ var FileDataSource = /** @class */ (function (_super) {
 }(datasource_1.DataSource));
 exports.FileDataSource = FileDataSource;
 //# sourceMappingURL=file_data_source.js.map
-}, function(modId) { var map = {"../datasource":1553229508414,"../iterators/file_chunk_iterator":1553229508416,"../util/source_util":1553229508419}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508421, function(require, module, exports) {
+}, function(modId) { var map = {"../datasource":1553811080218,"../iterators/file_chunk_iterator":1553811080220,"../util/source_util":1553811080223}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080225, function(require, module, exports) {
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 /** @license See the LICENSE file. */
 // This code is auto-generated, do not modify this file!
-var version = '1.0.2';
+var version = '1.0.3';
 exports.version = version;
 //# sourceMappingURL=version.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-return __REQUIRE__(1553229508404);
+return __REQUIRE__(1553811080208);
 })()
 //# sourceMappingURL=index.js.map

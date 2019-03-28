@@ -15,14 +15,13 @@
  * =============================================================================
  */
 import * as tfjs from '@tensorflow/tfjs';
-import { fetchFunc } from 'fetch-wechat';
 
 const tf = requirePlugin('myPlugin') as typeof tfjs;
 
-import { IMAGENET_CLASSES } from './imagenet_classes';
+import {IMAGENET_CLASSES} from './imagenet_classes';
 
 const GOOGLE_CLOUD_STORAGE_DIR =
-  'https://storage.googleapis.com/tfjs-models/savedmodel/';
+    'https://storage.googleapis.com/tfjs-models/savedmodel/';
 const MODEL_FILE_URL = 'mobilenet_v2_1.0_224/model.json';
 const PREPROCESS_DIVISOR = tf.scalar(255 / 2);
 
@@ -32,11 +31,11 @@ export interface TopKValue {
 }
 export class MobileNet {
   private model: tfjs.GraphModel;
-  constructor() { }
+  constructor() {}
 
   async load() {
-    this.model = await tf.loadGraphModel(
-      GOOGLE_CLOUD_STORAGE_DIR + MODEL_FILE_URL, {fetchFunc: fetchFunc()});
+    this.model =
+        await tf.loadGraphModel(GOOGLE_CLOUD_STORAGE_DIR + MODEL_FILE_URL);
   }
 
   dispose() {
@@ -54,10 +53,10 @@ export class MobileNet {
    */
   predict(input: tfjs.Tensor) {
     const preprocessedInput = tf.div(
-      tf.sub(input.asType('float32'), PREPROCESS_DIVISOR),
-      PREPROCESS_DIVISOR);
+        tf.sub(input.asType('float32'), PREPROCESS_DIVISOR),
+        PREPROCESS_DIVISOR);
     const reshapedInput =
-      preprocessedInput.reshape([1, ...preprocessedInput.shape]);
+        preprocessedInput.reshape([1, ...preprocessedInput.shape]);
     return this.model.predict(reshapedInput);
   }
 
@@ -67,16 +66,16 @@ export class MobileNet {
       const values = predictions.dataSync();
       let predictionList = [];
       for (let i = 0; i < values.length; i++) {
-        predictionList.push({ value: values[i], index: i });
+        predictionList.push({value: values[i], index: i});
       }
       predictionList = predictionList
-        .sort((a, b) => {
-          return b.value - a.value;
-        })
-        .slice(0, topK);
+                           .sort((a, b) => {
+                             return b.value - a.value;
+                           })
+                           .slice(0, topK);
 
       return predictionList.map(x => {
-        return { label: IMAGENET_CLASSES[x.index], value: x.value };
+        return {label: IMAGENET_CLASSES[x.index], value: x.value};
       });
     });
   }

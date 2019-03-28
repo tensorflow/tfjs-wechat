@@ -4,7 +4,7 @@ var __DEFINE__ = function(modId, func, req) { var m = { exports: {} }; __MODS__[
 var __REQUIRE__ = function(modId, source) { if(!__MODS__[modId]) return require(source); if(!__MODS__[modId].status) { var m = { exports: {} }; __MODS__[modId].status = 1; __MODS__[modId].func(__MODS__[modId].req, m, m.exports); if(typeof m.exports === "object") { Object.keys(m.exports).forEach(function(k) { __MODS__[modId].m.exports[k] = m.exports[k]; }); if(m.exports.__esModule) Object.defineProperty(__MODS__[modId].m.exports, "__esModule", { value: true }); } else { __MODS__[modId].m.exports = m.exports; } } return __MODS__[modId].m.exports; };
 var __REQUIRE_WILDCARD__ = function(obj) { if(obj && obj.__esModule) { return obj; } else { var newObj = {}; if(obj != null) { for(var k in obj) { if (Object.prototype.hasOwnProperty.call(obj, k)) newObj[k] = obj[k]; } } newObj.default = obj; return newObj; } };
 var __REQUIRE_DEFAULT__ = function(obj) { return obj && obj.__esModule ? obj.default : obj; };
-__DEFINE__(1553229508222, function(require, module, exports) {
+__DEFINE__(1553811080034, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -102,8 +102,8 @@ exports.DataStorage = backend_1.DataStorage;
 var ops = require("./ops/ops");
 tensor_1.setOpHandler(ops);
 //# sourceMappingURL=index.js.map
-}, function(modId) {var map = {"./kernels/backend_webgl":1553229508223,"./kernels/backend_cpu":1553229508334,"./browser_util":1553229508366,"./environment":1553229508225,"./io/io":1553229508367,"./math":1553229508379,"./ops/browser":1553229508381,"./serialization":1553229508382,"./tensor":1553229508231,"./tensor_util":1553229508233,"./test_util":1553229508383,"./util":1553229508229,"./version":1553229508384,"./webgl":1553229508385,"./optimizers/adadelta_optimizer":1553229508386,"./optimizers/adagrad_optimizer":1553229508388,"./optimizers/adam_optimizer":1553229508389,"./optimizers/adamax_optimizer":1553229508390,"./optimizers/momentum_optimizer":1553229508391,"./optimizers/optimizer":1553229508387,"./optimizers/rmsprop_optimizer":1553229508393,"./optimizers/sgd_optimizer":1553229508392,"./types":1553229508234,"./ops/ops":1553229508335,"./ops/loss_ops":1553229508362,"./train":1553229508394,"./globals":1553229508236,"./kernels/backend":1553229508252}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508223, function(require, module, exports) {
+}, function(modId) {var map = {"./kernels/backend_webgl":1553811080035,"./kernels/backend_cpu":1553811080146,"./browser_util":1553811080178,"./environment":1553811080037,"./io/io":1553811080179,"./math":1553811080191,"./ops/browser":1553811080193,"./serialization":1553811080194,"./tensor":1553811080043,"./tensor_util":1553811080045,"./test_util":1553811080195,"./util":1553811080041,"./version":1553811080196,"./webgl":1553811080197,"./optimizers/adadelta_optimizer":1553811080198,"./optimizers/adagrad_optimizer":1553811080200,"./optimizers/adam_optimizer":1553811080201,"./optimizers/adamax_optimizer":1553811080202,"./optimizers/momentum_optimizer":1553811080203,"./optimizers/optimizer":1553811080199,"./optimizers/rmsprop_optimizer":1553811080205,"./optimizers/sgd_optimizer":1553811080204,"./types":1553811080046,"./ops/ops":1553811080147,"./ops/loss_ops":1553811080174,"./train":1553811080206,"./globals":1553811080048,"./kernels/backend":1553811080064}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080035, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -214,7 +214,7 @@ var gather_gpu_1 = require("./webgl/gather_gpu");
 var gather_nd_gpu_1 = require("./webgl/gather_nd_gpu");
 var gpgpu_context_1 = require("./webgl/gpgpu_context");
 var gpgpu_math = require("./webgl/gpgpu_math");
-var im2col_gpu_1 = require("./webgl/im2col_gpu");
+var im2col_packed_gpu_1 = require("./webgl/im2col_packed_gpu");
 var lrn_gpu_1 = require("./webgl/lrn_gpu");
 var lrn_grad_gpu_1 = require("./webgl/lrn_grad_gpu");
 var max_pool_backprop_gpu_1 = require("./webgl/max_pool_backprop_gpu");
@@ -1184,15 +1184,13 @@ var MathBackendWebGL = /** @class */ (function () {
         var program = environment_1.ENV.get('WEBGL_PACK_BINARY_OPERATIONS') ?
             new binaryop_packed_gpu_1.BinaryOpPackedProgram(binaryop_packed_gpu.MIN, a.shape, b.shape) :
             new binaryop_gpu_1.BinaryOpProgram(binaryop_gpu.MIN, a.shape, b.shape);
-        var customSetup = program.getCustomSetupFunc();
-        return this.compileAndRun(program, [a, b], null, customSetup);
+        return this.compileAndRun(program, [a, b]);
     };
     MathBackendWebGL.prototype.mod = function (a, b) {
         var program = environment_1.ENV.get('WEBGL_PACK_BINARY_OPERATIONS') ?
             new binaryop_packed_gpu_1.BinaryOpPackedProgram(binaryop_packed_gpu.MOD, a.shape, b.shape) :
             new binaryop_gpu_1.BinaryOpProgram(binaryop_gpu.MOD, a.shape, b.shape);
-        var customSetup = program.getCustomSetupFunc();
-        return this.compileAndRun(program, [a, b], null, customSetup);
+        return this.compileAndRun(program, [a, b]);
     };
     MathBackendWebGL.prototype.max = function (x, axes) {
         if (this.shouldExecuteOnCPU([x])) {
@@ -1211,8 +1209,7 @@ var MathBackendWebGL = /** @class */ (function () {
         var program = environment_1.ENV.get('WEBGL_PACK_BINARY_OPERATIONS') ?
             new binaryop_packed_gpu_1.BinaryOpPackedProgram(binaryop_packed_gpu.MAX, a.shape, b.shape) :
             new binaryop_gpu_1.BinaryOpProgram(binaryop_gpu.MAX, a.shape, b.shape);
-        var customSetup = program.getCustomSetupFunc();
-        return this.compileAndRun(program, [a, b], null, customSetup);
+        return this.compileAndRun(program, [a, b]);
     };
     MathBackendWebGL.prototype.all = function (x, axes) {
         axis_util.assertAxesAreInnerMostDims('all', axes, x.rank);
@@ -1341,8 +1338,7 @@ var MathBackendWebGL = /** @class */ (function () {
         var output = usePackedOp ?
             this.makePackedTensor(program.outputShape, dtype) :
             this.makeOutputArray(program.outputShape, dtype);
-        var customSetup = program.getCustomSetupFunc();
-        return this.compileAndRun(program, [a, b], output, customSetup);
+        return this.compileAndRun(program, [a, b], output);
     };
     MathBackendWebGL.prototype.ceil = function (x) {
         var program = new unaryop_gpu_1.UnaryOpProgram(x.shape, unary_op.CEIL);
@@ -1355,6 +1351,21 @@ var MathBackendWebGL = /** @class */ (function () {
     MathBackendWebGL.prototype.sign = function (x) {
         var program = new unaryop_gpu_1.UnaryOpProgram(x.shape, unary_op.SIGN);
         return this.compileAndRun(program, [x]);
+    };
+    MathBackendWebGL.prototype.isNaN = function (x) {
+        var program = new unaryop_gpu_1.UnaryOpProgram(x.shape, unary_op.IS_NAN);
+        var output = this.makeOutputArray(program.outputShape, 'bool');
+        return this.compileAndRun(program, [x], output);
+    };
+    MathBackendWebGL.prototype.isInf = function (x) {
+        var program = new unaryop_gpu_1.UnaryOpProgram(x.shape, unary_op.IS_INF);
+        var output = this.makeOutputArray(program.outputShape, 'bool');
+        return this.compileAndRun(program, [x], output);
+    };
+    MathBackendWebGL.prototype.isFinite = function (x) {
+        var program = new unaryop_gpu_1.UnaryOpProgram(x.shape, unary_op.IS_FINITE);
+        var output = this.makeOutputArray(program.outputShape, 'bool');
+        return this.compileAndRun(program, [x], output);
     };
     MathBackendWebGL.prototype.round = function (x) {
         var program = new unaryop_gpu_1.UnaryOpProgram(x.shape, unary_op.ROUND);
@@ -1382,8 +1393,7 @@ var MathBackendWebGL = /** @class */ (function () {
         else {
             program = new unaryop_gpu_1.UnaryOpProgram(x.shape, unary_op.LOG);
         }
-        var customSetup = program.getCustomSetupFunc();
-        return this.compileAndRun(program, [x], null, customSetup);
+        return this.compileAndRun(program, [x]);
     };
     MathBackendWebGL.prototype.log1p = function (x) {
         var program = new unaryop_gpu_1.UnaryOpProgram(x.shape, unary_op.LOG1P);
@@ -1503,8 +1513,7 @@ var MathBackendWebGL = /** @class */ (function () {
         var program = environment_1.ENV.get('WEBGL_PACK_BINARY_OPERATIONS') ?
             new binaryop_packed_gpu_1.BinaryOpPackedProgram(binaryop_packed_gpu.ATAN2, a.shape, b.shape) :
             new binaryop_gpu_1.BinaryOpProgram(binaryop_gpu.ATAN2, a.shape, b.shape);
-        var customSetup = program.getCustomSetupFunc();
-        return this.compileAndRun(program, [a, b], null, customSetup);
+        return this.compileAndRun(program, [a, b]);
     };
     MathBackendWebGL.prototype.sinh = function (x) {
         var program = new unaryop_gpu_1.UnaryOpProgram(x.shape, unary_op.SINH);
@@ -1524,13 +1533,11 @@ var MathBackendWebGL = /** @class */ (function () {
     };
     MathBackendWebGL.prototype.acosh = function (x) {
         var program = new unaryop_gpu_1.UnaryOpProgram(x.shape, unary_op.ACOSH);
-        var customSetup = program.getCustomSetupFunc();
-        return this.compileAndRun(program, [x], null, customSetup);
+        return this.compileAndRun(program, [x]);
     };
     MathBackendWebGL.prototype.atanh = function (x) {
         var program = new unaryop_gpu_1.UnaryOpProgram(x.shape, unary_op.ATANH);
-        var customSetup = program.getCustomSetupFunc();
-        return this.compileAndRun(program, [x], null, customSetup);
+        return this.compileAndRun(program, [x]);
     };
     MathBackendWebGL.prototype.erf = function (x) {
         var program = new unaryop_gpu_1.UnaryOpProgram(x.shape, unary_op.ERF);
@@ -1604,7 +1611,7 @@ var MathBackendWebGL = /** @class */ (function () {
         var x2ColShape = [sharedDim, numCols];
         var xSqueezed = x.squeeze([0]);
         var w2Row = filter.reshape([1, sharedDim, -1]);
-        var im2ColProgram = new im2col_gpu_1.Im2ColProgram(x2ColShape, xSqueezed.shape, convInfo);
+        var im2ColProgram = new im2col_packed_gpu_1.Im2ColPackedProgram(x2ColShape, xSqueezed.shape, convInfo);
         var im2Col = this.compileAndRun(im2ColProgram, [xSqueezed]).reshape([
             1, x2ColShape[0], x2ColShape[1]
         ]);
@@ -2142,8 +2149,8 @@ function typedArrayToFloat32(a) {
     return (a instanceof Float32Array) ? a : new Float32Array(a);
 }
 //# sourceMappingURL=backend_webgl.js.map
-}, function(modId) { var map = {"../canvas_util":1553229508224,"../environment":1553229508225,"../globals":1553229508236,"../log":1553229508239,"../ops/array_ops_util":1553229508240,"../ops/axis_util":1553229508241,"../ops/concat_util":1553229508242,"../ops/gather_nd_util":1553229508243,"../ops/reduce_util":1553229508244,"../ops/scatter_nd_util":1553229508245,"../ops/segment_util":1553229508246,"../ops/slice_util":1553229508247,"../ops/softmax":1553229508248,"../ops/tensor_ops":1553229508250,"../tensor":1553229508231,"../types":1553229508234,"../util":1553229508229,"./backend":1553229508252,"./backend_util":1553229508253,"./complex_util":1553229508254,"./non_max_suppression_impl":1553229508255,"./split_shared":1553229508256,"./topk_impl":1553229508257,"./webgl/argminmax_gpu":1553229508258,"./webgl/argminmax_packed_gpu":1553229508259,"./webgl/avg_pool_backprop_gpu":1553229508265,"./webgl/batchnorm_gpu":1553229508266,"./webgl/batchnorm_packed_gpu":1553229508267,"./webgl/binaryop_complex_gpu":1553229508268,"./webgl/binaryop_gpu":1553229508269,"./webgl/binaryop_packed_gpu":1553229508270,"./webgl/clip_gpu":1553229508271,"./webgl/clip_packed_gpu":1553229508272,"./webgl/complex_abs_gpu":1553229508273,"./webgl/concat_gpu":1553229508274,"./webgl/concat_packed_gpu":1553229508275,"./webgl/conv_backprop_gpu":1553229508276,"./webgl/conv_backprop_gpu_depthwise":1553229508277,"./webgl/conv_gpu":1553229508278,"./webgl/conv_gpu_depthwise":1553229508279,"./webgl/conv_packed_gpu_depthwise":1553229508280,"./webgl/crop_and_resize_gpu":1553229508281,"./webgl/cumsum_gpu":1553229508282,"./webgl/depth_to_space_gpu":1553229508283,"./webgl/encode_float_gpu":1553229508284,"./webgl/fft_gpu":1553229508285,"./webgl/fill_gpu":1553229508286,"./webgl/from_pixels_gpu":1553229508287,"./webgl/gather_gpu":1553229508288,"./webgl/gather_nd_gpu":1553229508289,"./webgl/gpgpu_context":1553229508290,"./webgl/gpgpu_math":1553229508294,"./webgl/im2col_gpu":1553229508295,"./webgl/lrn_gpu":1553229508296,"./webgl/lrn_grad_gpu":1553229508297,"./webgl/max_pool_backprop_gpu":1553229508298,"./webgl/mulmat_packed_gpu":1553229508299,"./webgl/multinomial_gpu":1553229508300,"./webgl/onehot_gpu":1553229508301,"./webgl/pack_gpu":1553229508302,"./webgl/pad_gpu":1553229508303,"./webgl/pad_packed_gpu":1553229508304,"./webgl/pool_gpu":1553229508305,"./webgl/reduce_gpu":1553229508306,"./webgl/reshape_packed_gpu":1553229508307,"./webgl/resize_bilinear_backprop_gpu":1553229508308,"./webgl/resize_bilinear_gpu":1553229508309,"./webgl/resize_bilinear_packed_gpu":1553229508310,"./webgl/resize_nearest_neighbor_backprop_gpu":1553229508311,"./webgl/resize_nearest_neighbor_gpu":1553229508312,"./webgl/reverse_gpu":1553229508313,"./webgl/reverse_packed_gpu":1553229508314,"./webgl/scatter_gpu":1553229508315,"./webgl/segment_gpu":1553229508316,"./webgl/select_gpu":1553229508317,"./webgl/slice_gpu":1553229508318,"./webgl/slice_packed_gpu":1553229508319,"./webgl/strided_slice_gpu":1553229508320,"./webgl/tex_util":1553229508292,"./webgl/texture_manager":1553229508321,"./webgl/tile_gpu":1553229508322,"./webgl/transpose_gpu":1553229508323,"./webgl/transpose_packed_gpu":1553229508324,"./webgl/unaryop_gpu":1553229508325,"./webgl/unaryop_packed_gpu":1553229508328,"./webgl/unpack_gpu":1553229508329,"./webgl/webgl_util":1553229508293,"./where_impl":1553229508330}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508224, function(require, module, exports) {
+}, function(modId) { var map = {"../canvas_util":1553811080036,"../environment":1553811080037,"../globals":1553811080048,"../log":1553811080051,"../ops/array_ops_util":1553811080052,"../ops/axis_util":1553811080053,"../ops/concat_util":1553811080054,"../ops/gather_nd_util":1553811080055,"../ops/reduce_util":1553811080056,"../ops/scatter_nd_util":1553811080057,"../ops/segment_util":1553811080058,"../ops/slice_util":1553811080059,"../ops/softmax":1553811080060,"../ops/tensor_ops":1553811080062,"../tensor":1553811080043,"../types":1553811080046,"../util":1553811080041,"./backend":1553811080064,"./backend_util":1553811080065,"./complex_util":1553811080066,"./non_max_suppression_impl":1553811080067,"./split_shared":1553811080068,"./topk_impl":1553811080069,"./webgl/argminmax_gpu":1553811080070,"./webgl/argminmax_packed_gpu":1553811080071,"./webgl/avg_pool_backprop_gpu":1553811080077,"./webgl/batchnorm_gpu":1553811080078,"./webgl/batchnorm_packed_gpu":1553811080079,"./webgl/binaryop_complex_gpu":1553811080080,"./webgl/binaryop_gpu":1553811080081,"./webgl/binaryop_packed_gpu":1553811080082,"./webgl/clip_gpu":1553811080083,"./webgl/clip_packed_gpu":1553811080084,"./webgl/complex_abs_gpu":1553811080085,"./webgl/concat_gpu":1553811080086,"./webgl/concat_packed_gpu":1553811080087,"./webgl/conv_backprop_gpu":1553811080088,"./webgl/conv_backprop_gpu_depthwise":1553811080089,"./webgl/conv_gpu":1553811080090,"./webgl/conv_gpu_depthwise":1553811080091,"./webgl/conv_packed_gpu_depthwise":1553811080092,"./webgl/crop_and_resize_gpu":1553811080093,"./webgl/cumsum_gpu":1553811080094,"./webgl/depth_to_space_gpu":1553811080095,"./webgl/encode_float_gpu":1553811080096,"./webgl/fft_gpu":1553811080097,"./webgl/fill_gpu":1553811080098,"./webgl/from_pixels_gpu":1553811080099,"./webgl/gather_gpu":1553811080100,"./webgl/gather_nd_gpu":1553811080101,"./webgl/gpgpu_context":1553811080102,"./webgl/gpgpu_math":1553811080106,"./webgl/im2col_packed_gpu":1553811080107,"./webgl/lrn_gpu":1553811080108,"./webgl/lrn_grad_gpu":1553811080109,"./webgl/max_pool_backprop_gpu":1553811080110,"./webgl/mulmat_packed_gpu":1553811080111,"./webgl/multinomial_gpu":1553811080112,"./webgl/onehot_gpu":1553811080113,"./webgl/pack_gpu":1553811080114,"./webgl/pad_gpu":1553811080115,"./webgl/pad_packed_gpu":1553811080116,"./webgl/pool_gpu":1553811080117,"./webgl/reduce_gpu":1553811080118,"./webgl/reshape_packed_gpu":1553811080119,"./webgl/resize_bilinear_backprop_gpu":1553811080120,"./webgl/resize_bilinear_gpu":1553811080121,"./webgl/resize_bilinear_packed_gpu":1553811080122,"./webgl/resize_nearest_neighbor_backprop_gpu":1553811080123,"./webgl/resize_nearest_neighbor_gpu":1553811080124,"./webgl/reverse_gpu":1553811080125,"./webgl/reverse_packed_gpu":1553811080126,"./webgl/scatter_gpu":1553811080127,"./webgl/segment_gpu":1553811080128,"./webgl/select_gpu":1553811080129,"./webgl/slice_gpu":1553811080130,"./webgl/slice_packed_gpu":1553811080131,"./webgl/strided_slice_gpu":1553811080132,"./webgl/tex_util":1553811080104,"./webgl/texture_manager":1553811080133,"./webgl/tile_gpu":1553811080134,"./webgl/transpose_gpu":1553811080135,"./webgl/transpose_packed_gpu":1553811080136,"./webgl/unaryop_gpu":1553811080137,"./webgl/unaryop_packed_gpu":1553811080140,"./webgl/unpack_gpu":1553811080141,"./webgl/webgl_util":1553811080105,"./where_impl":1553811080142}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080036, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -2214,7 +2221,7 @@ function getWebGLRenderingContext(webGLVersion) {
 }
 //# sourceMappingURL=canvas_util.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508225, function(require, module, exports) {
+__DEFINE__(1553811080037, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -2790,8 +2797,8 @@ exports.deprecationWarn = deprecationWarn;
 tensor_1.setDeprecationWarningFn(deprecationWarn);
 exports.ENV = getOrMakeEnvironment();
 //# sourceMappingURL=environment.js.map
-}, function(modId) { var map = {"./device_util":1553229508226,"./engine":1553229508227,"./environment_util":1553229508235,"./tensor":1553229508231,"./tensor_util":1553229508233}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508226, function(require, module, exports) {
+}, function(modId) { var map = {"./device_util":1553811080038,"./engine":1553811080039,"./environment_util":1553811080047,"./tensor":1553811080043,"./tensor_util":1553811080045}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080038, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -2823,7 +2830,7 @@ function isMobile() {
 exports.isMobile = isMobile;
 //# sourceMappingURL=device_util.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508227, function(require, module, exports) {
+__DEFINE__(1553811080039, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -2977,7 +2984,7 @@ var Engine = /** @class */ (function () {
     Engine.prototype.runKernel = function (forwardFunc, inputs, backwardsFunc) {
         var _this = this;
         var result;
-        var saved = {};
+        var saved = [];
         var isTapeOn = this.isTapeOn();
         var scopeName = this.activeScope != null ? this.activeScope.name : '';
         var saveFunc = function (tensors) {
@@ -2987,9 +2994,7 @@ var Engine = /** @class */ (function () {
             if (!isTapeOn) {
                 return;
             }
-            for (var key in tensors) {
-                saved[key] = _this.keep(_this.clone(tensors[key]));
-            }
+            saved = tensors.map(function (tensor) { return _this.keep(_this.clone(tensor)); });
         };
         var startingBytecount = this.numBytes;
         var startingNumTensors = this.numTensors;
@@ -3376,8 +3381,8 @@ function ones(shape) {
     return tensor_1.Tensor.make(shape, { values: values });
 }
 //# sourceMappingURL=engine.js.map
-}, function(modId) { var map = {"./profiler":1553229508228,"./tape":1553229508230,"./tensor":1553229508231,"./tensor_util":1553229508233,"./util":1553229508229}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508228, function(require, module, exports) {
+}, function(modId) { var map = {"./profiler":1553811080040,"./tape":1553811080042,"./tensor":1553811080043,"./tensor_util":1553811080045,"./util":1553811080041}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080040, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -3444,8 +3449,8 @@ var Logger = /** @class */ (function () {
 }());
 exports.Logger = Logger;
 //# sourceMappingURL=profiler.js.map
-}, function(modId) { var map = {"./util":1553229508229}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508229, function(require, module, exports) {
+}, function(modId) { var map = {"./util":1553811080041}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080041, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -4098,7 +4103,7 @@ function assertNonNegativeIntegerDimensions(shape) {
 exports.assertNonNegativeIntegerDimensions = assertNonNegativeIntegerDimensions;
 //# sourceMappingURL=util.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508230, function(require, module, exports) {
+__DEFINE__(1553811080042, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -4264,8 +4269,8 @@ function backpropagateGradients(tensorAccumulatedGradientMap, filteredTape, tidy
 }
 exports.backpropagateGradients = backpropagateGradients;
 //# sourceMappingURL=tape.js.map
-}, function(modId) { var map = {"./tensor":1553229508231,"./util":1553229508229}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508231, function(require, module, exports) {
+}, function(modId) { var map = {"./tensor":1553811080043,"./util":1553811080041}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080043, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -5475,8 +5480,8 @@ Object.defineProperty(Variable, Symbol.hasInstance, {
 var variable = Variable.variable;
 exports.variable = variable;
 //# sourceMappingURL=tensor.js.map
-}, function(modId) { var map = {"./tensor_format":1553229508232,"./util":1553229508229}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508232, function(require, module, exports) {
+}, function(modId) { var map = {"./tensor_format":1553811080044,"./util":1553811080041}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080044, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -5640,8 +5645,8 @@ function createComplexTuples(vals) {
     return complexTuples;
 }
 //# sourceMappingURL=tensor_format.js.map
-}, function(modId) { var map = {"./util":1553229508229}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508233, function(require, module, exports) {
+}, function(modId) { var map = {"./util":1553811080041}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080045, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -5730,8 +5735,8 @@ function isIterable(obj) {
     return Array.isArray(obj) || typeof obj === 'object';
 }
 //# sourceMappingURL=tensor_util.js.map
-}, function(modId) { var map = {"./tensor":1553229508231,"./types":1553229508234,"./util":1553229508229}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508234, function(require, module, exports) {
+}, function(modId) { var map = {"./tensor":1553811080043,"./types":1553811080046,"./util":1553811080041}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080046, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -5813,7 +5818,7 @@ function sumOutType(type) {
 exports.sumOutType = sumOutType;
 //# sourceMappingURL=types.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508235, function(require, module, exports) {
+__DEFINE__(1553811080047, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -6065,8 +6070,8 @@ function getNumMBBeforePaging() {
 }
 exports.getNumMBBeforePaging = getNumMBBeforePaging;
 //# sourceMappingURL=environment_util.js.map
-}, function(modId) { var map = {"./canvas_util":1553229508224}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508236, function(require, module, exports) {
+}, function(modId) { var map = {"./canvas_util":1553811080036}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080048, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -6099,8 +6104,8 @@ exports.dispose = environment_1.Environment.dispose;
 exports.time = environment_1.Environment.time;
 exports.profile = environment_1.Environment.profile;
 //# sourceMappingURL=globals.js.map
-}, function(modId) { var map = {"./environment":1553229508225,"./gradients":1553229508237}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508237, function(require, module, exports) {
+}, function(modId) { var map = {"./environment":1553811080037,"./gradients":1553811080049}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080049, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -6413,8 +6418,8 @@ function checkGrads(grads) {
     }
 }
 //# sourceMappingURL=gradients.js.map
-}, function(modId) { var map = {"./environment":1553229508225,"./tensor":1553229508231,"./tensor_util_env":1553229508238,"./util":1553229508229}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508238, function(require, module, exports) {
+}, function(modId) { var map = {"./environment":1553811080037,"./tensor":1553811080043,"./tensor_util_env":1553811080050,"./util":1553811080041}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080050, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -6523,8 +6528,8 @@ function convertToTensorArray(arg, argName, functionName, parseAsDtype) {
 }
 exports.convertToTensorArray = convertToTensorArray;
 //# sourceMappingURL=tensor_util_env.js.map
-}, function(modId) { var map = {"./environment":1553229508225,"./tensor":1553229508231,"./util":1553229508229}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508239, function(require, module, exports) {
+}, function(modId) { var map = {"./environment":1553811080037,"./tensor":1553811080043,"./util":1553811080041}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080051, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -6565,8 +6570,8 @@ function log() {
 }
 exports.log = log;
 //# sourceMappingURL=log.js.map
-}, function(modId) { var map = {"./environment":1553229508225}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508240, function(require, module, exports) {
+}, function(modId) { var map = {"./environment":1553811080037}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080052, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -6722,7 +6727,7 @@ function getSliceSize(uncroppedShape, crops, blockShape) {
 exports.getSliceSize = getSliceSize;
 //# sourceMappingURL=array_ops_util.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508241, function(require, module, exports) {
+__DEFINE__(1553811080053, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -6828,8 +6833,8 @@ function getInnerMostAxes(numAxes, rank) {
 }
 exports.getInnerMostAxes = getInnerMostAxes;
 //# sourceMappingURL=axis_util.js.map
-}, function(modId) { var map = {"../util":1553229508229}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508242, function(require, module, exports) {
+}, function(modId) { var map = {"../util":1553811080041}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080054, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -6877,8 +6882,8 @@ function computeOutShape(shapes, axis) {
 }
 exports.computeOutShape = computeOutShape;
 //# sourceMappingURL=concat_util.js.map
-}, function(modId) { var map = {"../util":1553229508229}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508243, function(require, module, exports) {
+}, function(modId) { var map = {"../util":1553811080041}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080055, function(require, module, exports) {
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var util_1 = require("../util");
@@ -6932,8 +6937,8 @@ function prepareAndValidate(tensor, indices) {
 }
 exports.prepareAndValidate = prepareAndValidate;
 //# sourceMappingURL=gather_nd_util.js.map
-}, function(modId) { var map = {"../util":1553229508229}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508244, function(require, module, exports) {
+}, function(modId) { var map = {"../util":1553811080041}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080056, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -6966,8 +6971,8 @@ function computeOptimalWindowSize(inSize) {
 }
 exports.computeOptimalWindowSize = computeOptimalWindowSize;
 //# sourceMappingURL=reduce_util.js.map
-}, function(modId) { var map = {"../util":1553229508229}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508245, function(require, module, exports) {
+}, function(modId) { var map = {"../util":1553811080041}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080057, function(require, module, exports) {
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var util_1 = require("../util");
@@ -7069,8 +7074,8 @@ function calculateShapes(updates, indices, shape) {
 }
 exports.calculateShapes = calculateShapes;
 //# sourceMappingURL=scatter_nd_util.js.map
-}, function(modId) { var map = {"../util":1553229508229}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508246, function(require, module, exports) {
+}, function(modId) { var map = {"../util":1553811080041}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080058, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -7104,7 +7109,6 @@ function segOpComputeOptimalWindowSize(inSize, numSegments) {
     while (!done) {
         if (res > numSegments || res === inSize) {
             done = true;
-            break;
         }
         else {
             res = util_1.nearestDivisor(inSize, res + 1);
@@ -7147,8 +7151,8 @@ function collectGatherOpShapeInfo(x, indices, axis) {
 }
 exports.collectGatherOpShapeInfo = collectGatherOpShapeInfo;
 //# sourceMappingURL=segment_util.js.map
-}, function(modId) { var map = {"../util":1553229508229,"./reduce_util":1553229508244}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508247, function(require, module, exports) {
+}, function(modId) { var map = {"../util":1553811080041,"./reduce_util":1553811080056}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080059, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -7216,7 +7220,8 @@ function getStridedSlicedInfo(shape, begin, end, strides, beginMask, endMask, el
     var size = new Array(shape.length).fill(0);
     size = size.map(function (d, i) {
         var count = 0;
-        for (var start = startIndex[i]; !(strides[i] > 0 ? start >= endIndex[i] : start <= endIndex[i]); start += strides[i]) {
+        var stride = strides[i] || 1;
+        for (var start = startIndex[i]; !(stride > 0 ? start >= endIndex[i] : start <= endIndex[i]); start += stride) {
             count += 1;
         }
         return count;
@@ -7227,9 +7232,11 @@ exports.getStridedSlicedInfo = getStridedSlicedInfo;
 function startForAxis(beginMask, startIndices, strides, inputShape, axis) {
     // Begin with the specified index
     var start = startIndices[axis];
-    // Check the axis bit from right of beginMask
-    if (beginMask & 1 << axis) {
-        if (strides[axis] > 0) {
+    var stride = strides[axis] || 1;
+    // Check the axis bit from right of beginMask or the begin index is not set
+    // for the axis.
+    if (beginMask & 1 << axis || start == null) {
+        if (stride > 0) {
             // Forward iteration - use the first element. These values will get
             // clamped below (Note: We could have set them to 0 and axis_size-1, but
             // use lowest() and max() to maintain symmetry with StopForAxis())
@@ -7253,9 +7260,11 @@ exports.startForAxis = startForAxis;
 function stopForAxis(endMask, stopIndices, strides, inputShape, axis) {
     // Begin with the specified index
     var stop = stopIndices[axis];
-    // Check the axis bit from right of endMask
-    if (endMask & (1 << axis)) {
-        if (strides[axis] > 0) {
+    var stride = strides[axis] || 1;
+    // Check the axis bit from right of endMask or if the stop index is not set
+    // for this axis.
+    if (endMask & (1 << axis) || stop == null) {
+        if (stride > 0) {
             // Forward iteration - use the last element. These values will get
             // clamped below
             stop = Number.MAX_SAFE_INTEGER;
@@ -7273,7 +7282,7 @@ function stopForAxis(endMask, stopIndices, strides, inputShape, axis) {
     // Clamping
     // Because the end index points one past the last element, we need slightly
     // different clamping ranges depending on the direction.
-    if (strides[axis] > 0) {
+    if (stride > 0) {
         // Forward iteration
         stop = util.clamp(0, stop, axisSize);
     }
@@ -7314,8 +7323,8 @@ function computeFlatOffset(begin, strides) {
 }
 exports.computeFlatOffset = computeFlatOffset;
 //# sourceMappingURL=slice_util.js.map
-}, function(modId) { var map = {"../util":1553229508229}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508248, function(require, module, exports) {
+}, function(modId) { var map = {"../util":1553811080041}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080060, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -7374,9 +7383,9 @@ function softmax_(logits, dim) {
         var lse = logits.logSumExp([dim], keepDims);
         var logResult = logits.toFloat().sub(lse);
         var y = logResult.exp();
-        save({ y: y });
+        save([y]);
         var gradFunc = function (dy, saved) {
-            var y = saved.y;
+            var y = saved[0];
             var dyTimesY = dy.mul(y);
             var keepDims = true;
             return dyTimesY.sub(dyTimesY.sum([dim], keepDims).mul(y));
@@ -7420,9 +7429,9 @@ function logSoftmax_(logits, axis) {
         var xMax = logits.max(axis, true);
         var shifted = logits.sub(xMax);
         var value = shifted.toFloat().sub(shifted.exp().sum(axis, keepDims).log());
-        save({ value: value });
+        save([value]);
         var gradFunc = function (dy, saved) {
-            var value = saved.value;
+            var value = saved[0];
             var softmax = value.exp();
             return dy.sub(dy.sum(axis, keepDims).mul(softmax));
         };
@@ -7433,8 +7442,8 @@ function logSoftmax_(logits, axis) {
 exports.softmax = operation_1.op({ softmax_: softmax_ });
 exports.logSoftmax = operation_1.op({ logSoftmax_: logSoftmax_ });
 //# sourceMappingURL=softmax.js.map
-}, function(modId) { var map = {"../gradients":1553229508237,"../tensor_util_env":1553229508238,"./operation":1553229508249}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508249, function(require, module, exports) {
+}, function(modId) { var map = {"../gradients":1553811080049,"../tensor_util_env":1553811080050,"./operation":1553811080061}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080061, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -7498,8 +7507,8 @@ function op(f) {
 }
 exports.op = op;
 //# sourceMappingURL=operation.js.map
-}, function(modId) { var map = {"../environment":1553229508225}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508250, function(require, module, exports) {
+}, function(modId) { var map = {"../environment":1553811080037}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080062, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -8008,8 +8017,8 @@ exports.range = range;
 exports.onesLike = operation_1.op({ onesLike_: onesLike_ });
 exports.zerosLike = operation_1.op({ zerosLike_: zerosLike_ });
 //# sourceMappingURL=tensor_ops.js.map
-}, function(modId) { var map = {"../environment":1553229508225,"../tensor":1553229508231,"../tensor_util_env":1553229508238,"../util":1553229508229,"./complex_ops":1553229508251,"./operation":1553229508249}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508251, function(require, module, exports) {
+}, function(modId) { var map = {"../environment":1553811080037,"../tensor":1553811080043,"../tensor_util_env":1553811080050,"../util":1553811080041,"./complex_ops":1553811080063,"./operation":1553811080061}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080063, function(require, module, exports) {
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 /**
@@ -8097,8 +8106,8 @@ exports.complex = operation_1.op({ complex_: complex_ });
 exports.real = operation_1.op({ real_: real_ });
 exports.imag = operation_1.op({ imag_: imag_ });
 //# sourceMappingURL=complex_ops.js.map
-}, function(modId) { var map = {"../environment":1553229508225,"../tensor_util_env":1553229508238,"../util":1553229508229,"./operation":1553229508249}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508252, function(require, module, exports) {
+}, function(modId) { var map = {"../environment":1553811080037,"../tensor_util_env":1553811080050,"../util":1553811080041,"./operation":1553811080061}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080064, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -8305,6 +8314,15 @@ var KernelBackend = /** @class */ (function () {
         throw new Error('Not yet implemented');
     };
     KernelBackend.prototype.sign = function (x) {
+        throw new Error('Not yet implemented');
+    };
+    KernelBackend.prototype.isNaN = function (x) {
+        throw new Error('Not yet implemented');
+    };
+    KernelBackend.prototype.isInf = function (x) {
+        throw new Error('Not yet implemented');
+    };
+    KernelBackend.prototype.isFinite = function (x) {
         throw new Error('Not yet implemented');
     };
     KernelBackend.prototype.pow = function (a, b) {
@@ -8566,7 +8584,7 @@ var KernelBackend = /** @class */ (function () {
 exports.KernelBackend = KernelBackend;
 //# sourceMappingURL=backend.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508253, function(require, module, exports) {
+__DEFINE__(1553811080065, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -8630,8 +8648,8 @@ function reshapeTensor(x, shape) {
 }
 exports.reshapeTensor = reshapeTensor;
 //# sourceMappingURL=backend_util.js.map
-}, function(modId) { var map = {"../ops/tensor_ops":1553229508250,"../tensor":1553229508231,"../util":1553229508229}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508254, function(require, module, exports) {
+}, function(modId) { var map = {"../ops/tensor_ops":1553811080062,"../tensor":1553811080043,"../util":1553811080041}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080066, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -8779,7 +8797,7 @@ function exponent(k, n, inverse) {
 exports.exponent = exponent;
 //# sourceMappingURL=complex_util.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508255, function(require, module, exports) {
+__DEFINE__(1553811080067, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -8856,8 +8874,8 @@ function intersectionOverUnion(boxes, i, j) {
     return intersectionArea / (areaI + areaJ - intersectionArea);
 }
 //# sourceMappingURL=non_max_suppression_impl.js.map
-}, function(modId) { var map = {"../ops/tensor_ops":1553229508250}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508256, function(require, module, exports) {
+}, function(modId) { var map = {"../ops/tensor_ops":1553811080062}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080068, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -8890,7 +8908,7 @@ function split(x, sizeSplits, axis) {
 exports.split = split;
 //# sourceMappingURL=split_shared.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508257, function(require, module, exports) {
+__DEFINE__(1553811080069, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -8945,8 +8963,8 @@ function topkImpl(x, xShape, xDtype, k, sorted) {
 }
 exports.topkImpl = topkImpl;
 //# sourceMappingURL=topk_impl.js.map
-}, function(modId) { var map = {"../ops/tensor_ops":1553229508250,"../util":1553229508229}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508258, function(require, module, exports) {
+}, function(modId) { var map = {"../ops/tensor_ops":1553811080062,"../util":1553811080041}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080070, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -8987,7 +9005,7 @@ var ArgMinMaxProgram = /** @class */ (function () {
 exports.ArgMinMaxProgram = ArgMinMaxProgram;
 //# sourceMappingURL=argminmax_gpu.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508259, function(require, module, exports) {
+__DEFINE__(1553811080071, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -9050,14 +9068,14 @@ var ArgMinMaxPackedProgram = /** @class */ (function () {
         var fetchCandidateIdx = firstPass ? '' : "\n          inIdx = round(vec4(getBestIndicesAChannel(" + srcRCoords.join() + "),\n                             getBestIndicesAChannel(" + srcGCoords.join() + "),\n                             getBestIndicesAChannel(" + srcBCoords.join() + "),\n                             getBestIndicesAChannel(" + srcACoords.join() + ")));";
         var fetchValue = "vec4(\n            getAChannel(" + srcRCoords.join() + "),\n            hasNextCol ? getAChannel(" + srcGCoords.join() + ") : 0.,\n            hasNextRow ? getAChannel(" + srcBCoords.join() + ") : 0.,\n            hasNextRow && hasNextCol ? getAChannel(" + srcACoords.join() + ") : 0.)";
         var getBestIndicesAChannelSnippet = firstPass ? '' : "\n      float getBestIndicesAChannel(" + intChannels.join() + ") {\n        return getChannel(getBestIndicesA(" + channels.join() + "),\n                                          vec2(" + channels.slice(-2).join() + "));\n      }";
-        this.userCode = "\n      float getAChannel(" + intChannels.join() + ") {\n        return getChannel(getA(" + channels.join() + "),\n                               vec2(" + channels.slice(-2).join() + "));\n      }\n      " + getBestIndicesAChannelSnippet + "\n      void main() {\n        " + dtype + " coords = getOutputCoords();\n        bool hasNextCol = " + coords[rank - 1] + " < " + (outShape[rank - 1] - 1) + ";\n        bool hasNextRow = " + coords[rank - 2] + " < " + (outShape[rank - 2] - 1) + ";\n        " + sourceLocSetup + "\n        ivec4 srcIdx = ivec4(sourceLocR" + inChannel + ", sourceLocG" + inChannel + ",\n          sourceLocB" + inChannel + ", sourceLocA" + inChannel + ") * " + windowSize + ";\n        ivec4 inIdx = srcIdx;\n        vec4 bestIndex = vec4(inIdx);\n        vec4 bestValue = " + fetchValue + ";\n\n        for (int i = 0; i < " + windowSize + "; i++) {\n          inIdx = srcIdx;\n          " + fetchCandidateIdx + "\n          vec4 candidate = " + fetchValue + ";\n          bvec4 nan = isNaN(candidate);\n          bvec4 replace = bvec4(\n            vec4(" + compOp + "(candidate, bestValue)) * (vec4(1.0) - vec4(nan)));\n\n          bestValue = vec4(replace.x  ? candidate.x : bestValue.x,\n                           replace.y  ? candidate.y : bestValue.y,\n                           replace.z  ? candidate.z : bestValue.z,\n                           replace.w  ? candidate.w : bestValue.w);\n          bestIndex = mix(bestIndex, vec4(inIdx), vec4(replace));\n          srcIdx++;\n        }\n        setOutput(bestIndex);\n      }\n    ";
+        this.userCode = "\n      float getAChannel(" + intChannels.join() + ") {\n        return getChannel(getA(" + channels.join() + "),\n                               vec2(" + channels.slice(-2).join() + "));\n      }\n      " + getBestIndicesAChannelSnippet + "\n      void main() {\n        " + dtype + " coords = getOutputCoords();\n        bool hasNextCol = " + coords[rank - 1] + " < " + (outShape[rank - 1] - 1) + ";\n        bool hasNextRow = " + coords[rank - 2] + " < " + (outShape[rank - 2] - 1) + ";\n        " + sourceLocSetup + "\n        ivec4 srcIdx = ivec4(sourceLocR" + inChannel + ", sourceLocG" + inChannel + ",\n          sourceLocB" + inChannel + ", sourceLocA" + inChannel + ") * " + windowSize + ";\n        ivec4 inIdx = srcIdx;\n        vec4 bestIndex = vec4(inIdx);\n        vec4 bestValue = " + fetchValue + ";\n\n        for (int i = 0; i < " + windowSize + "; i++) {\n          inIdx = srcIdx;\n          " + fetchCandidateIdx + "\n          vec4 candidate = " + fetchValue + ";\n          bvec4 nan = isnan(candidate);\n          bvec4 replace = bvec4(\n            vec4(" + compOp + "(candidate, bestValue)) * (vec4(1.0) - vec4(nan)));\n\n          bestValue = vec4(replace.x  ? candidate.x : bestValue.x,\n                           replace.y  ? candidate.y : bestValue.y,\n                           replace.z  ? candidate.z : bestValue.z,\n                           replace.w  ? candidate.w : bestValue.w);\n          bestIndex = mix(bestIndex, vec4(inIdx), vec4(replace));\n          srcIdx++;\n        }\n        setOutput(bestIndex);\n      }\n    ";
     }
     return ArgMinMaxPackedProgram;
 }());
 exports.ArgMinMaxPackedProgram = ArgMinMaxPackedProgram;
 //# sourceMappingURL=argminmax_packed_gpu.js.map
-}, function(modId) { var map = {"../../util":1553229508229,"../packing_util":1553229508260,"./shader_compiler":1553229508261}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508260, function(require, module, exports) {
+}, function(modId) { var map = {"../../util":1553811080041,"../packing_util":1553811080072,"./shader_compiler":1553811080073}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080072, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -9103,7 +9121,7 @@ function getSourceCoords(rank, dims) {
 exports.getSourceCoords = getSourceCoords;
 //# sourceMappingURL=packing_util.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508261, function(require, module, exports) {
+__DEFINE__(1553811080073, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -9122,7 +9140,6 @@ __DEFINE__(1553229508261, function(require, module, exports) {
  * =============================================================================
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-var environment_1 = require("../../environment");
 var broadcast_util_1 = require("../../ops/broadcast_util");
 var util = require("../../util");
 var glsl_version_1 = require("./glsl_version");
@@ -9272,18 +9289,7 @@ function getFloatTextureSetRGBASnippet(glsl) {
     return "\n    void setOutput(vec4 val) {\n      " + glsl.output + " = val;\n    }\n  ";
 }
 function getShaderPrefix(glsl) {
-    var nanChecks = '';
-    if (environment_1.ENV.get('PROD')) {
-        nanChecks = "\n      bool isNaN(float val) {\n        return false;\n      }\n\n      bool hasNaN(vec4 values) {\n        return false;\n      }\n    ";
-    }
-    else {
-        /**
-         * Previous NaN check '(val < 0.0 || 0.0 < val || val == 0.0) ? false :
-         * true' does not work on iOS 12
-         */
-        nanChecks = "\n      bool isNaN(float val) {\n        return (val < 1.0 || 0.0 < val || val == 0.0) ? false : true;\n      }\n\n      bvec4 isNaN(vec4 val) {\n        return bvec4(\n          isNaN(val.x),\n          isNaN(val.y),\n          isNaN(val.z),\n          isNaN(val.w)\n        );\n      }\n\n      bool hasNaN(vec4 values) {\n        return any(bvec4(\n          isNaN(values.x),\n          isNaN(values.y),\n          isNaN(values.z),\n          isNaN(values.w)\n        ));\n      }\n    ";
-    }
-    var SHADER_PREFIX = glsl.version + "\n    precision highp float;\n    precision highp int;\n    precision highp sampler2D;\n    " + glsl.varyingFs + " vec2 resultUV;\n    " + glsl.defineOutput + "\n    const vec2 halfCR = vec2(0.5, 0.5);\n\n    struct ivec5\n    {\n      int x;\n      int y;\n      int z;\n      int w;\n      int u;\n    };\n\n    struct ivec6\n    {\n      int x;\n      int y;\n      int z;\n      int w;\n      int u;\n      int v;\n    };\n\n    " + nanChecks + "\n\n    float getNaN(vec4 values) {\n      return dot(vec4(1), values);\n    }\n\n    " + glsl.defineRound + "\n\n    int imod(int x, int y) {\n      return x - y * (x / y);\n    }\n\n    //Based on the work of Dave Hoskins\n    //https://www.shadertoy.com/view/4djSRW\n    #define HASHSCALE1 443.8975\n    float random(float seed){\n      vec2 p = resultUV * seed;\n      vec3 p3  = fract(vec3(p.xyx) * HASHSCALE1);\n      p3 += dot(p3, p3.yzx + 19.19);\n      return fract((p3.x + p3.y) * p3.z);\n    }\n\n    " + SAMPLE_1D_SNIPPET + "\n    " + SAMPLE_2D_SNIPPET + "\n    " + SAMPLE_3D_SNIPPET + "\n  ";
+    var SHADER_PREFIX = glsl.version + "\n    precision highp float;\n    precision highp int;\n    precision highp sampler2D;\n    " + glsl.varyingFs + " vec2 resultUV;\n    " + glsl.defineOutput + "\n    const vec2 halfCR = vec2(0.5, 0.5);\n\n    struct ivec5\n    {\n      int x;\n      int y;\n      int z;\n      int w;\n      int u;\n    };\n\n    struct ivec6\n    {\n      int x;\n      int y;\n      int z;\n      int w;\n      int u;\n      int v;\n    };\n\n    " + glsl.defineSpecialNaN + "\n    " + glsl.defineSpecialInf + "\n    " + glsl.defineRound + "\n\n    int imod(int x, int y) {\n      return x - y * (x / y);\n    }\n\n    //Based on the work of Dave Hoskins\n    //https://www.shadertoy.com/view/4djSRW\n    #define HASHSCALE1 443.8975\n    float random(float seed){\n      vec2 p = resultUV * seed;\n      vec3 p3  = fract(vec3(p.xyx) * HASHSCALE1);\n      p3 += dot(p3, p3.yzx + 19.19);\n      return fract((p3.x + p3.y) * p3.z);\n    }\n\n    " + SAMPLE_1D_SNIPPET + "\n    " + SAMPLE_2D_SNIPPET + "\n    " + SAMPLE_3D_SNIPPET + "\n  ";
     return SHADER_PREFIX;
 }
 var SAMPLE_1D_SNIPPET = "\nvec2 uvFromFlat(int texNumR, int texNumC, int index) {\n  int texR = index / texNumC;\n  int texC = index - texR * texNumC;\n  return (vec2(texC, texR) + halfCR) / vec2(texNumC, texNumR);\n}\nvec2 packedUVfrom1D(int texNumR, int texNumC, int index) {\n  int texelIndex = index / 2;\n  int texR = texelIndex / texNumC;\n  int texC = texelIndex - texR * texNumC;\n  return (vec2(texC, texR) + halfCR) / vec2(texNumC, texNumR);\n}\n";
@@ -9794,8 +9800,8 @@ function getSqueezedParams(params, keptDims) {
     return keptDims.map(function (d) { return params[d]; }).join(', ');
 }
 //# sourceMappingURL=shader_compiler.js.map
-}, function(modId) { var map = {"../../environment":1553229508225,"../../ops/broadcast_util":1553229508262,"../../util":1553229508229,"./glsl_version":1553229508263,"./shader_compiler_util":1553229508264}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508262, function(require, module, exports) {
+}, function(modId) { var map = {"../../ops/broadcast_util":1553811080074,"../../util":1553811080041,"./glsl_version":1553811080075,"./shader_compiler_util":1553811080076}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080074, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -9886,7 +9892,7 @@ function assertAndGetBroadcastShape(shapeA, shapeB) {
 exports.assertAndGetBroadcastShape = assertAndGetBroadcastShape;
 //# sourceMappingURL=broadcast_util.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508263, function(require, module, exports) {
+__DEFINE__(1553811080075, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -9914,6 +9920,8 @@ function getGlslDifferences() {
     var texture2D;
     var output;
     var defineOutput;
+    var defineSpecialNaN;
+    var defineSpecialInf;
     var defineRound;
     if (environment_1.ENV.get('WEBGL_VERSION') === 2) {
         version = '#version 300 es';
@@ -9923,6 +9931,8 @@ function getGlslDifferences() {
         texture2D = 'texture';
         output = 'outputColor';
         defineOutput = 'out vec4 outputColor;';
+        defineSpecialNaN = "\n      const float NAN = uintBitsToFloat(uint(0x7fc00000));\n    ";
+        defineSpecialInf = "\n      const float INFINITY = uintBitsToFloat(uint(0x7f800000));\n    ";
         defineRound = "\n      #define round(value) newRound(value)\n      int newRound(float value) {\n        return int(floor(value + 0.5));\n      }\n\n      ivec4 newRound(vec4 value) {\n        return ivec4(floor(value + vec4(0.5)));\n      }\n    ";
     }
     else {
@@ -9933,6 +9943,8 @@ function getGlslDifferences() {
         texture2D = 'texture2D';
         output = 'gl_FragColor';
         defineOutput = '';
+        defineSpecialNaN = "\n      uniform float NAN;\n\n      bool isnan(float val) {\n        return (val < 1.0 || 0.0 < val || val == 0.0) ? false : true;\n      }\n      bvec4 isnan(vec4 val) {\n        return bvec4(isnan(val.x), isnan(val.y), isnan(val.z), isnan(val.w));\n      }\n    ";
+        defineSpecialInf = "\n      uniform float INFINITY;\n\n      bool isinf(float val) {\n        return abs(val) == INFINITY;\n      }\n      bvec4 isinf(vec4 val) {\n        return equal(abs(val), vec4(INFINITY));\n      }\n    ";
         defineRound = "\n      int round(float value) {\n        return int(floor(value + 0.5));\n      }\n\n      ivec4 round(vec4 value) {\n        return ivec4(floor(value + vec4(0.5)));\n      }\n    ";
     }
     return {
@@ -9943,13 +9955,15 @@ function getGlslDifferences() {
         texture2D: texture2D,
         output: output,
         defineOutput: defineOutput,
+        defineSpecialNaN: defineSpecialNaN,
+        defineSpecialInf: defineSpecialInf,
         defineRound: defineRound
     };
 }
 exports.getGlslDifferences = getGlslDifferences;
 //# sourceMappingURL=glsl_version.js.map
-}, function(modId) { var map = {"../../environment":1553229508225}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508264, function(require, module, exports) {
+}, function(modId) { var map = {"../../environment":1553811080037}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080076, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -10024,8 +10038,8 @@ function dotify(x, y) {
 }
 exports.dotify = dotify;
 //# sourceMappingURL=shader_compiler_util.js.map
-}, function(modId) { var map = {"../../util":1553229508229}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508265, function(require, module, exports) {
+}, function(modId) { var map = {"../../util":1553811080041}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080077, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -10066,7 +10080,7 @@ var AvgPool2DBackpropProgram = /** @class */ (function () {
 exports.AvgPool2DBackpropProgram = AvgPool2DBackpropProgram;
 //# sourceMappingURL=avg_pool_backprop_gpu.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508266, function(require, module, exports) {
+__DEFINE__(1553811080078, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -10111,8 +10125,8 @@ var BatchNormProgram = /** @class */ (function () {
 }());
 exports.BatchNormProgram = BatchNormProgram;
 //# sourceMappingURL=batchnorm_gpu.js.map
-}, function(modId) { var map = {"../../ops/broadcast_util":1553229508262}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508267, function(require, module, exports) {
+}, function(modId) { var map = {"../../ops/broadcast_util":1553811080074}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080079, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -10157,8 +10171,8 @@ var BatchNormPackedProgram = /** @class */ (function () {
 }());
 exports.BatchNormPackedProgram = BatchNormPackedProgram;
 //# sourceMappingURL=batchnorm_packed_gpu.js.map
-}, function(modId) { var map = {"../../ops/broadcast_util":1553229508262}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508268, function(require, module, exports) {
+}, function(modId) { var map = {"../../ops/broadcast_util":1553811080074}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080080, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -10197,8 +10211,8 @@ var BinaryOpComplexProgram = /** @class */ (function () {
 }());
 exports.BinaryOpComplexProgram = BinaryOpComplexProgram;
 //# sourceMappingURL=binaryop_complex_gpu.js.map
-}, function(modId) { var map = {"../../ops/broadcast_util":1553229508262}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508269, function(require, module, exports) {
+}, function(modId) { var map = {"../../ops/broadcast_util":1553811080074}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080081, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -10218,7 +10232,7 @@ __DEFINE__(1553229508269, function(require, module, exports) {
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 var broadcast_util = require("../../ops/broadcast_util");
-var CHECK_NAN_SNIPPET = "\n  if (isNaN(a)) return a;\n  if (isNaN(b)) return b;\n";
+var CHECK_NAN_SNIPPET = "\n  if (isnan(a)) return a;\n  if (isnan(b)) return b;\n";
 exports.ADD = 'return a + b;';
 exports.SUB = 'return a - b;';
 exports.MUL = 'return a * b;';
@@ -10251,28 +10265,14 @@ var BinaryOpProgram = /** @class */ (function () {
         this.variableNames = ['A', 'B'];
         this.outputShape =
             broadcast_util.assertAndGetBroadcastShape(aShape, bShape);
-        this.userCode = "\n      uniform float NAN;\n      float binaryOperation(float a, float b) {\n        " + op + "\n      }\n\n      void main() {\n        float a = getAAtOutCoords();\n        float b = getBAtOutCoords();\n        setOutput(binaryOperation(a, b));\n      }\n    ";
+        this.userCode = "\n      float binaryOperation(float a, float b) {\n        " + op + "\n      }\n\n      void main() {\n        float a = getAAtOutCoords();\n        float b = getBAtOutCoords();\n        setOutput(binaryOperation(a, b));\n      }\n    ";
     }
-    BinaryOpProgram.prototype.getCustomSetupFunc = function () {
-        var _this = this;
-        return function (gpgpu, webGLProgram) {
-            if (_this.startLoc == null) {
-                _this.startLoc = gpgpu.getUniformLocationNoThrow(webGLProgram, 'NAN');
-                if (_this.startLoc == null) {
-                    // This means the compiler has optimized and realized it doesn't need
-                    // the uniform.
-                    return;
-                }
-            }
-            gpgpu.gl.uniform1f(_this.startLoc, NaN);
-        };
-    };
     return BinaryOpProgram;
 }());
 exports.BinaryOpProgram = BinaryOpProgram;
 //# sourceMappingURL=binaryop_gpu.js.map
-}, function(modId) { var map = {"../../ops/broadcast_util":1553229508262}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508270, function(require, module, exports) {
+}, function(modId) { var map = {"../../ops/broadcast_util":1553811080074}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080082, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -10301,7 +10301,7 @@ exports.POW = "\n  // isModRound1 has 1 for components with round(mod(b, 2.0)) =
     CHECK_NAN_SNIPPET + "\n  return result;\n";
 exports.PRELU = "\n  vec4 aLessThanZero = vec4(lessThan(a, vec4(0.)));\n  return (aLessThanZero * (b * a)) + ((vec4(1.0) - aLessThanZero) * a);\n";
 exports.ELU_DER = "\n  vec4 bGTEZero = vec4(greaterThanEqual(b, vec4(0.)));\n  return (bGTEZero * a) + ((vec4(1.0) - bGTEZero) * (a * (b + vec4(1.0))));\n";
-exports.ATAN2 = "\n  vec4 result = atan(a, b);\n  vec4 isNaN = min(vec4(isNaN(a)) + vec4(isNaN(b)), vec4(1.0));\n  " +
+exports.ATAN2 = "\n  vec4 result = atan(a, b);\n  vec4 isNaN = min(vec4(isnan(a)) + vec4(isnan(b)), vec4(1.0));\n  " +
     CHECK_NAN_SNIPPET + "\n  return result;\n";
 exports.EQUAL = "\n  return vec4(equal(a, b));\n";
 exports.NOT_EQUAL = "\n  return vec4(notEqual(a, b));\n";
@@ -10311,9 +10311,9 @@ exports.GREATER = "\n  return vec4(greaterThan(a, b));\n";
 exports.GREATER_EQUAL = "\n  return vec4(greaterThanEqual(a, b));\n";
 exports.LOGICAL_AND = "\n  return vec4(\n    vec4(greaterThanEqual(a, vec4(1.0))) *\n    vec4(greaterThanEqual(b, vec4(1.0))));\n";
 exports.LOGICAL_OR = "\n  return min(\n    vec4(greaterThanEqual(a, vec4(1.0))) +\n    vec4(greaterThanEqual(b, vec4(1.0))),\n    vec4(1.0));\n";
-exports.MAX = "\n  vec4 result = vec4(max(a, b));\n  vec4 isNaN = min(vec4(isNaN(a)) + vec4(isNaN(b)), vec4(1.0));\n  " +
+exports.MAX = "\n  vec4 result = vec4(max(a, b));\n  vec4 isNaN = min(vec4(isnan(a)) + vec4(isnan(b)), vec4(1.0));\n  " +
     CHECK_NAN_SNIPPET + "\n  return result;\n";
-exports.MIN = "\n  vec4 result = vec4(min(a, b));\n  vec4 isNaN = min(vec4(isNaN(a)) + vec4(isNaN(b)), vec4(1.0));\n  " +
+exports.MIN = "\n  vec4 result = vec4(min(a, b));\n  vec4 isNaN = min(vec4(isnan(a)) + vec4(isnan(b)), vec4(1.0));\n  " +
     CHECK_NAN_SNIPPET + "\n  return result;\n";
 exports.MOD = "\n  vec4 result = mod(a, b);\n  vec4 isNaN = vec4(equal(b, vec4(0.0)));\n  " +
     CHECK_NAN_SNIPPET + "\n  return result;\n";
@@ -10324,28 +10324,14 @@ var BinaryOpPackedProgram = /** @class */ (function () {
         this.usesPackedTextures = true;
         this.outputShape =
             broadcast_util.assertAndGetBroadcastShape(aShape, bShape);
-        this.userCode = "\n      uniform float NAN;\n      vec4 binaryOperation(vec4 a, vec4 b) {\n        " + op + "\n      }\n\n      void main() {\n        vec4 a = getAAtOutCoords();\n        vec4 b = getBAtOutCoords();\n        setOutput(binaryOperation(a, b));\n      }\n    ";
+        this.userCode = "\n      vec4 binaryOperation(vec4 a, vec4 b) {\n        " + op + "\n      }\n\n      void main() {\n        vec4 a = getAAtOutCoords();\n        vec4 b = getBAtOutCoords();\n        setOutput(binaryOperation(a, b));\n      }\n    ";
     }
-    BinaryOpPackedProgram.prototype.getCustomSetupFunc = function () {
-        var _this = this;
-        return function (gpgpu, webGLProgram) {
-            if (_this.startLoc == null) {
-                _this.startLoc = gpgpu.getUniformLocationNoThrow(webGLProgram, 'NAN');
-                if (_this.startLoc == null) {
-                    // This means the compiler has optimized and realized it doesn't need
-                    // the uniform.
-                    return;
-                }
-            }
-            gpgpu.gl.uniform1f(_this.startLoc, NaN);
-        };
-    };
     return BinaryOpPackedProgram;
 }());
 exports.BinaryOpPackedProgram = BinaryOpPackedProgram;
 //# sourceMappingURL=binaryop_packed_gpu.js.map
-}, function(modId) { var map = {"../../ops/broadcast_util":1553229508262}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508271, function(require, module, exports) {
+}, function(modId) { var map = {"../../ops/broadcast_util":1553811080074}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080083, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -10368,7 +10354,7 @@ var ClipProgram = /** @class */ (function () {
     function ClipProgram(aShape) {
         this.variableNames = ['A'];
         this.outputShape = aShape;
-        this.userCode = "\n      uniform float min;\n      uniform float max;\n\n      void main() {\n        float value = getAAtOutCoords();\n        if (isNaN(value)) {\n          setOutput(value);\n          return;\n        }\n\n        setOutput(clamp(value, min, max));\n      }\n    ";
+        this.userCode = "\n      uniform float min;\n      uniform float max;\n\n      void main() {\n        float value = getAAtOutCoords();\n        if (isnan(value)) {\n          setOutput(value);\n          return;\n        }\n\n        setOutput(clamp(value, min, max));\n      }\n    ";
     }
     ClipProgram.prototype.getCustomSetupFunc = function (min, max) {
         var _this = this;
@@ -10386,7 +10372,7 @@ var ClipProgram = /** @class */ (function () {
 exports.ClipProgram = ClipProgram;
 //# sourceMappingURL=clip_gpu.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508272, function(require, module, exports) {
+__DEFINE__(1553811080084, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -10410,7 +10396,7 @@ var ClipPackedProgram = /** @class */ (function () {
         this.variableNames = ['A'];
         this.usesPackedTextures = true;
         this.outputShape = aShape;
-        this.userCode = "\n      uniform float min;\n      uniform float max;\n\n      void main() {\n        vec4 value = getAAtOutCoords();\n\n        if (hasNaN(value)) {\n          setOutput(value);\n          return;\n        }\n\n        setOutput(clamp(value, vec4(min), vec4(max)));\n      }\n    ";
+        this.userCode = "\n      uniform float min;\n      uniform float max;\n\n      void main() {\n        vec4 value = getAAtOutCoords();\n\n        if (any(isnan(value))) {\n          setOutput(value);\n          return;\n        }\n\n        setOutput(clamp(value, vec4(min), vec4(max)));\n      }\n    ";
     }
     ClipPackedProgram.prototype.getCustomSetupFunc = function (min, max) {
         var _this = this;
@@ -10428,7 +10414,7 @@ var ClipPackedProgram = /** @class */ (function () {
 exports.ClipPackedProgram = ClipPackedProgram;
 //# sourceMappingURL=clip_packed_gpu.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508273, function(require, module, exports) {
+__DEFINE__(1553811080085, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -10458,7 +10444,7 @@ var ComplexAbsProgram = /** @class */ (function () {
 exports.ComplexAbsProgram = ComplexAbsProgram;
 //# sourceMappingURL=complex_abs_gpu.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508274, function(require, module, exports) {
+__DEFINE__(1553811080086, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -10504,8 +10490,8 @@ var ConcatProgram = /** @class */ (function () {
 }());
 exports.ConcatProgram = ConcatProgram;
 //# sourceMappingURL=concat_gpu.js.map
-}, function(modId) { var map = {"../../ops/concat_util":1553229508242}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508275, function(require, module, exports) {
+}, function(modId) { var map = {"../../ops/concat_util":1553811080054}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080087, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -10560,8 +10546,8 @@ var ConcatPackedProgram = /** @class */ (function () {
 }());
 exports.ConcatPackedProgram = ConcatPackedProgram;
 //# sourceMappingURL=concat_packed_gpu.js.map
-}, function(modId) { var map = {"../../ops/concat_util":1553229508242,"../packing_util":1553229508260,"./shader_compiler":1553229508261}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508276, function(require, module, exports) {
+}, function(modId) { var map = {"../../ops/concat_util":1553811080054,"../packing_util":1553811080072,"./shader_compiler":1553811080073}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080088, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -10643,7 +10629,7 @@ var Conv3DDerInputProgram = /** @class */ (function () {
 exports.Conv3DDerInputProgram = Conv3DDerInputProgram;
 //# sourceMappingURL=conv_backprop_gpu.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508277, function(require, module, exports) {
+__DEFINE__(1553811080089, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -10694,7 +10680,7 @@ var DepthwiseConv2DDerInputProgram = /** @class */ (function () {
 exports.DepthwiseConv2DDerInputProgram = DepthwiseConv2DDerInputProgram;
 //# sourceMappingURL=conv_backprop_gpu_depthwise.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508278, function(require, module, exports) {
+__DEFINE__(1553811080090, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -10757,7 +10743,7 @@ var Conv3DProgram = /** @class */ (function () {
 exports.Conv3DProgram = Conv3DProgram;
 //# sourceMappingURL=conv_gpu.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508279, function(require, module, exports) {
+__DEFINE__(1553811080091, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -10798,7 +10784,7 @@ var DepthwiseConv2DProgram = /** @class */ (function () {
 exports.DepthwiseConv2DProgram = DepthwiseConv2DProgram;
 //# sourceMappingURL=conv_gpu_depthwise.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508280, function(require, module, exports) {
+__DEFINE__(1553811080092, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -10937,8 +10923,8 @@ var DepthwiseConvPacked2DProgram = /** @class */ (function () {
 }());
 exports.DepthwiseConvPacked2DProgram = DepthwiseConvPacked2DProgram;
 //# sourceMappingURL=conv_packed_gpu_depthwise.js.map
-}, function(modId) { var map = {"../../util":1553229508229}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508281, function(require, module, exports) {
+}, function(modId) { var map = {"../../util":1553811080041}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080093, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -10992,14 +10978,14 @@ var CropAndResizeProgram = /** @class */ (function () {
         // Reference implementation
         // tslint:disable-next-line:max-line-length
         // https://github.com/tensorflow/tensorflow/blob/master/tensorflow/core/kernels/crop_and_resize_op_gpu.cu.cc
-        this.userCode = "\n      const float height_ratio = float(" + heightRatio + ");\n      const float width_ratio = float(" + widthRatio + ");\n      void main() {\n        ivec4 coords = getOutputCoords();\n        int b = coords[0];\n        int y = coords[1];\n        int x = coords[2];\n        int d = coords[3];\n\n        // get box vals\n        float y1 = getBoxes(b,0);\n        float x1 = getBoxes(b,1);\n        float y2 = getBoxes(b,2);\n        float x2 = getBoxes(b,3);\n\n        // get image in batch index\n        int bInd = round(getBoxInd(b));\n        if(bInd < 0 || bInd >= " + batch + ") {\n          return;\n        }\n\n        float height_scale = " + heightScale + ";\n        float width_scale = " + widthScale + ";\n\n        float in_y = " + inY + ";\n        if( in_y < 0.0 || in_y > " + inputHeightFloat + " ) {\n          setOutput(float(" + extrapolationValue + "));\n          return;\n        }\n        float in_x = " + inX + ";\n        if( in_x < 0.0 || in_x > " + inputWidthFloat + " ) {\n          setOutput(float(" + extrapolationValue + "));\n          return;\n        }\n\n        vec2 sourceFracIndexRC = vec2(in_y,in_x);\n        if(" + methodId + " == 1) {\n          // Compute the four integer indices.\n          ivec2 sourceFloorRC = ivec2(sourceFracIndexRC);\n          ivec2 sourceCeilRC = ivec2(ceil(sourceFracIndexRC));\n\n          float topLeft = getImage(b, sourceFloorRC.x, sourceFloorRC.y, d);\n          float bottomLeft = getImage(b, sourceCeilRC.x, sourceFloorRC.y, d);\n          float topRight = getImage(b, sourceFloorRC.x, sourceCeilRC.y, d);\n          float bottomRight = getImage(b, sourceCeilRC.x, sourceCeilRC.y, d);\n\n          vec2 fracRC = sourceFracIndexRC - vec2(sourceFloorRC);\n\n          float top = topLeft + (topRight - topLeft) * fracRC.y;\n          float bottom = bottomLeft + (bottomRight - bottomLeft) * fracRC.y;\n          float newValue = top + (bottom - top) * fracRC.x;\n          setOutput(newValue);\n        } else {\n          // Compute the coordinators of nearest neighbor point.\n          ivec2 sourceNearestRC = ivec2(floor(\n            sourceFracIndexRC + vec2(0.5,0.5)));\n          float newValue = getImage(b, sourceNearestRC.x, sourceNearestRC.y, d);\n          setOutput(newValue);\n        }\n      }\n    ";
+        this.userCode = "\n      const float height_ratio = float(" + heightRatio + ");\n      const float width_ratio = float(" + widthRatio + ");\n      void main() {\n        ivec4 coords = getOutputCoords();\n        int b = coords[0];\n        int y = coords[1];\n        int x = coords[2];\n        int d = coords[3];\n\n        // get box vals\n        float y1 = getBoxes(b,0);\n        float x1 = getBoxes(b,1);\n        float y2 = getBoxes(b,2);\n        float x2 = getBoxes(b,3);\n\n        // get image in batch index\n        int bInd = round(getBoxInd(b));\n        if(bInd < 0 || bInd >= " + batch + ") {\n          return;\n        }\n\n        float height_scale = " + heightScale + ";\n        float width_scale = " + widthScale + ";\n\n        float in_y = " + inY + ";\n        if( in_y < 0.0 || in_y > " + inputHeightFloat + " ) {\n          setOutput(float(" + extrapolationValue + "));\n          return;\n        }\n        float in_x = " + inX + ";\n        if( in_x < 0.0 || in_x > " + inputWidthFloat + " ) {\n          setOutput(float(" + extrapolationValue + "));\n          return;\n        }\n\n        vec2 sourceFracIndexCR = vec2(in_x,in_y);\n        if(" + methodId + " == 1) {\n          // Compute the four integer indices.\n          ivec2 sourceFloorCR = ivec2(sourceFracIndexCR);\n          ivec2 sourceCeilCR = ivec2(ceil(sourceFracIndexCR));\n\n          float topLeft = getImage(b, sourceFloorCR.y, sourceFloorCR.x, d);\n          float bottomLeft = getImage(b, sourceCeilCR.y, sourceFloorCR.x, d);\n          float topRight = getImage(b, sourceFloorCR.y, sourceCeilCR.x, d);\n          float bottomRight = getImage(b, sourceCeilCR.y, sourceCeilCR.x, d);\n\n          vec2 fracCR = sourceFracIndexCR - vec2(sourceFloorCR);\n\n          float top = topLeft + (topRight - topLeft) * fracCR.x;\n          float bottom = bottomLeft + (bottomRight - bottomLeft) * fracCR.x;\n          float newValue = top + (bottom - top) * fracCR.y;\n          setOutput(newValue);\n        } else {\n          // Compute the coordinators of nearest neighbor point.\n          ivec2 sourceNearestCR = ivec2(floor(\n            sourceFracIndexCR + vec2(0.5,0.5)));\n          float newValue = getImage(b, sourceNearestCR.y, sourceNearestCR.x, d);\n          setOutput(newValue);\n        }\n      }\n    ";
     }
     return CropAndResizeProgram;
 }());
 exports.CropAndResizeProgram = CropAndResizeProgram;
 //# sourceMappingURL=crop_and_resize_gpu.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508282, function(require, module, exports) {
+__DEFINE__(1553811080094, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -11066,8 +11052,8 @@ function getFinalCoord(rank, name) {
     }
 }
 //# sourceMappingURL=cumsum_gpu.js.map
-}, function(modId) { var map = {"./shader_compiler":1553229508261}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508283, function(require, module, exports) {
+}, function(modId) { var map = {"./shader_compiler":1553811080073}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080095, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -11140,7 +11126,7 @@ var DepthToSpaceProgram = /** @class */ (function () {
 exports.DepthToSpaceProgram = DepthToSpaceProgram;
 //# sourceMappingURL=depth_to_space_gpu.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508284, function(require, module, exports) {
+__DEFINE__(1553811080096, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -11165,14 +11151,14 @@ var EncodeFloatProgram = /** @class */ (function () {
         this.variableNames = ['A'];
         var glsl = glsl_version_1.getGlslDifferences();
         this.outputShape = outputShape;
-        this.userCode = "\n      const float FLOAT_MAX = 1.70141184e38;\n      const float FLOAT_MIN = 1.17549435e-38;\n\n      lowp vec4 encode_float(highp float v) {\n        if (isNaN(v)) {\n          return vec4(255, 255, 255, 255);\n        }\n\n        highp float av = abs(v);\n\n        if(av < FLOAT_MIN) {\n          return vec4(0.0, 0.0, 0.0, 0.0);\n        } else if(v > FLOAT_MAX) {\n          return vec4(0.0, 0.0, 128.0, 127.0) / 255.0;\n        } else if(v < -FLOAT_MAX) {\n          return vec4(0.0, 0.0,  128.0, 255.0) / 255.0;\n        }\n\n        highp vec4 c = vec4(0,0,0,0);\n\n        highp float e = floor(log2(av));\n        highp float m = exp2(fract(log2(av))) - 1.0;\n\n        c[2] = floor(128.0 * m);\n        m -= c[2] / 128.0;\n        c[1] = floor(32768.0 * m);\n        m -= c[1] / 32768.0;\n        c[0] = floor(8388608.0 * m);\n\n        highp float ebias = e + 127.0;\n        c[3] = floor(ebias / 2.0);\n        ebias -= c[3] * 2.0;\n        c[2] += floor(ebias) * 128.0;\n\n        c[3] += 128.0 * step(0.0, -v);\n\n        return c / 255.0;\n      }\n\n      void main() {\n        float x = getAAtOutCoords();\n        " + glsl.output + " = encode_float(x);\n      }\n    ";
+        this.userCode = "\n      const float FLOAT_MAX = 1.70141184e38;\n      const float FLOAT_MIN = 1.17549435e-38;\n\n      lowp vec4 encode_float(highp float v) {\n        if (isnan(v)) {\n          return vec4(255, 255, 255, 255);\n        }\n\n        highp float av = abs(v);\n\n        if(av < FLOAT_MIN) {\n          return vec4(0.0, 0.0, 0.0, 0.0);\n        } else if(v > FLOAT_MAX) {\n          return vec4(0.0, 0.0, 128.0, 127.0) / 255.0;\n        } else if(v < -FLOAT_MAX) {\n          return vec4(0.0, 0.0,  128.0, 255.0) / 255.0;\n        }\n\n        highp vec4 c = vec4(0,0,0,0);\n\n        highp float e = floor(log2(av));\n        highp float m = exp2(fract(log2(av))) - 1.0;\n\n        c[2] = floor(128.0 * m);\n        m -= c[2] / 128.0;\n        c[1] = floor(32768.0 * m);\n        m -= c[1] / 32768.0;\n        c[0] = floor(8388608.0 * m);\n\n        highp float ebias = e + 127.0;\n        c[3] = floor(ebias / 2.0);\n        ebias -= c[3] * 2.0;\n        c[2] += floor(ebias) * 128.0;\n\n        c[3] += 128.0 * step(0.0, -v);\n\n        return c / 255.0;\n      }\n\n      void main() {\n        float x = getAAtOutCoords();\n        " + glsl.output + " = encode_float(x);\n      }\n    ";
     }
     return EncodeFloatProgram;
 }());
 exports.EncodeFloatProgram = EncodeFloatProgram;
 //# sourceMappingURL=encode_float_gpu.js.map
-}, function(modId) { var map = {"./glsl_version":1553229508263}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508285, function(require, module, exports) {
+}, function(modId) { var map = {"./glsl_version":1553811080075}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080097, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -11209,7 +11195,7 @@ var FFTProgram = /** @class */ (function () {
 exports.FFTProgram = FFTProgram;
 //# sourceMappingURL=fft_gpu.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508286, function(require, module, exports) {
+__DEFINE__(1553811080098, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -11249,7 +11235,7 @@ var FillProgram = /** @class */ (function () {
 exports.FillProgram = FillProgram;
 //# sourceMappingURL=fill_gpu.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508287, function(require, module, exports) {
+__DEFINE__(1553811080099, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -11281,8 +11267,8 @@ var FromPixelsProgram = /** @class */ (function () {
 }());
 exports.FromPixelsProgram = FromPixelsProgram;
 //# sourceMappingURL=from_pixels_gpu.js.map
-}, function(modId) { var map = {"./glsl_version":1553229508263}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508288, function(require, module, exports) {
+}, function(modId) { var map = {"./glsl_version":1553811080075}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080100, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -11337,8 +11323,8 @@ function getSourceCoords(aShape, axis) {
     return sourceCoords.join();
 }
 //# sourceMappingURL=gather_gpu.js.map
-}, function(modId) { var map = {"./shader_compiler":1553229508261}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508289, function(require, module, exports) {
+}, function(modId) { var map = {"./shader_compiler":1553811080073}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080101, function(require, module, exports) {
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var shader_compiler_1 = require("./shader_compiler");
@@ -11357,8 +11343,8 @@ var GatherNDProgram = /** @class */ (function () {
 }());
 exports.GatherNDProgram = GatherNDProgram;
 //# sourceMappingURL=gather_nd_gpu.js.map
-}, function(modId) { var map = {"./shader_compiler":1553229508261}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508290, function(require, module, exports) {
+}, function(modId) { var map = {"./shader_compiler":1553811080073}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080102, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -11872,8 +11858,8 @@ function linearSearchLastTrue(arr) {
 }
 exports.linearSearchLastTrue = linearSearchLastTrue;
 //# sourceMappingURL=gpgpu_context.js.map
-}, function(modId) { var map = {"../../canvas_util":1553229508224,"../../environment":1553229508225,"../../util":1553229508229,"./gpgpu_util":1553229508291,"./tex_util":1553229508292,"./webgl_util":1553229508293}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508291, function(require, module, exports) {
+}, function(modId) { var map = {"../../canvas_util":1553811080036,"../../environment":1553811080037,"../../util":1553811080041,"./gpgpu_util":1553811080103,"./tex_util":1553811080104,"./webgl_util":1553811080105}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080103, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -12134,8 +12120,8 @@ function downloadMatrixFromPackedOutputTexture(gl, debug, batch, rows, cols, phy
 }
 exports.downloadMatrixFromPackedOutputTexture = downloadMatrixFromPackedOutputTexture;
 //# sourceMappingURL=gpgpu_util.js.map
-}, function(modId) { var map = {"../../environment":1553229508225,"../../util":1553229508229,"./glsl_version":1553229508263,"./tex_util":1553229508292,"./webgl_util":1553229508293}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508292, function(require, module, exports) {
+}, function(modId) { var map = {"../../environment":1553811080037,"../../util":1553811080041,"./glsl_version":1553811080075,"./tex_util":1553811080104,"./webgl_util":1553811080105}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080104, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -12383,8 +12369,8 @@ function decodeMatrixFromPackedRGBA(packedRGBA, batches, rows, columns, matrix) 
 }
 exports.decodeMatrixFromPackedRGBA = decodeMatrixFromPackedRGBA;
 //# sourceMappingURL=tex_util.js.map
-}, function(modId) { var map = {"../../util":1553229508229}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508293, function(require, module, exports) {
+}, function(modId) { var map = {"../../util":1553811080041}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080105, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -12775,8 +12761,8 @@ function isReshapeFree(shape1, shape2) {
 }
 exports.isReshapeFree = isReshapeFree;
 //# sourceMappingURL=webgl_util.js.map
-}, function(modId) { var map = {"../../environment":1553229508225,"../../util":1553229508229}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508294, function(require, module, exports) {
+}, function(modId) { var map = {"../../environment":1553811080037,"../../util":1553811080041}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080106, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -12795,6 +12781,7 @@ __DEFINE__(1553229508294, function(require, module, exports) {
  * =============================================================================
  */
 Object.defineProperty(exports, "__esModule", { value: true });
+var environment_1 = require("../../environment");
 var util = require("../../util");
 var shader_compiler = require("./shader_compiler");
 function compileProgram(gpgpu, program, inputs, output) {
@@ -12823,6 +12810,14 @@ function compileProgram(gpgpu, program, inputs, output) {
     };
     var source = shader_compiler.makeShader(inputInfos, outShapeInfo, userCode, program.usesPackedTextures);
     var webGLProgram = gpgpu.createProgram(source);
+    // Add special uniforms (NAN, INFINITY)
+    var infLoc = null;
+    var nanLoc = null;
+    if (environment_1.ENV.get('WEBGL_VERSION') === 1) {
+        infLoc = gpgpu.getUniformLocation(webGLProgram, 'INFINITY', false);
+        nanLoc = gpgpu.getUniformLocation(webGLProgram, 'NAN', false);
+    }
+    // Add user-defined uniforms
     var uniformLocations = {};
     for (var i = 0; i < program.variableNames.length; i++) {
         var varName = program.variableNames[i];
@@ -12838,7 +12833,9 @@ function compileProgram(gpgpu, program, inputs, output) {
         webGLProgram: webGLProgram,
         uniformLocations: uniformLocations,
         inShapeInfos: inShapeInfos,
-        outShapeInfo: outShapeInfo
+        outShapeInfo: outShapeInfo,
+        infLoc: infLoc,
+        nanLoc: nanLoc,
     };
 }
 exports.compileProgram = compileProgram;
@@ -12879,6 +12876,16 @@ function runProgram(gpgpu, binary, inputs, output, customSetup) {
         gpgpu.setOutputMatrixTexture(outTex, outTexShape[0], outTexShape[1]);
     }
     gpgpu.setProgram(binary.webGLProgram);
+    // Set special uniforms (NAN, INFINITY)
+    if (environment_1.ENV.get('WEBGL_VERSION') === 1) {
+        if (binary.infLoc !== null) {
+            gpgpu.gl.uniform1f(binary.infLoc, Infinity);
+        }
+        if (binary.nanLoc !== null) {
+            gpgpu.gl.uniform1f(binary.nanLoc, NaN);
+        }
+    }
+    // Set user-defined inputs
     inputs.forEach(function (input, i) {
         var varName = binary.program.variableNames[i];
         var varLoc = binary.uniformLocations[varName];
@@ -12929,12 +12936,12 @@ function makeShaderKey(program, inputs, output) {
 }
 exports.makeShaderKey = makeShaderKey;
 //# sourceMappingURL=gpgpu_math.js.map
-}, function(modId) { var map = {"../../util":1553229508229,"./shader_compiler":1553229508261}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508295, function(require, module, exports) {
+}, function(modId) { var map = {"../../environment":1553811080037,"../../util":1553811080041,"./shader_compiler":1553811080073}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080107, function(require, module, exports) {
 "use strict";
 /**
  * @license
- * Copyright 2018 Google Inc. All Rights Reserved.
+ * Copyright 2019 Google LLC. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -12950,22 +12957,23 @@ __DEFINE__(1553229508295, function(require, module, exports) {
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 var glsl_version_1 = require("./glsl_version");
-var Im2ColProgram = /** @class */ (function () {
-    function Im2ColProgram(outputShape, inputShape, convInfo) {
+var Im2ColPackedProgram = /** @class */ (function () {
+    function Im2ColPackedProgram(outputShape, inputShape, convInfo) {
         this.variableNames = ['A'];
+        this.usesPackedTextures = true;
         this.outputShape = outputShape;
         var filterWidth = convInfo.filterWidth, inChannels = convInfo.inChannels, strideWidth = convInfo.strideWidth, strideHeight = convInfo.strideHeight, padInfo = convInfo.padInfo, outWidth = convInfo.outWidth, dilationWidth = convInfo.dilationWidth, dilationHeight = convInfo.dilationHeight;
         var left = padInfo.left, top = padInfo.top;
         var itemsPerBlockRow = inChannels * filterWidth;
         var glsl = glsl_version_1.getGlslDifferences();
-        this.userCode = "\n      void main() {\n        ivec2 rc = getOutputCoords();\n\n        vec4 result = vec4(0);\n\n        for(int row=0; row<=1; row++) {\n          for(int col=0; col<=1; col++) {\n            int blockIndex = rc.y + col;\n            int pos = rc.x + row;\n\n            if(blockIndex >= " + outputShape[1] + " || pos >= " + outputShape[0] + ") continue;\n\n            int offsetY = int(blockIndex / (" + outWidth + ")) * " + strideHeight + " - " + top + ";\n            int d0 = offsetY + " + dilationHeight + " * (pos / " + itemsPerBlockRow + ");\n\n            if(d0 >= " + inputShape[0] + " || d0 < 0) continue;\n\n            int offsetX = int(mod(float(blockIndex), " + outWidth + ".) * " + strideWidth + ". - " + left + ".);\n            int d1 = offsetX + " + dilationWidth + " * (int(mod(float(pos), " + itemsPerBlockRow + ".) / " + inChannels + ".));\n\n            if(d1 >= " + inputShape[1] + " || d1 < 0) continue;\n\n            result[row * 2 + col] = getA(d0, d1, int(mod(float(pos), " + inChannels + ".)));\n          }\n        }\n\n        " + glsl.output + " = result;\n      }\n    ";
+        this.userCode = "\n      void main() {\n        ivec2 rc = getOutputCoords();\n\n        vec4 result = vec4(0);\n\n        for(int row=0; row<=1; row++) {\n          for(int col=0; col<=1; col++) {\n            int blockIndex = rc.y + col;\n            int pos = rc.x + row;\n\n            if(blockIndex >= " + outputShape[1] + " || pos >= " + outputShape[0] + ") continue;\n\n            int offsetY = int(blockIndex / (" + outWidth + ")) * " + strideHeight + " - " + top + ";\n            int d0 = offsetY + " + dilationHeight + " * (pos / " + itemsPerBlockRow + ");\n\n            if(d0 >= " + inputShape[0] + " || d0 < 0) continue;\n\n            int offsetX = int(mod(float(blockIndex), " + outWidth + ".) * " + strideWidth + ". - " + left + ".);\n            int d1 = offsetX + " + dilationWidth + " * (int(mod(float(pos), " + itemsPerBlockRow + ".) / " + inChannels + ".));\n\n            if(d1 >= " + inputShape[1] + " || d1 < 0) continue;\n\n            vec2 innerDims = vec2(d1, int(mod(float(pos), " + inChannels + ".)));\n            result[row * 2 + col] = getChannel(getA(d0, int(innerDims.x),\n                                              int(innerDims.y)), innerDims);\n          }\n        }\n\n        " + glsl.output + " = result;\n      }\n    ";
     }
-    return Im2ColProgram;
+    return Im2ColPackedProgram;
 }());
-exports.Im2ColProgram = Im2ColProgram;
-//# sourceMappingURL=im2col_gpu.js.map
-}, function(modId) { var map = {"./glsl_version":1553229508263}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508296, function(require, module, exports) {
+exports.Im2ColPackedProgram = Im2ColPackedProgram;
+//# sourceMappingURL=im2col_packed_gpu.js.map
+}, function(modId) { var map = {"./glsl_version":1553811080075}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080108, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -13013,7 +13021,7 @@ var LRNProgram = /** @class */ (function () {
 exports.LRNProgram = LRNProgram;
 //# sourceMappingURL=lrn_gpu.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508297, function(require, module, exports) {
+__DEFINE__(1553811080109, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -13049,7 +13057,7 @@ var LRNGradProgram = /** @class */ (function () {
 exports.LRNGradProgram = LRNGradProgram;
 //# sourceMappingURL=lrn_grad_gpu.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508298, function(require, module, exports) {
+__DEFINE__(1553811080110, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -13087,7 +13095,7 @@ var MaxPool2DBackpropProgram = /** @class */ (function () {
 exports.MaxPool2DBackpropProgram = MaxPool2DBackpropProgram;
 //# sourceMappingURL=max_pool_backprop_gpu.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508299, function(require, module, exports) {
+__DEFINE__(1553811080111, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -13137,7 +13145,7 @@ var MatMulPackedProgram = /** @class */ (function () {
 exports.MatMulPackedProgram = MatMulPackedProgram;
 //# sourceMappingURL=mulmat_packed_gpu.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508300, function(require, module, exports) {
+__DEFINE__(1553811080112, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -13176,7 +13184,7 @@ var MultinomialProgram = /** @class */ (function () {
 exports.MultinomialProgram = MultinomialProgram;
 //# sourceMappingURL=multinomial_gpu.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508301, function(require, module, exports) {
+__DEFINE__(1553811080113, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -13206,7 +13214,7 @@ var OneHotProgram = /** @class */ (function () {
 exports.OneHotProgram = OneHotProgram;
 //# sourceMappingURL=onehot_gpu.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508302, function(require, module, exports) {
+__DEFINE__(1553811080114, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -13291,8 +13299,8 @@ function getOutput(shape, dims) {
     return "getA(" + sourceCoords[0] + "),\n          cEdge ? 0. : getA(" + sourceCoords[1] + "),\n          rEdge ? 0. : getA(" + sourceCoords[2] + "),\n          rEdge || cEdge ? 0. : getA(" + sourceCoords[3] + ")";
 }
 //# sourceMappingURL=pack_gpu.js.map
-}, function(modId) { var map = {"../packing_util":1553229508260,"./shader_compiler":1553229508261}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508303, function(require, module, exports) {
+}, function(modId) { var map = {"../packing_util":1553811080072,"./shader_compiler":1553811080073}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080115, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -13331,8 +13339,8 @@ var PadProgram = /** @class */ (function () {
 }());
 exports.PadProgram = PadProgram;
 //# sourceMappingURL=pad_gpu.js.map
-}, function(modId) { var map = {"./shader_compiler":1553229508261}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508304, function(require, module, exports) {
+}, function(modId) { var map = {"./shader_compiler":1553811080073}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080116, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -13388,8 +13396,8 @@ var PadPackedProgram = /** @class */ (function () {
 }());
 exports.PadPackedProgram = PadPackedProgram;
 //# sourceMappingURL=pad_packed_gpu.js.map
-}, function(modId) { var map = {"./shader_compiler":1553229508261,"../packing_util":1553229508260}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508305, function(require, module, exports) {
+}, function(modId) { var map = {"./shader_compiler":1553811080073,"../packing_util":1553811080072}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080117, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -13451,7 +13459,7 @@ var Pool2DProgram = /** @class */ (function () {
 exports.Pool2DProgram = Pool2DProgram;
 //# sourceMappingURL=pool_gpu.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508306, function(require, module, exports) {
+__DEFINE__(1553811080118, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -13532,7 +13540,7 @@ var ReduceProgram = /** @class */ (function () {
 exports.ReduceProgram = ReduceProgram;
 //# sourceMappingURL=reduce_gpu.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508307, function(require, module, exports) {
+__DEFINE__(1553811080119, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -13583,8 +13591,8 @@ function getReshapedInputCoords(shape) {
     return "\n    ivec3 inputCoordsFromReshapedOutCoords(int index) {\n      " + coordsFromIndexSnippet + "\n      return ivec3(r, c, d);\n    }\n  ";
 }
 //# sourceMappingURL=reshape_packed_gpu.js.map
-}, function(modId) { var map = {"../../util":1553229508229,"./shader_compiler_util":1553229508264}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508308, function(require, module, exports) {
+}, function(modId) { var map = {"../../util":1553811080041,"./shader_compiler_util":1553811080076}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080120, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -13636,7 +13644,7 @@ var ResizeBilinearBackpropProgram = /** @class */ (function () {
 exports.ResizeBilinearBackpropProgram = ResizeBilinearBackpropProgram;
 //# sourceMappingURL=resize_bilinear_backprop_gpu.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508309, function(require, module, exports) {
+__DEFINE__(1553811080121, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -13676,7 +13684,7 @@ var ResizeBilinearProgram = /** @class */ (function () {
 exports.ResizeBilinearProgram = ResizeBilinearProgram;
 //# sourceMappingURL=resize_bilinear_gpu.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508310, function(require, module, exports) {
+__DEFINE__(1553811080122, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -13717,7 +13725,7 @@ var ResizeBilinearPackedProgram = /** @class */ (function () {
 exports.ResizeBilinearPackedProgram = ResizeBilinearPackedProgram;
 //# sourceMappingURL=resize_bilinear_packed_gpu.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508311, function(require, module, exports) {
+__DEFINE__(1553811080123, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -13769,7 +13777,7 @@ var ResizeNearestNeigborBackpropProgram = /** @class */ (function () {
 exports.ResizeNearestNeigborBackpropProgram = ResizeNearestNeigborBackpropProgram;
 //# sourceMappingURL=resize_nearest_neighbor_backprop_gpu.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508312, function(require, module, exports) {
+__DEFINE__(1553811080124, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -13811,7 +13819,7 @@ var ResizeNearestNeighborProgram = /** @class */ (function () {
 exports.ResizeNearestNeighborProgram = ResizeNearestNeighborProgram;
 //# sourceMappingURL=resize_nearest_neighbor_gpu.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508313, function(require, module, exports) {
+__DEFINE__(1553811080125, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -13857,8 +13865,8 @@ var ReverseProgram = /** @class */ (function () {
 }());
 exports.ReverseProgram = ReverseProgram;
 //# sourceMappingURL=reverse_gpu.js.map
-}, function(modId) { var map = {"./shader_compiler":1553229508261}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508314, function(require, module, exports) {
+}, function(modId) { var map = {"./shader_compiler":1553811080073}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080126, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -13933,8 +13941,8 @@ var ReversePackedProgram = /** @class */ (function () {
 }());
 exports.ReversePackedProgram = ReversePackedProgram;
 //# sourceMappingURL=reverse_packed_gpu.js.map
-}, function(modId) { var map = {"../packing_util":1553229508260,"./shader_compiler":1553229508261}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508315, function(require, module, exports) {
+}, function(modId) { var map = {"../packing_util":1553811080072,"./shader_compiler":1553811080073}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080127, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -13984,8 +13992,8 @@ var ScatterProgram = /** @class */ (function () {
 }());
 exports.ScatterProgram = ScatterProgram;
 //# sourceMappingURL=scatter_gpu.js.map
-}, function(modId) { var map = {"./shader_compiler":1553229508261}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508316, function(require, module, exports) {
+}, function(modId) { var map = {"./shader_compiler":1553811080073}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080128, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -14033,7 +14041,7 @@ var SegmentOpProgram = /** @class */ (function () {
 exports.SegmentOpProgram = SegmentOpProgram;
 //# sourceMappingURL=segment_gpu.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508317, function(require, module, exports) {
+__DEFINE__(1553811080129, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -14086,8 +14094,8 @@ var SelectProgram = /** @class */ (function () {
 }());
 exports.SelectProgram = SelectProgram;
 //# sourceMappingURL=select_gpu.js.map
-}, function(modId) { var map = {"./shader_compiler":1553229508261}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508318, function(require, module, exports) {
+}, function(modId) { var map = {"./shader_compiler":1553811080073}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080130, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -14156,8 +14164,8 @@ function getCoords(rank) {
     }
 }
 //# sourceMappingURL=slice_gpu.js.map
-}, function(modId) { var map = {"./shader_compiler":1553229508261}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508319, function(require, module, exports) {
+}, function(modId) { var map = {"./shader_compiler":1553811080073}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080131, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -14219,8 +14227,8 @@ var SlicePackedProgram = /** @class */ (function () {
 }());
 exports.SlicePackedProgram = SlicePackedProgram;
 //# sourceMappingURL=slice_packed_gpu.js.map
-}, function(modId) { var map = {"./shader_compiler":1553229508261,"../packing_util":1553229508260}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508320, function(require, module, exports) {
+}, function(modId) { var map = {"./shader_compiler":1553811080073,"../packing_util":1553811080072}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080132, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -14274,8 +14282,8 @@ var StridedSliceProgram = /** @class */ (function () {
 }());
 exports.StridedSliceProgram = StridedSliceProgram;
 //# sourceMappingURL=strided_slice_gpu.js.map
-}, function(modId) { var map = {"./shader_compiler":1553229508261}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508321, function(require, module, exports) {
+}, function(modId) { var map = {"./shader_compiler":1553811080073}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080133, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -14431,8 +14439,8 @@ function getKeyFromTextureShape(shapeRowsCol, physicalTexType, isPacked) {
     return shapeRowsCol[0] + "_" + shapeRowsCol[1] + "_" + physicalTexType + "_" + isPacked;
 }
 //# sourceMappingURL=texture_manager.js.map
-}, function(modId) { var map = {"../../environment":1553229508225,"./tex_util":1553229508292}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508322, function(require, module, exports) {
+}, function(modId) { var map = {"../../environment":1553811080037,"./tex_util":1553811080104}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080134, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -14484,8 +14492,8 @@ function getSourceCoords(aShape) {
     return sourceCoords.join();
 }
 //# sourceMappingURL=tile_gpu.js.map
-}, function(modId) { var map = {"./shader_compiler":1553229508261}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508323, function(require, module, exports) {
+}, function(modId) { var map = {"./shader_compiler":1553811080073}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080135, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -14534,8 +14542,8 @@ function getSwitchedCoords(newDim) {
     return switchedCoords.join();
 }
 //# sourceMappingURL=transpose_gpu.js.map
-}, function(modId) { var map = {"./shader_compiler":1553229508261}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508324, function(require, module, exports) {
+}, function(modId) { var map = {"./shader_compiler":1553811080073}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080136, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -14584,8 +14592,8 @@ var TransposePackedProgram = /** @class */ (function () {
 }());
 exports.TransposePackedProgram = TransposePackedProgram;
 //# sourceMappingURL=transpose_packed_gpu.js.map
-}, function(modId) { var map = {"./shader_compiler":1553229508261,"../packing_util":1553229508260}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508325, function(require, module, exports) {
+}, function(modId) { var map = {"./shader_compiler":1553811080073,"../packing_util":1553811080072}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080137, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -14610,26 +14618,12 @@ var UnaryOpProgram = /** @class */ (function () {
     function UnaryOpProgram(aShape, opSnippet) {
         this.variableNames = ['A'];
         this.outputShape = aShape;
-        this.userCode = "\n      uniform float NAN;\n      float unaryOperation(float x) {\n        " + opSnippet + "\n      }\n\n      void main() {\n        float x = getAAtOutCoords();\n        float y = unaryOperation(x);\n\n        setOutput(y);\n      }\n    ";
+        this.userCode = "\n      float unaryOperation(float x) {\n        " + opSnippet + "\n      }\n\n      void main() {\n        float x = getAAtOutCoords();\n        float y = unaryOperation(x);\n\n        setOutput(y);\n      }\n    ";
     }
-    UnaryOpProgram.prototype.getCustomSetupFunc = function () {
-        var _this = this;
-        return function (gpgpu, webGLProgram) {
-            if (_this.startLoc == null) {
-                _this.startLoc = gpgpu.getUniformLocationNoThrow(webGLProgram, 'NAN');
-                if (_this.startLoc == null) {
-                    // This means the compiler has optimized and realized it doesn't need
-                    // the uniform.
-                    return;
-                }
-            }
-            gpgpu.gl.uniform1f(_this.startLoc, NaN);
-        };
-    };
     return UnaryOpProgram;
 }());
 exports.UnaryOpProgram = UnaryOpProgram;
-var CHECK_NAN_SNIPPET = "if (isNaN(x)) return x;";
+var CHECK_NAN_SNIPPET = "if (isnan(x)) return x;";
 exports.LINEAR = "return x;";
 exports.ABS = "return abs(x);";
 exports.RELU = CHECK_NAN_SNIPPET + "\n  return (x < 0.0) ? 0.0 : x;\n";
@@ -14643,7 +14637,10 @@ exports.STEP = STEP;
 exports.NEG = "return -x;";
 exports.CEIL = "return ceil(x);";
 exports.FLOOR = "return floor(x);";
-exports.SIGN = "\n  if (isNaN(x)) { return 0.0; }\n  return sign(x);\n";
+exports.SIGN = "\n  if (isnan(x)) { return 0.0; }\n  return sign(x);\n";
+exports.IS_NAN = "return float(isnan(x));";
+exports.IS_INF = "return float(isinf(x));";
+exports.IS_FINITE = "return float(!isnan(x) && !isinf(x));";
 exports.ROUND = "\n  // OpenGL ES does not support round function.\n  // The algorithm is based on banker's rounding.\n  float base = floor(x);\n  if ((x - base) < 0.5) {\n    return floor(x);\n  } else if ((x - base) > 0.5) {\n    return ceil(x);\n  } else {\n    if (mod(base, 2.0) == 0.0) {\n      return base;\n    } else {\n      return base + 1.0;\n    }\n  }\n";
 exports.EXP = "return exp(x);";
 exports.EXPM1 = "return exp(x) - 1.0;";
@@ -14685,8 +14682,8 @@ exports.LOGICAL_NOT = "return float(!(x >= 1.0));";
 exports.TO_INT = "return float(int(x));";
 exports.CLONE = 'return x;';
 //# sourceMappingURL=unaryop_gpu.js.map
-}, function(modId) { var map = {"../../ops/erf_util":1553229508326,"../../ops/selu_util":1553229508327}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508326, function(require, module, exports) {
+}, function(modId) { var map = {"../../ops/erf_util":1553811080138,"../../ops/selu_util":1553811080139}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080138, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -14713,7 +14710,7 @@ exports.ERF_A4 = -1.453152027;
 exports.ERF_A5 = 1.061405429;
 //# sourceMappingURL=erf_util.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508327, function(require, module, exports) {
+__DEFINE__(1553811080139, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -14736,7 +14733,7 @@ exports.SELU_SCALEALPHA = 1.7580993408473768599402175208123;
 exports.SELU_SCALE = 1.0507009873554804934193349852946;
 //# sourceMappingURL=selu_util.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508328, function(require, module, exports) {
+__DEFINE__(1553811080140, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -14757,34 +14754,20 @@ __DEFINE__(1553229508328, function(require, module, exports) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.LINEAR = "return x;";
 exports.LOG = "\n  vec4 result = log(x);\n  vec4 isNaN = vec4(lessThan(x, vec4(0.0)));\n  result.r = isNaN.r == 1.0 ? NAN : result.r;\n  result.g = isNaN.g == 1.0 ? NAN : result.g;\n  result.b = isNaN.b == 1.0 ? NAN : result.b;\n  result.a = isNaN.a == 1.0 ? NAN : result.a;\n\n  return result;\n";
-exports.RELU = "\n  vec4 result = x * vec4(greaterThanEqual(x, vec4(0.0)));\n\n  result.r = isNaN(x.r) ? x.r : result.r;\n  result.g = isNaN(x.g) ? x.g : result.g;\n  result.b = isNaN(x.b) ? x.b : result.b;\n  result.a = isNaN(x.a) ? x.a : result.a;\n\n  return result;\n";
+exports.RELU = "\n  vec4 result = x * vec4(greaterThanEqual(x, vec4(0.0)));\n  bvec4 isNaN = isnan(x);\n\n  result.r = isNaN.r ? x.r : result.r;\n  result.g = isNaN.g ? x.g : result.g;\n  result.b = isNaN.b ? x.b : result.b;\n  result.a = isNaN.a ? x.a : result.a;\n\n  return result;\n";
 var UnaryOpPackedProgram = /** @class */ (function () {
     function UnaryOpPackedProgram(aShape, opSnippet) {
         this.variableNames = ['A'];
         this.usesPackedTextures = true;
         this.outputShape = aShape;
-        this.userCode = "\n      uniform float NAN;\n      vec4 unaryOperation(vec4 x) {\n        " + opSnippet + "\n      }\n\n      void main() {\n        vec4 x = getAAtOutCoords();\n        vec4 y = unaryOperation(x);\n\n        setOutput(y);\n      }\n    ";
+        this.userCode = "\n      vec4 unaryOperation(vec4 x) {\n        " + opSnippet + "\n      }\n\n      void main() {\n        vec4 x = getAAtOutCoords();\n        vec4 y = unaryOperation(x);\n\n        setOutput(y);\n      }\n    ";
     }
-    UnaryOpPackedProgram.prototype.getCustomSetupFunc = function () {
-        var _this = this;
-        return function (gpgpu, webGLProgram) {
-            if (_this.startLoc == null) {
-                _this.startLoc = gpgpu.getUniformLocationNoThrow(webGLProgram, 'NAN');
-                if (_this.startLoc == null) {
-                    // This means the compiler has optimized and realized it doesn't need
-                    // the uniform.
-                    return;
-                }
-            }
-            gpgpu.gl.uniform1f(_this.startLoc, NaN);
-        };
-    };
     return UnaryOpPackedProgram;
 }());
 exports.UnaryOpPackedProgram = UnaryOpPackedProgram;
 //# sourceMappingURL=unaryop_packed_gpu.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508329, function(require, module, exports) {
+__DEFINE__(1553811080141, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -14822,8 +14805,8 @@ var UnpackProgram = /** @class */ (function () {
 }());
 exports.UnpackProgram = UnpackProgram;
 //# sourceMappingURL=unpack_gpu.js.map
-}, function(modId) { var map = {"../packing_util":1553229508260,"./shader_compiler":1553229508261}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508330, function(require, module, exports) {
+}, function(modId) { var map = {"../packing_util":1553811080072,"./shader_compiler":1553811080073}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080142, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -14862,8 +14845,8 @@ function whereImpl(condShape, condVals) {
 }
 exports.whereImpl = whereImpl;
 //# sourceMappingURL=where_impl.js.map
-}, function(modId) { var map = {"../ops/array_ops":1553229508331}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508331, function(require, module, exports) {
+}, function(modId) { var map = {"../ops/array_ops":1553811080143}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080143, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -15278,7 +15261,7 @@ function tile_(x, reps) {
     util.assert($x.rank === reps.length, function () { return "Error in transpose: rank of input " + $x.rank + " " +
         ("must match length of reps " + reps + "."); });
     var grad = function (dy, saved) {
-        var $x = saved.$x;
+        var $x = saved[0];
         var derX = function () {
             var xGrad = tensor_ops_1.zerosLike($x);
             // TODO(cais): Maybe reduce memory footprint by avoiding repeated
@@ -15328,7 +15311,7 @@ function tile_(x, reps) {
     };
     return environment_1.ENV.engine.runKernel(function (backend, save) {
         var res = backend.tile($x, reps);
-        save({ $x: $x });
+        save([$x]);
         return res;
     }, { $x: $x }, grad);
 }
@@ -15850,8 +15833,8 @@ exports.truncatedNormal = operation_1.op({ truncatedNormal_: truncatedNormal_ })
 exports.unstack = operation_1.op({ unstack_: unstack_ });
 exports.setdiff1dAsync = setdiff1dAsync_;
 //# sourceMappingURL=array_ops.js.map
-}, function(modId) { var map = {"../environment":1553229508225,"../tensor":1553229508231,"../tensor_util_env":1553229508238,"../util":1553229508229,"./axis_util":1553229508241,"./concat_split":1553229508332,"./operation":1553229508249,"./rand":1553229508333,"./tensor_ops":1553229508250}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508332, function(require, module, exports) {
+}, function(modId) { var map = {"../environment":1553811080037,"../tensor":1553811080043,"../tensor_util_env":1553811080050,"../util":1553811080041,"./axis_util":1553811080053,"./concat_split":1553811080144,"./operation":1553811080061,"./rand":1553811080145,"./tensor_ops":1553811080062}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080144, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -16086,8 +16069,8 @@ exports.concat3d = operation_1.op({ concat3d_: concat3d_ });
 exports.concat4d = operation_1.op({ concat4d_: concat4d_ });
 exports.split = operation_1.op({ split_: split_ });
 //# sourceMappingURL=concat_split.js.map
-}, function(modId) { var map = {"../environment":1553229508225,"../tensor_util_env":1553229508238,"../util":1553229508229,"./concat_util":1553229508242,"./operation":1553229508249,"./tensor_ops":1553229508250}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508333, function(require, module, exports) {
+}, function(modId) { var map = {"../environment":1553811080037,"../tensor_util_env":1553811080050,"../util":1553811080041,"./concat_util":1553811080054,"./operation":1553811080061,"./tensor_ops":1553811080062}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080145, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -16166,7 +16149,7 @@ var MPRandGauss = /** @class */ (function () {
 exports.MPRandGauss = MPRandGauss;
 //# sourceMappingURL=rand.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508334, function(require, module, exports) {
+__DEFINE__(1553811080146, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -17002,6 +16985,39 @@ var MathBackendCPU = /** @class */ (function () {
             }
         }
         return tensor_1.Tensor.make(x.shape, { values: newValues });
+    };
+    MathBackendCPU.prototype.isNaN = function (x) {
+        this.assertNotComplex(x, 'x');
+        var values = x.dataSync();
+        var newValues = new Uint8Array(values.length);
+        for (var i = 0; i < values.length; ++i) {
+            if (Number.isNaN(values[i])) {
+                newValues[i] = 1;
+            }
+        }
+        return tensor_1.Tensor.make(x.shape, { values: newValues }, 'bool');
+    };
+    MathBackendCPU.prototype.isInf = function (x) {
+        this.assertNotComplex(x, 'x');
+        var values = x.dataSync();
+        var newValues = new Uint8Array(values.length);
+        for (var i = 0; i < values.length; ++i) {
+            if (Math.abs(values[i]) === Infinity) {
+                newValues[i] = 1;
+            }
+        }
+        return tensor_1.Tensor.make(x.shape, { values: newValues }, 'bool');
+    };
+    MathBackendCPU.prototype.isFinite = function (x) {
+        this.assertNotComplex(x, 'x');
+        var values = x.dataSync();
+        var newValues = new Uint8Array(values.length);
+        for (var i = 0; i < values.length; ++i) {
+            if (Number.isFinite(values[i])) {
+                newValues[i] = 1;
+            }
+        }
+        return tensor_1.Tensor.make(x.shape, { values: newValues }, 'bool');
     };
     MathBackendCPU.prototype.round = function (x) {
         this.assertNotComplex(x, 'round');
@@ -18941,8 +18957,8 @@ var MathBackendCPU = /** @class */ (function () {
 exports.MathBackendCPU = MathBackendCPU;
 environment_1.ENV.registerBackend('cpu', function () { return new MathBackendCPU(); }, 1 /* priority */);
 //# sourceMappingURL=backend_cpu.js.map
-}, function(modId) { var map = {"../environment":1553229508225,"../log":1553229508239,"../ops/array_ops_util":1553229508240,"../ops/axis_util":1553229508241,"../ops/broadcast_util":1553229508262,"../ops/concat_util":1553229508242,"../ops/erf_util":1553229508326,"../ops/gather_nd_util":1553229508243,"../ops/ops":1553229508335,"../ops/scatter_nd_util":1553229508245,"../ops/selu_util":1553229508327,"../ops/slice_util":1553229508247,"../tensor":1553229508231,"../types":1553229508234,"../util":1553229508229,"./backend":1553229508252,"./backend_util":1553229508253,"./complex_util":1553229508254,"./non_max_suppression_impl":1553229508255,"./split_shared":1553229508256,"./topk_impl":1553229508257,"./where_impl":1553229508330}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508335, function(require, module, exports) {
+}, function(modId) { var map = {"../environment":1553811080037,"../log":1553811080051,"../ops/array_ops_util":1553811080052,"../ops/axis_util":1553811080053,"../ops/broadcast_util":1553811080074,"../ops/concat_util":1553811080054,"../ops/erf_util":1553811080138,"../ops/gather_nd_util":1553811080055,"../ops/ops":1553811080147,"../ops/scatter_nd_util":1553811080057,"../ops/selu_util":1553811080139,"../ops/slice_util":1553811080059,"../tensor":1553811080043,"../types":1553811080046,"../util":1553811080041,"./backend":1553811080064,"./backend_util":1553811080065,"./complex_util":1553811080066,"./non_max_suppression_impl":1553811080067,"./split_shared":1553811080068,"./topk_impl":1553811080069,"./where_impl":1553811080142}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080147, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -19007,8 +19023,8 @@ exports.spectral = spectral;
 var fused = require("./fused_ops");
 exports.fused = fused;
 //# sourceMappingURL=ops.js.map
-}, function(modId) { var map = {"./batchnorm":1553229508336,"./complex_ops":1553229508251,"./concat_split":1553229508332,"./conv":1553229508338,"./matmul":1553229508340,"./reverse":1553229508341,"./pool":1553229508342,"./slice":1553229508343,"./unary_ops":1553229508337,"./reduction_ops":1553229508344,"./compare":1553229508345,"./binary_ops":1553229508346,"./relu_ops":1553229508347,"./logical_ops":1553229508348,"./array_ops":1553229508331,"./tensor_ops":1553229508250,"./transpose":1553229508349,"./softmax":1553229508248,"./lrn":1553229508350,"./norm":1553229508351,"./segment_ops":1553229508352,"./lstm":1553229508353,"./moving_average":1553229508354,"./strided_slice":1553229508355,"./topk":1553229508356,"./scatter_nd":1553229508357,"./spectral_ops":1553229508358,"./sparse_to_dense":1553229508359,"./gather_nd":1553229508361,"./operation":1553229508249,"./loss_ops":1553229508362,"./linalg_ops":1553229508363,"./image_ops":1553229508364,"./fused_ops":1553229508365}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508336, function(require, module, exports) {
+}, function(modId) { var map = {"./batchnorm":1553811080148,"./complex_ops":1553811080063,"./concat_split":1553811080144,"./conv":1553811080150,"./matmul":1553811080152,"./reverse":1553811080153,"./pool":1553811080154,"./slice":1553811080155,"./unary_ops":1553811080149,"./reduction_ops":1553811080156,"./compare":1553811080157,"./binary_ops":1553811080158,"./relu_ops":1553811080159,"./logical_ops":1553811080160,"./array_ops":1553811080143,"./tensor_ops":1553811080062,"./transpose":1553811080161,"./softmax":1553811080060,"./lrn":1553811080162,"./norm":1553811080163,"./segment_ops":1553811080164,"./lstm":1553811080165,"./moving_average":1553811080166,"./strided_slice":1553811080167,"./topk":1553811080168,"./scatter_nd":1553811080169,"./spectral_ops":1553811080170,"./sparse_to_dense":1553811080171,"./gather_nd":1553811080173,"./operation":1553811080061,"./loss_ops":1553811080174,"./linalg_ops":1553811080175,"./image_ops":1553811080176,"./fused_ops":1553811080177}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080148, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -19221,7 +19237,7 @@ function batchNorm_(x, mean, variance, offset, scale, varianceEpsilon) {
         x4D = $x;
     }
     var der = function (dy, saved) {
-        var $x = saved.$x, $mean = saved.$mean, $variance = saved.$variance, $scale = saved.$scale;
+        var $x = saved[0], $mean = saved[1], $variance = saved[2], $scale = saved[3];
         var scaleValue = $scale == null ? tensor_ops_1.scalar(1) : $scale;
         var reductionAxes = broadcast_util_1.getReductionAxes($mean.shape, x4D.shape);
         var tileShape = [];
@@ -19286,7 +19302,7 @@ function batchNorm_(x, mean, variance, offset, scale, varianceEpsilon) {
     };
     var res = environment_1.ENV.engine.runKernel(function (backend, save) {
         var res = backend.batchNormalization(x4D, batchnormReshape4D($mean), batchnormReshape4D($variance), varianceEpsilon, batchnormReshape4D($scale), batchnormReshape4D($offset));
-        save({ $x: $x, $mean: $mean, $variance: $variance, $scale: $scale });
+        save([$x, $mean, $variance, $scale]);
         return res;
     }, { $x: $x, $mean: $mean, $variance: $variance, $scale: $scale, $offset: $offset }, der);
     return res.reshape($x.shape);
@@ -19350,8 +19366,8 @@ exports.batchNorm2d = operation_1.op({ batchNorm2d_: batchNorm2d_ });
 exports.batchNorm3d = operation_1.op({ batchNorm3d_: batchNorm3d_ });
 exports.batchNorm4d = operation_1.op({ batchNorm4d_: batchNorm4d_ });
 //# sourceMappingURL=batchnorm.js.map
-}, function(modId) { var map = {"../environment":1553229508225,"../tensor_util_env":1553229508238,"../util":1553229508229,"./array_ops":1553229508331,"./broadcast_util":1553229508262,"./operation":1553229508249,"./tensor_ops":1553229508250,"./unary_ops":1553229508337}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508337, function(require, module, exports) {
+}, function(modId) { var map = {"../environment":1553811080037,"../tensor_util_env":1553811080050,"../util":1553811080041,"./array_ops":1553811080143,"./broadcast_util":1553811080074,"./operation":1553811080061,"./tensor_ops":1553811080062,"./unary_ops":1553811080149}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080149, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -19452,6 +19468,66 @@ function sign_(x) {
     return environment_1.ENV.engine.runKernel(function (backend) { return backend.sign($x); }, { $x: $x }, grad);
 }
 /**
+ * RReturns which elements of x are NaN.
+ *
+ * ```js
+ * const x = tf.tensor1d([NaN, Infinity, -Infinity, 0, 1]);
+ *
+ * x.isNaN().print();  // or tf.isNaN(x)
+ * ```
+ * @param x The input Tensor.
+ */
+/** @doc {heading: 'Operations', subheading: 'Basic math'} */
+function isNaN_(x) {
+    var $x = tensor_util_env_1.convertToTensor(x, 'x', 'isNaN');
+    // TODO(nsthorat): Let gradients be null for cases where we want to stop
+    // backpropgation.
+    var grad = function (dy) {
+        return { $x: function () { return tensor_ops_1.zerosLike(dy); } };
+    };
+    return environment_1.ENV.engine.runKernel(function (backend) { return backend.isNaN($x); }, { $x: $x }, grad);
+}
+/**
+ * Returns which elements of x are Infinity or -Infinity.
+ *
+ * ```js
+ * const x = tf.tensor1d([NaN, Infinity, -Infinity, 0, 1]);
+ *
+ * x.isInf().print();  // or tf.isNaN(x)
+ * ```
+ * @param x The input Tensor.
+ */
+/** @doc {heading: 'Operations', subheading: 'Basic math'} */
+function isInf_(x) {
+    var $x = tensor_util_env_1.convertToTensor(x, 'x', 'isInf');
+    // TODO(nsthorat): Let gradients be null for cases where we want to stop
+    // backpropgation.
+    var grad = function (dy) {
+        return { $x: function () { return tensor_ops_1.zerosLike(dy); } };
+    };
+    return environment_1.ENV.engine.runKernel(function (backend) { return backend.isInf($x); }, { $x: $x }, grad);
+}
+/**
+ * Returns which elements of x are finite.
+ *
+ * ```js
+ * const x = tf.tensor1d([NaN, Infinity, -Infinity, 0, 1]);
+ *
+ * x.isFinite().print();  // or tf.isNaN(x)
+ * ```
+ * @param x The input Tensor.
+ */
+/** @doc {heading: 'Operations', subheading: 'Basic math'} */
+function isFinite_(x) {
+    var $x = tensor_util_env_1.convertToTensor(x, 'x', 'isFinite');
+    // TODO(nsthorat): Let gradients be null for cases where we want to stop
+    // backpropgation.
+    var grad = function (dy) {
+        return { $x: function () { return tensor_ops_1.zerosLike(dy); } };
+    };
+    return environment_1.ENV.engine.runKernel(function (backend) { return backend.isFinite($x); }, { $x: $x }, grad);
+}
+/**
  * Computes round of input `tf.Tensor` element-wise: `round(x)`.
  * It implements banker's rounding.
  *
@@ -19486,11 +19562,11 @@ function round_(x) {
 function exp_(x) {
     var $x = tensor_util_env_1.convertToTensor(x, 'x', 'exp');
     var bck = function (dy, saved) {
-        return { $x: function () { return dy.mulStrict(saved.y); } };
+        return { $x: function () { return dy.mulStrict(saved[0]); } };
     };
     return environment_1.ENV.engine.runKernel(function (backend, save) {
         var y = backend.exp($x);
-        save({ y: y });
+        save([y]);
         return y;
     }, { $x: $x }, bck);
 }
@@ -19509,12 +19585,12 @@ function exp_(x) {
 function expm1_(x) {
     var $x = tensor_util_env_1.convertToTensor(x, 'x', 'expm1');
     var grad = function (dy, saved) {
-        var $x = saved.$x;
+        var $x = saved[0];
         return { $x: function () { return dy.mul($x.exp()); } };
     };
     return environment_1.ENV.engine.runKernel(function (backend, save) {
         var res = backend.expm1($x);
-        save({ $x: $x });
+        save([$x]);
         return res;
     }, { $x: $x }, grad);
 }
@@ -19532,12 +19608,12 @@ function expm1_(x) {
 function log_(x) {
     var $x = tensor_util_env_1.convertToTensor(x, 'x', 'log');
     var grad = function (dy, saved) {
-        var $x = saved.$x;
+        var $x = saved[0];
         return { $x: function () { return dy.div($x.toFloat()); } };
     };
     return environment_1.ENV.engine.runKernel(function (backend, save) {
         var res = backend.log($x);
-        save({ $x: $x });
+        save([$x]);
         return res;
     }, { $x: $x }, grad);
 }
@@ -19556,12 +19632,12 @@ function log_(x) {
 function log1p_(x) {
     var $x = tensor_util_env_1.convertToTensor(x, 'x', 'log1p');
     var grad = function (dy, saved) {
-        var $x = saved.$x;
+        var $x = saved[0];
         return { $x: function () { return dy.div($x.add(1)); } };
     };
     return environment_1.ENV.engine.runKernel(function (backend, save) {
         var res = backend.log1p($x);
-        save({ $x: $x });
+        save([$x]);
         return res;
     }, { $x: $x }, grad);
 }
@@ -19579,12 +19655,12 @@ function log1p_(x) {
 function sqrt_(x) {
     var $x = tensor_util_env_1.convertToTensor(x, 'x', 'sqrt');
     var grad = function (dy, saved) {
-        var $x = saved.$x;
+        var $x = saved[0];
         return { $x: function () { return dy.div($x.toFloat().sqrt().mul(2)); } };
     };
     return environment_1.ENV.engine.runKernel(function (backend, save) {
         var res = backend.sqrt($x);
-        save({ $x: $x });
+        save([$x]);
         return res;
     }, { $x: $x }, grad);
 }
@@ -19603,12 +19679,12 @@ function sqrt_(x) {
 function rsqrt_(x) {
     var $x = tensor_util_env_1.convertToTensor(x, 'x', 'rsqrt');
     var grad = function (dy, saved) {
-        var $x = saved.$x;
+        var $x = saved[0];
         return { $x: function () { return dy.div($x.pow(1.5).mul(2)).neg(); } };
     };
     return environment_1.ENV.engine.runKernel(function (backend, save) {
         var res = backend.rsqrt($x);
-        save({ $x: $x });
+        save([$x]);
         return res;
     }, { $x: $x }, grad);
 }
@@ -19626,10 +19702,11 @@ function rsqrt_(x) {
 function square_(x) {
     var $x = tensor_util_env_1.convertToTensor(x, 'x', 'square');
     var grad = function (dy, saved) {
-        return { $x: function () { return dy.mul(saved.$x.toFloat().mul(2)); } };
+        var $x = saved[0];
+        return { $x: function () { return dy.mul($x.toFloat().mul(2)); } };
     };
     return environment_1.ENV.engine.runKernel(function (backend, save) {
-        save({ $x: $x });
+        save([$x]);
         return backend.square($x);
     }, { $x: $x }, grad);
 }
@@ -19647,12 +19724,12 @@ function square_(x) {
 function reciprocal_(x) {
     var $x = tensor_util_env_1.convertToTensor(x, 'x', 'reciprocal');
     var grad = function (dy, saved) {
-        var $x = saved.$x;
+        var $x = saved[0];
         return { $x: function () { return dy.div($x.square().neg()); } };
     };
     return environment_1.ENV.engine.runKernel(function (backend, save) {
         var res = backend.reciprocal($x);
-        save({ $x: $x });
+        save([$x]);
         return res;
     }, { $x: $x }, grad);
 }
@@ -19673,12 +19750,12 @@ function abs_(x) {
         return environment_1.ENV.engine.runKernel(function (backend) { return backend.complexAbs($x); }, { $x: $x });
     }
     var grad = function (dy, saved) {
-        var $x = saved.$x;
+        var $x = saved[0];
         return { $x: function () { return dy.mul($x.toFloat().step(-1)); } };
     };
     return environment_1.ENV.engine.runKernel(function (backend, save) {
         var res = backend.abs($x);
-        save({ $x: $x });
+        save([$x]);
         return res;
     }, { $x: $x }, grad);
 }
@@ -19700,7 +19777,7 @@ function clipByValue_(x, clipValueMin, clipValueMax) {
     util.assert((clipValueMin <= clipValueMax), function () { return "Error in clip: min (" + clipValueMin + ") must be " +
         ("less than or equal to max (" + clipValueMax + ")."); });
     var grad = function (dy, saved) {
-        var $x = saved.$x;
+        var $x = saved[0];
         return {
             $x: function () { return dy.where($x.greaterEqual(clipValueMin)
                 .logicalAnd($x.lessEqual(clipValueMax)), tensor_ops_1.zerosLike(dy)); },
@@ -19708,7 +19785,7 @@ function clipByValue_(x, clipValueMin, clipValueMax) {
     };
     return environment_1.ENV.engine.runKernel(function (backend, save) {
         var res = backend.clip($x, clipValueMin, clipValueMax);
-        save({ $x: $x });
+        save([$x]);
         return res;
     }, { $x: $x }, grad);
 }
@@ -19726,12 +19803,12 @@ function clipByValue_(x, clipValueMin, clipValueMax) {
 function sigmoid_(x) {
     var $x = tensor_util_env_1.convertToTensor(x, 'x', 'sigmoid');
     var grad = function (dy, saved) {
-        var y = saved.y;
+        var y = saved[0];
         return { $x: function () { return dy.mul(y.mul(tensor_ops_1.scalar(1).sub(y))); } };
     };
     return environment_1.ENV.engine.runKernel(function (backend, save) {
         var y = backend.sigmoid($x);
-        save({ y: y });
+        save([y]);
         return y;
     }, { $x: $x }, grad);
 }
@@ -19750,12 +19827,12 @@ function sigmoid_(x) {
 function logSigmoid_(x) {
     var $x = tensor_util_env_1.convertToTensor(x, 'x', 'logSigmoid');
     var grad = function (dy, saved) {
-        var $x = saved.$x;
+        var $x = saved[0];
         return { $x: function () { return dy.mul($x.neg().sigmoid()); } };
     };
     return environment_1.ENV.engine.runKernel(function (backend, save) {
         var res = backend.softplus($x.neg()).neg();
-        save({ $x: $x });
+        save([$x]);
         return res;
     }, { $x: $x }, grad);
 }
@@ -19773,12 +19850,12 @@ function logSigmoid_(x) {
 function softplus_(x) {
     var $x = tensor_util_env_1.convertToTensor(x, 'x', 'softplus');
     var grad = function (dy, saved) {
-        var $x = saved.$x;
+        var $x = saved[0];
         return { $x: function () { return dy.mul($x.sigmoid()); } };
     };
     return environment_1.ENV.engine.runKernel(function (backend, save) {
         var res = backend.softplus($x);
-        save({ $x: $x });
+        save([$x]);
         return res;
     }, { $x: $x }, grad);
 }
@@ -19796,12 +19873,12 @@ function softplus_(x) {
 function sin_(x) {
     var $x = tensor_util_env_1.convertToTensor(x, 'x', 'sin');
     var grad = function (dy, saved) {
-        var $x = saved.$x;
+        var $x = saved[0];
         return { $x: function () { return $x.toFloat().cos().mul(dy); } };
     };
     return environment_1.ENV.engine.runKernel(function (backend, save) {
         var res = backend.sin($x);
-        save({ $x: $x });
+        save([$x]);
         return res;
     }, { $x: $x }, grad);
 }
@@ -19819,12 +19896,12 @@ function sin_(x) {
 function cos_(x) {
     var $x = tensor_util_env_1.convertToTensor(x, 'x', 'cos');
     var grad = function (dy, saved) {
-        var $x = saved.$x;
+        var $x = saved[0];
         return { $x: function () { return $x.toFloat().sin().neg().mul(dy); } };
     };
     return environment_1.ENV.engine.runKernel(function (backend, save) {
         var res = backend.cos($x);
-        save({ $x: $x });
+        save([$x]);
         return res;
     }, { $x: $x }, grad);
 }
@@ -19842,12 +19919,12 @@ function cos_(x) {
 function tan_(x) {
     var $x = tensor_util_env_1.convertToTensor(x, 'x', 'tan');
     var grad = function (dy, saved) {
-        var $x = saved.$x;
+        var $x = saved[0];
         return { $x: function () { return dy.div($x.cos().square()); } };
     };
     return environment_1.ENV.engine.runKernel(function (backend, save) {
         var res = backend.tan($x);
-        save({ $x: $x });
+        save([$x]);
         return res;
     }, { $x: $x }, grad);
 }
@@ -19865,14 +19942,14 @@ function tan_(x) {
 function asin_(x) {
     var $x = tensor_util_env_1.convertToTensor(x, 'x', 'asin');
     var grad = function (dy, saved) {
-        var $x = saved.$x;
+        var $x = saved[0];
         return {
             $x: function () { return dy.divStrict(tensor_ops_1.scalar(1).sub($x.toFloat().square()).sqrt()); }
         };
     };
     return environment_1.ENV.engine.runKernel(function (backend, save) {
         var res = backend.asin($x);
-        save({ $x: $x });
+        save([$x]);
         return res;
     }, { $x: $x }, grad);
 }
@@ -19890,7 +19967,7 @@ function asin_(x) {
 function acos_(x) {
     var $x = tensor_util_env_1.convertToTensor(x, 'x', 'acos');
     var grad = function (dy, saved) {
-        var $x = saved.$x;
+        var $x = saved[0];
         return {
             $x: function () {
                 return dy.divStrict(tensor_ops_1.scalar(1).sub($x.toFloat().square()).sqrt()).neg();
@@ -19899,7 +19976,7 @@ function acos_(x) {
     };
     return environment_1.ENV.engine.runKernel(function (backend, save) {
         var res = backend.acos($x);
-        save({ $x: $x });
+        save([$x]);
         return res;
     }, { $x: $x }, grad);
 }
@@ -19917,12 +19994,12 @@ function acos_(x) {
 function atan_(x) {
     var $x = tensor_util_env_1.convertToTensor(x, 'x', 'atan');
     var grad = function (dy, saved) {
-        var $x = saved.$x;
+        var $x = saved[0];
         return { $x: function () { return dy.div($x.toFloat().square().add(1)); } };
     };
     return environment_1.ENV.engine.runKernel(function (backend, save) {
         var res = backend.atan($x);
-        save({ $x: $x });
+        save([$x]);
         return res;
     }, { $x: $x }, grad);
 }
@@ -19940,12 +20017,12 @@ function atan_(x) {
 function sinh_(x) {
     var $x = tensor_util_env_1.convertToTensor(x, 'x', 'sinh');
     var grad = function (dy, saved) {
-        var $x = saved.$x;
+        var $x = saved[0];
         return { $x: function () { return $x.toFloat().cosh().mulStrict(dy); } };
     };
     return environment_1.ENV.engine.runKernel(function (backend, save) {
         var res = backend.sinh($x);
-        save({ $x: $x });
+        save([$x]);
         return res;
     }, { $x: $x }, grad);
 }
@@ -19963,12 +20040,12 @@ function sinh_(x) {
 function cosh_(x) {
     var $x = tensor_util_env_1.convertToTensor(x, 'x', 'cosh');
     var grad = function (dy, saved) {
-        var $x = saved.$x;
+        var $x = saved[0];
         return { $x: function () { return $x.toFloat().sinh().mulStrict(dy); } };
     };
     return environment_1.ENV.engine.runKernel(function (backend, save) {
         var res = backend.cosh($x);
-        save({ $x: $x });
+        save([$x]);
         return res;
     }, { $x: $x }, grad);
 }
@@ -19986,12 +20063,12 @@ function cosh_(x) {
 function tanh_(x) {
     var $x = tensor_util_env_1.convertToTensor(x, 'x', 'tanh');
     var grad = function (dy, saved) {
-        var y = saved.y;
+        var y = saved[0];
         return { $x: function () { return tensor_ops_1.scalar(1).sub(y.square()).mulStrict(dy); } };
     };
     return environment_1.ENV.engine.runKernel(function (backend, save) {
         var y = backend.tanh($x);
-        save({ y: y });
+        save([y]);
         return y;
     }, { $x: $x }, grad);
 }
@@ -20010,14 +20087,14 @@ function tanh_(x) {
 function asinh_(x) {
     var $x = tensor_util_env_1.convertToTensor(x, 'x', 'asinh');
     var grad = function (dy, saved) {
-        var $x = saved.$x;
+        var $x = saved[0];
         return {
             $x: function () { return dy.divStrict(tensor_ops_1.scalar(1).add($x.toFloat().square()).sqrt()); }
         };
     };
     return environment_1.ENV.engine.runKernel(function (backend, save) {
         var res = backend.asinh($x);
-        save({ $x: $x });
+        save([$x]);
         return res;
     }, { $x: $x }, grad);
 }
@@ -20036,12 +20113,12 @@ function asinh_(x) {
 function acosh_(x) {
     var $x = tensor_util_env_1.convertToTensor(x, 'x', 'acosh');
     var grad = function (dy, saved) {
-        var $x = saved.$x;
+        var $x = saved[0];
         return { $x: function () { return dy.divStrict($x.toFloat().square().sub(1).sqrt()); } };
     };
     return environment_1.ENV.engine.runKernel(function (backend, save) {
         var res = backend.acosh($x);
-        save({ $x: $x });
+        save([$x]);
         return res;
     }, { $x: $x }, grad);
 }
@@ -20060,12 +20137,12 @@ function acosh_(x) {
 function atanh_(x) {
     var $x = tensor_util_env_1.convertToTensor(x, 'x', 'atanh');
     var grad = function (dy, saved) {
-        var $x = saved.$x;
+        var $x = saved[0];
         return { $x: function () { return dy.div(tensor_ops_1.scalar(1).sub($x.toFloat().square())); } };
     };
     return environment_1.ENV.engine.runKernel(function (backend, save) {
         var res = backend.atanh($x);
-        save({ $x: $x });
+        save([$x]);
         return res;
     }, { $x: $x }, grad);
 }
@@ -20088,14 +20165,14 @@ function erf_(x) {
         $x = $x.toFloat();
     }
     var grad = function (dy, saved) {
-        var $x = saved.$x;
+        var $x = saved[0];
         return {
             $x: function () { return dy.mul($x.square().neg().exp().mul(2 / Math.sqrt(Math.PI))); }
         };
     };
     return environment_1.ENV.engine.runKernel(function (backend, save) {
         var res = backend.erf($x);
-        save({ $x: $x });
+        save([$x]);
         return res;
     }, { $x: $x }, grad);
 }
@@ -20145,6 +20222,9 @@ exports.round = operation_1.op({ round_: round_ });
 exports.rsqrt = operation_1.op({ rsqrt_: rsqrt_ });
 exports.sigmoid = operation_1.op({ sigmoid_: sigmoid_ });
 exports.sign = operation_1.op({ sign_: sign_ });
+exports.isNaN = operation_1.op({ isNaN_: isNaN_ });
+exports.isInf = operation_1.op({ isInf_: isInf_ });
+exports.isFinite = operation_1.op({ isFinite_: isFinite_ });
 exports.sin = operation_1.op({ sin_: sin_ });
 exports.sinh = operation_1.op({ sinh_: sinh_ });
 exports.softplus = operation_1.op({ softplus_: softplus_ });
@@ -20154,8 +20234,8 @@ exports.step = operation_1.op({ step_: step_ });
 exports.tan = operation_1.op({ tan_: tan_ });
 exports.tanh = operation_1.op({ tanh_: tanh_ });
 //# sourceMappingURL=unary_ops.js.map
-}, function(modId) { var map = {"../environment":1553229508225,"../tensor_util_env":1553229508238,"../util":1553229508229,"./operation":1553229508249,"./tensor_ops":1553229508250}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508338, function(require, module, exports) {
+}, function(modId) { var map = {"../environment":1553811080037,"../tensor_util_env":1553811080050,"../util":1553811080041,"./operation":1553811080061,"./tensor_ops":1553811080062}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080150, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -20298,8 +20378,7 @@ function conv2d_(x, filter, strides, pad, dataFormat, dilations, dimRoundingMode
     util.assert(dataFormat === 'NHWC', function () { return "Error in conv2d: got dataFormat of " + dataFormat + " but only NHWC is currently supported."; });
     var convInfo = conv_util.computeConv2DInfo(x4D.shape, $filter.shape, strides, dilations, pad, dimRoundingMode);
     var grad = function (dy, saved) {
-        var x4D = saved.x4D;
-        var $filter = saved.$filter;
+        var _a = saved, $filter = _a[0], x4D = _a[1];
         util.assert(conv_util.tupleValuesAreOne(dilations), function () { return 'Error in gradient of conv2D: dilation rates greater than 1 ' +
             ("are not yet supported in gradients. Got dilations '" + dilations + "'"); });
         return {
@@ -20309,7 +20388,7 @@ function conv2d_(x, filter, strides, pad, dataFormat, dilations, dimRoundingMode
     };
     var res = environment_1.ENV.engine.runKernel(function (backend, save) {
         var res = backend.conv2d(x4D, $filter, convInfo);
-        save({ $filter: $filter, x4D: x4D });
+        save([$filter, x4D]);
         return res;
     }, { x: x4D, $filter: $filter }, grad);
     if (reshapedTo4D) {
@@ -20370,7 +20449,7 @@ function conv2dDerInput_(xShape, dy, filter, strides, pad, dimRoundingMode) {
     var dilations = 1;
     var grad = function (ddx, saved) {
         var dataFormat = 'NHWC';
-        var filter = saved.filter, dy4D = saved.dy4D;
+        var filter = saved[0], dy4D = saved[1];
         return {
             dy4D: function () { return exports.conv2d(ddx, filter, strides, pad, dataFormat, dilations, dimRoundingMode); },
             filter: function () { return exports.conv2dDerFilter(ddx, dy4D, filter.shape, strides, pad, dimRoundingMode); }
@@ -20379,7 +20458,7 @@ function conv2dDerInput_(xShape, dy, filter, strides, pad, dimRoundingMode) {
     var convInfo = conv_util.computeConv2DInfo(xShape4D, filter.shape, strides, dilations, pad, dimRoundingMode);
     var res = environment_1.ENV.engine.runKernel(function (backend, save) {
         var res = backend.conv2dDerInput(dy4D, filter, convInfo);
-        save({ filter: filter, dy4D: dy4D });
+        save([filter, dy4D]);
         return res;
     }, { dy4D: dy4D, filter: filter }, grad);
     if (reshapedTo4D) {
@@ -20536,7 +20615,7 @@ function depthwiseConv2d_(x, filter, strides, pad, dataFormat, dilations, dimRou
         util.assert(conv_util.tupleValuesAreOne(dilations), function () { return 'Error in gradient of depthwiseConv2d: dilation rates ' +
             "greater than 1 are not yet supported. Got dilations " +
             ("'" + dilations + "'"); });
-        var x4D = saved.x4D, $filter = saved.$filter;
+        var x4D = saved[0], $filter = saved[1];
         return {
             x: function () { return depthwiseConv2dDerInput(x4D.shape, dy, $filter, convInfo); },
             $filter: function () { return depthwiseConv2dDerFilter(x4D, dy, $filter.shape, convInfo); },
@@ -20544,7 +20623,7 @@ function depthwiseConv2d_(x, filter, strides, pad, dataFormat, dilations, dimRou
     };
     var res = environment_1.ENV.engine.runKernel(function (backend, save) {
         var res = backend.depthwiseConv2D(x4D, $filter, convInfo);
-        save({ x4D: x4D, $filter: $filter });
+        save([x4D, $filter]);
         return res;
     }, { x: x4D, $filter: $filter }, grad);
     if (reshapedTo4D) {
@@ -20735,7 +20814,7 @@ function conv3d_(x, filter, strides, pad, dataFormat, dilations) {
             return 'Error in gradient of conv3D: dilation rates greater than 1 are ' +
                 ("not yet supported in gradients. Got dilations '" + dilations + "'");
         });
-        var x5D = saved.x5D, $filter = saved.$filter;
+        var x5D = saved[0], $filter = saved[1];
         return {
             x: function () { return conv3dDerInput_(x5D.shape, dy, $filter, strides, pad); },
             $filter: function () { return conv3dDerFilter_(x5D, dy, $filter.shape, strides, pad); }
@@ -20743,7 +20822,7 @@ function conv3d_(x, filter, strides, pad, dataFormat, dilations) {
     };
     var res = environment_1.ENV.engine.runKernel(function (backend, save) {
         var res = backend.conv3d(x5D, $filter, convInfo);
-        save({ x5D: x5D, $filter: $filter });
+        save([x5D, $filter]);
         return res;
     }, { x: x5D, $filter: $filter }, grad);
     if (reshapedTo5D) {
@@ -20849,8 +20928,8 @@ exports.depthwiseConv2d = operation_1.op({ depthwiseConv2d_: depthwiseConv2d_ })
 exports.separableConv2d = operation_1.op({ separableConv2d_: separableConv2d_ });
 exports.conv2dTranspose = operation_1.op({ conv2dTranspose_: conv2dTranspose_ });
 //# sourceMappingURL=conv.js.map
-}, function(modId) { var map = {"../environment":1553229508225,"../tensor_util_env":1553229508238,"../util":1553229508229,"./conv_util":1553229508339,"./operation":1553229508249}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508339, function(require, module, exports) {
+}, function(modId) { var map = {"../environment":1553811080037,"../tensor_util_env":1553811080050,"../util":1553811080041,"./conv_util":1553811080151,"./operation":1553811080061}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080151, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -21146,8 +21225,8 @@ function eitherStridesOrDilationsAreOne(strides, dilations) {
 }
 exports.eitherStridesOrDilationsAreOne = eitherStridesOrDilationsAreOne;
 //# sourceMappingURL=conv_util.js.map
-}, function(modId) { var map = {"../util":1553229508229}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508340, function(require, module, exports) {
+}, function(modId) { var map = {"../util":1553811080041}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080152, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -21216,8 +21295,7 @@ function matMul_(a, b, transposeA, transposeB) {
     var b3D = transposeB ? $b.as3D(batchDimB, outerShapeB, innerShapeB) :
         $b.as3D(batchDimB, innerShapeB, outerShapeB);
     var grad = function (dy, saved) {
-        var a3D = saved.a3D;
-        var b3D = saved.b3D;
+        var _a = saved, a3D = _a[0], b3D = _a[1];
         if (!transposeA && !transposeB) {
             return {
                 $a: function () { return dy.matMul(b3D, false, true); },
@@ -21245,7 +21323,7 @@ function matMul_(a, b, transposeA, transposeB) {
     };
     var res = environment_1.ENV.engine.runKernel(function (backend, save) {
         var res = backend.batchMatMul(a3D, b3D, transposeA, transposeB);
-        save({ a3D: a3D, b3D: b3D });
+        save([a3D, b3D]);
         return res;
     }, { $a: a3D, $b: b3D }, grad);
     return res.reshape(outShape);
@@ -21312,8 +21390,8 @@ exports.matMul = operation_1.op({ matMul_: matMul_ });
 exports.dot = operation_1.op({ dot_: dot_ });
 exports.outerProduct = operation_1.op({ outerProduct_: outerProduct_ });
 //# sourceMappingURL=matmul.js.map
-}, function(modId) { var map = {"../environment":1553229508225,"../tensor_util":1553229508233,"../tensor_util_env":1553229508238,"../util":1553229508229,"./operation":1553229508249}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508341, function(require, module, exports) {
+}, function(modId) { var map = {"../environment":1553811080037,"../tensor_util":1553811080045,"../tensor_util_env":1553811080050,"../util":1553811080041,"./operation":1553811080061}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080153, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -21430,8 +21508,8 @@ exports.reverse2d = operation_1.op({ reverse2d_: reverse2d_ });
 exports.reverse3d = operation_1.op({ reverse3d_: reverse3d_ });
 exports.reverse4d = operation_1.op({ reverse4d_: reverse4d_ });
 //# sourceMappingURL=reverse.js.map
-}, function(modId) { var map = {"../environment":1553229508225,"../tensor_util_env":1553229508238,"../util":1553229508229,"./operation":1553229508249}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508342, function(require, module, exports) {
+}, function(modId) { var map = {"../environment":1553811080037,"../tensor_util_env":1553811080050,"../util":1553811080041,"./operation":1553811080061}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080154, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -21502,14 +21580,14 @@ function maxPoolImpl_(x, filterSize, strides, dilations, pad, dimRoundingMode) {
     }
     var convInfo = conv_util.computePool2DInfo(x4D.shape, filterSize, strides, dilations, pad, dimRoundingMode);
     var grad = function (dy, saved) {
-        var x4D = saved.x4D, y = saved.y;
+        var x4D = saved[0], y = saved[1];
         return {
             x: function () { return maxPoolBackprop(dy, x4D, y, filterSize, strides, dilations, pad); }
         };
     };
     var res = environment_1.ENV.engine.runKernel(function (backend, save) {
         var y = backend.maxPool(x4D, convInfo);
-        save({ x4D: x4D, y: y });
+        save([x4D, y]);
         return y;
     }, { x: x4D }, grad);
     if (reshapedTo4D) {
@@ -21822,8 +21900,8 @@ exports.maxPool = operation_1.op({ maxPool_: maxPool_ });
 exports.avgPool = operation_1.op({ avgPool_: avgPool_ });
 exports.pool = operation_1.op({ pool_: pool_ });
 //# sourceMappingURL=pool.js.map
-}, function(modId) { var map = {"../environment":1553229508225,"../tensor_util_env":1553229508238,"../util":1553229508229,"./array_ops":1553229508331,"./conv_util":1553229508339,"./operation":1553229508249}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508343, function(require, module, exports) {
+}, function(modId) { var map = {"../environment":1553811080037,"../tensor_util_env":1553811080050,"../util":1553811080041,"./array_ops":1553811080143,"./conv_util":1553811080151,"./operation":1553811080061}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080155, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -21984,8 +22062,8 @@ exports.slice2d = operation_1.op({ slice2d_: slice2d_ });
 exports.slice3d = operation_1.op({ slice3d_: slice3d_ });
 exports.slice4d = operation_1.op({ slice4d_: slice4d_ });
 //# sourceMappingURL=slice.js.map
-}, function(modId) { var map = {"../environment":1553229508225,"../tensor_util_env":1553229508238,"../util":1553229508229,"./operation":1553229508249,"./slice_util":1553229508247}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508344, function(require, module, exports) {
+}, function(modId) { var map = {"../environment":1553811080037,"../tensor_util_env":1553811080050,"../util":1553811080041,"./operation":1553811080061,"./slice_util":1553811080059}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080156, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -22287,11 +22365,11 @@ function min_(x, axis, keepDims) {
         axes = axis_util.getInnerMostAxes(axes.length, $x.rank);
     }
     var grad = function (dy, saved) {
-        return gradForMinAndMax(dy, saved.y, saved.xOrig, origAxes, permutedAxes);
+        return gradForMinAndMax(dy, saved[1], saved[0], origAxes, permutedAxes);
     };
     var res = environment_1.ENV.engine.runKernel(function (backend, save) {
         var y = backend.min($x, axes);
-        save({ xOrig: xOrig, y: y });
+        save([xOrig, y]);
         return y;
     }, { $x: $x }, grad);
     if (keepDims) {
@@ -22341,11 +22419,11 @@ function max_(x, axis, keepDims) {
         axes = axis_util.getInnerMostAxes(axes.length, $x.rank);
     }
     var grad = function (dy, saved) {
-        return gradForMinAndMax(dy, saved.y, saved.xOrig, origAxes, permutedAxes);
+        return gradForMinAndMax(dy, saved[1], saved[0], origAxes, permutedAxes);
     };
     var res = environment_1.ENV.engine.runKernel(function (backend, save) {
         var y = backend.max($x, axes);
-        save({ xOrig: xOrig, y: y });
+        save([xOrig, y]);
         return y;
     }, { $x: $x }, grad);
     if (keepDims) {
@@ -22391,12 +22469,12 @@ function argMin_(x, axis) {
         axes = axis_util.getInnerMostAxes(axes.length, $x.rank);
     }
     var grad = function (dy, saved) {
-        var $x = saved.$x;
+        var $x = saved[0];
         return { $x: function () { return tensor_ops_1.zerosLike($x); } };
     };
     return environment_1.ENV.engine.runKernel(function (backend, save) {
         var res = backend.argMin($x, axes[0]);
-        save({ $x: $x });
+        save([$x]);
         return res;
     }, { $x: $x }, grad);
 }
@@ -22436,12 +22514,12 @@ function argMax_(x, axis) {
         axes = axis_util.getInnerMostAxes(axes.length, $x.rank);
     }
     var grad = function (dy, saved) {
-        var $x = saved.$x;
+        var $x = saved[0];
         return { $x: function () { return tensor_ops_1.zerosLike($x); } };
     };
     return environment_1.ENV.engine.runKernel(function (backend, save) {
         var res = backend.argMax($x, axes[0]);
-        save({ $x: $x });
+        save([$x]);
         return res;
     }, { $x: $x }, grad);
 }
@@ -22577,8 +22655,8 @@ exports.moments = operation_1.op({ moments_: moments_ });
 exports.sum = operation_1.op({ sum_: sum_ });
 exports.prod = operation_1.op({ prod_: prod_ });
 //# sourceMappingURL=reduction_ops.js.map
-}, function(modId) { var map = {"../environment":1553229508225,"../globals":1553229508236,"../tensor_util_env":1553229508238,"../util":1553229508229,"./axis_util":1553229508241,"./operation":1553229508249,"./tensor_ops":1553229508250}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508345, function(require, module, exports) {
+}, function(modId) { var map = {"../environment":1553811080037,"../globals":1553811080048,"../tensor_util_env":1553811080050,"../util":1553811080041,"./axis_util":1553811080053,"./operation":1553811080061,"./tensor_ops":1553811080062}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080157, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -22797,12 +22875,12 @@ function greaterEqual_(a, b) {
     _a = tensor_util_1.makeTypesMatch($a, $b), $a = _a[0], $b = _a[1];
     broadcast_util_1.assertAndGetBroadcastShape($a.shape, $b.shape);
     var grad = function (dy, saved) {
-        var $a = saved.$a, $b = saved.$b;
+        var $a = saved[0], $b = saved[1];
         return { $a: function () { return tensor_ops_1.zerosLike($a); }, $b: function () { return tensor_ops_1.zerosLike($b); } };
     };
     return environment_1.ENV.engine.runKernel(function (backend, save) {
         var res = backend.greaterEqual($a, $b);
-        save({ $a: $a, $b: $b });
+        save([$a, $b]);
         return res;
     }, { $a: $a, $b: $b }, grad);
 }
@@ -22825,8 +22903,8 @@ exports.lessStrict = operation_1.op({ lessStrict_: lessStrict_ });
 exports.notEqual = operation_1.op({ notEqual_: notEqual_ });
 exports.notEqualStrict = operation_1.op({ notEqualStrict_: notEqualStrict_ });
 //# sourceMappingURL=compare.js.map
-}, function(modId) { var map = {"../environment":1553229508225,"../tensor_util":1553229508233,"../tensor_util_env":1553229508238,"../util":1553229508229,"./broadcast_util":1553229508262,"./operation":1553229508249,"./tensor_ops":1553229508250}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508346, function(require, module, exports) {
+}, function(modId) { var map = {"../environment":1553811080037,"../tensor_util":1553811080045,"../tensor_util_env":1553811080050,"../util":1553811080041,"./broadcast_util":1553811080074,"./operation":1553811080061,"./tensor_ops":1553811080062}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080158, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -23059,7 +23137,7 @@ function pow_(base, exp) {
     base = $base.cast(types_1.upcastType($base.dtype, $exp.dtype));
     exp = $exp.cast(types_1.upcastType($base.dtype, $exp.dtype));
     var grad = function (dy, saved) {
-        var $base = saved.$base, $exp = saved.$exp, y = saved.y;
+        var $base = saved[0], $exp = saved[1], y = saved[2];
         var derBase = function () {
             var expFloat = $exp.toFloat();
             var res = dy.mul(expFloat.mul($base.pow(expFloat.sub(tensor_ops_1.scalar(1)))));
@@ -23083,7 +23161,7 @@ function pow_(base, exp) {
     };
     return environment_1.ENV.engine.runKernel(function (backend, save) {
         var y = backend.pow($base, $exp);
-        save({ $base: $base, $exp: $exp, y: y });
+        save([$base, $exp, y]);
         return y;
     }, { $base: $base, $exp: $exp }, grad);
 }
@@ -23131,7 +23209,7 @@ function mul_(a, b) {
     _a = tensor_util_1.makeTypesMatch($a, $b), $a = _a[0], $b = _a[1];
     var outShape = broadcast_util.assertAndGetBroadcastShape($a.shape, $b.shape);
     var der = function (dy, saved) {
-        var $a = saved.$a, $b = saved.$b;
+        var $a = saved[0], $b = saved[1];
         var derA = function () {
             var res = dy.mul($b.toFloat());
             var reduceAxes = broadcast_util.getReductionAxes($a.shape, outShape);
@@ -23152,7 +23230,7 @@ function mul_(a, b) {
     };
     return environment_1.ENV.engine.runKernel(function (backend, save) {
         var res = backend.multiply($a, $b);
-        save({ $a: $a, $b: $b });
+        save([$a, $b]);
         return res;
     }, { $a: $a, $b: $b }, der);
 }
@@ -23207,7 +23285,7 @@ function div_(a, b) {
     }
     var outShape = broadcast_util.assertAndGetBroadcastShape($a.shape, $b.shape);
     var der = function (dy, saved) {
-        var $a = saved.$a, $b = saved.$b;
+        var $a = saved[0], $b = saved[1];
         var derA = function () {
             var res = dy.div($b.toFloat());
             var reduceAxes = broadcast_util.getReductionAxes($a.shape, outShape);
@@ -23229,7 +23307,7 @@ function div_(a, b) {
     };
     return environment_1.ENV.engine.runKernel(function (backend, save) {
         var res = backend.realDivide($a, $b);
-        save({ $a: $a, $b: $b });
+        save([$a, $b]);
         return res;
     }, { $a: $a, $b: $b }, der);
 }
@@ -23265,7 +23343,7 @@ function floorDiv_(a, b) {
     _a = tensor_util_1.makeTypesMatch($a, $b), $a = _a[0], $b = _a[1];
     var outShape = broadcast_util.assertAndGetBroadcastShape($a.shape, $b.shape);
     var der = function (dy, saved) {
-        var $a = saved.$a, $b = saved.$b;
+        var $a = saved[0], $b = saved[1];
         var derA = function () {
             var res = dy.div($b.toFloat());
             var reduceAxes = broadcast_util.getReductionAxes($a.shape, outShape);
@@ -23287,7 +23365,7 @@ function floorDiv_(a, b) {
     };
     return environment_1.ENV.engine.runKernel(function (backend, save) {
         var res = backend.floorDiv($a, $b);
-        save({ $a: $a, $b: $b });
+        save([$a, $b]);
         return res;
     }, { $a: $a, $b: $b }, der);
 }
@@ -23338,7 +23416,7 @@ function mod_(a, b) {
     _a = tensor_util_1.makeTypesMatch($a, $b), $a = _a[0], $b = _a[1];
     var outShape = broadcast_util.assertAndGetBroadcastShape($a.shape, $b.shape);
     var der = function (dy, saved) {
-        var $a = saved.$a, $b = saved.$b;
+        var $a = saved[0], $b = saved[1];
         var derA = function () {
             var reduceAxes = broadcast_util.getReductionAxes($a.shape, outShape);
             if (reduceAxes.length > 0) {
@@ -23358,7 +23436,7 @@ function mod_(a, b) {
     };
     return environment_1.ENV.engine.runKernel(function (backend, save) {
         var res = backend.mod($a, $b);
-        save({ $a: $a, $b: $b });
+        save([$a, $b]);
         return res;
     }, { $a: $a, $b: $b }, der);
 }
@@ -23412,14 +23490,14 @@ function minimum_(a, b) {
     }
     broadcast_util.assertAndGetBroadcastShape($a.shape, $b.shape);
     var der = function (dy, saved) {
-        var $a = saved.$a, $b = saved.$b;
+        var $a = saved[0], $b = saved[1];
         var derA = function () { return dy.mul($a.lessEqual($b).toFloat()); };
         var derB = function () { return dy.mul($a.greater($b).toFloat()); };
         return { $a: derA, $b: derB };
     };
     return environment_1.ENV.engine.runKernel(function (backend, save) {
         var res = backend.minimum($a, $b);
-        save({ $a: $a, $b: $b });
+        save([$a, $b]);
         return res;
     }, { $a: $a, $b: $b }, der);
 }
@@ -23473,14 +23551,14 @@ function maximum_(a, b) {
     }
     broadcast_util.assertAndGetBroadcastShape($a.shape, $b.shape);
     var der = function (dy, saved) {
-        var $a = saved.$a, $b = saved.$b;
+        var $a = saved[0], $b = saved[1];
         var derA = function () { return dy.mul($a.greaterEqual($b).toFloat()); };
         var derB = function () { return dy.mul($a.less($b).toFloat()); };
         return { $a: derA, $b: derB };
     };
     return environment_1.ENV.engine.runKernel(function (backend, save) {
         var res = backend.maximum($a, $b);
-        save({ $a: $a, $b: $b });
+        save([$a, $b]);
         return res;
     }, { $a: $a, $b: $b }, der);
 }
@@ -23531,7 +23609,7 @@ function squaredDifference_(a, b) {
     _a = tensor_util_1.makeTypesMatch($a, $b), $a = _a[0], $b = _a[1];
     broadcast_util.assertAndGetBroadcastShape($a.shape, $b.shape);
     var der = function (dy, saved) {
-        var $a = saved.$a, $b = saved.$b;
+        var $a = saved[0], $b = saved[1];
         var two = tensor_ops_1.scalar(2);
         var derA = function () { return dy.mul($a.sub($b).mul(two)); };
         var derB = function () { return dy.mul($b.sub($a).mul(two)); };
@@ -23539,7 +23617,7 @@ function squaredDifference_(a, b) {
     };
     return environment_1.ENV.engine.runKernel(function (backend, save) {
         var res = backend.squaredDifference($a, $b);
-        save({ $a: $a, $b: $b });
+        save([$a, $b]);
         return res;
     }, { $a: $a, $b: $b }, der);
 }
@@ -23581,7 +23659,7 @@ function atan2_(a, b) {
     _a = tensor_util_1.makeTypesMatch($a, $b), $a = _a[0], $b = _a[1];
     var outShape = broadcast_util.assertAndGetBroadcastShape($a.shape, $b.shape);
     var der = function (dy, saved) {
-        var $a = saved.$a, $b = saved.$b;
+        var $a = saved[0], $b = saved[1];
         var derA = function () {
             var d = exports.add($a.square(), $b.square());
             var res = dy.mul($b.div(d));
@@ -23604,7 +23682,7 @@ function atan2_(a, b) {
     };
     return environment_1.ENV.engine.runKernel(function (backend, save) {
         var res = backend.atan2($a, $b);
-        save({ $a: $a, $b: $b });
+        save([$a, $b]);
         return res;
     }, { $a: $a, $b: $b }, der);
 }
@@ -23630,8 +23708,8 @@ exports.squaredDifferenceStrict = operation_1.op({ squaredDifferenceStrict_: squ
 exports.sub = operation_1.op({ sub_: sub_ });
 exports.subStrict = operation_1.op({ subStrict_: subStrict_ });
 //# sourceMappingURL=binary_ops.js.map
-}, function(modId) { var map = {"../environment":1553229508225,"../tensor_util":1553229508233,"../tensor_util_env":1553229508238,"../types":1553229508234,"../util":1553229508229,"./broadcast_util":1553229508262,"./operation":1553229508249,"./tensor_ops":1553229508250,"./unary_ops":1553229508337}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508347, function(require, module, exports) {
+}, function(modId) { var map = {"../environment":1553811080037,"../tensor_util":1553811080045,"../tensor_util_env":1553811080050,"../types":1553811080046,"../util":1553811080041,"./broadcast_util":1553811080074,"./operation":1553811080061,"./tensor_ops":1553811080062,"./unary_ops":1553811080149}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080159, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -23676,12 +23754,12 @@ function relu_(x) {
         return $x.toInt();
     }
     var grad = function (dy, saved) {
-        var $x = saved.$x;
+        var $x = saved[0];
         return { $x: function () { return dy.mulStrict($x.step().toFloat()); } };
     };
     return environment_1.ENV.engine.runKernel(function (backend, save) {
         var res = backend.relu($x);
-        save({ $x: $x });
+        save([$x]);
         return res;
     }, { $x: $x }, grad);
 }
@@ -23699,7 +23777,7 @@ function relu_(x) {
 function elu_(x) {
     var $x = tensor_util_env_1.convertToTensor(x, 'x', 'elu');
     var grad = function (dy, saved) {
-        var y = saved.y;
+        var y = saved[0];
         return {
             $x: function () {
                 return environment_1.ENV.engine.runKernel(function (backend) { return backend.eluDer(dy, y); }, { dy: dy, y: y });
@@ -23708,7 +23786,7 @@ function elu_(x) {
     };
     return environment_1.ENV.engine.runKernel(function (backend, save) {
         var y = backend.elu($x);
-        save({ y: y });
+        save([y]);
         return y;
     }, { $x: $x }, grad);
 }
@@ -23728,7 +23806,7 @@ function elu_(x) {
 function selu_(x) {
     var $x = tensor_util_env_1.convertToTensor(x, 'x', 'selu');
     var grad = function (dy, saved) {
-        var $x = saved.$x;
+        var $x = saved[0];
         return {
             $x: function () {
                 var mask = $x.greater(tensor_ops_1.scalar(0));
@@ -23742,7 +23820,7 @@ function selu_(x) {
     };
     return environment_1.ENV.engine.runKernel(function (backend, save) {
         var res = backend.selu($x);
-        save({ $x: $x });
+        save([$x]);
         return res;
     }, { $x: $x }, grad);
 }
@@ -23786,7 +23864,7 @@ function prelu_(x, alpha) {
     var $x = tensor_util_env_1.convertToTensor(x, 'x', 'prelu');
     var $alpha = tensor_util_env_1.convertToTensor(alpha, 'alpha', 'prelu');
     var grad = function (dy, saved) {
-        var $x = saved.$x, $alpha = saved.$alpha;
+        var $x = saved[0], $alpha = saved[1];
         var mask = $x.greater(0);
         return {
             $x: function () { return logical_ops_1.where(mask, dy, dy.mul($alpha)); },
@@ -23802,7 +23880,7 @@ function prelu_(x, alpha) {
     };
     return environment_1.ENV.engine.runKernel(function (backend, save) {
         var res = backend.prelu($x, $alpha);
-        save({ $x: $x, $alpha: $alpha });
+        save([$x, $alpha]);
         return res;
     }, { $x: $x, $alpha: $alpha }, grad);
 }
@@ -23812,8 +23890,8 @@ exports.prelu = operation_1.op({ prelu_: prelu_ });
 exports.relu = operation_1.op({ relu_: relu_ });
 exports.selu = operation_1.op({ selu_: selu_ });
 //# sourceMappingURL=relu_ops.js.map
-}, function(modId) { var map = {"../environment":1553229508225,"../tensor_util_env":1553229508238,"./binary_ops":1553229508346,"./broadcast_util":1553229508262,"./logical_ops":1553229508348,"./operation":1553229508249,"./selu_util":1553229508327,"./tensor_ops":1553229508250}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508348, function(require, module, exports) {
+}, function(modId) { var map = {"../environment":1553811080037,"../tensor_util_env":1553811080050,"./binary_ops":1553811080158,"./broadcast_util":1553811080074,"./logical_ops":1553811080160,"./operation":1553811080061,"./selu_util":1553811080139,"./tensor_ops":1553811080062}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080160, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -23986,7 +24064,7 @@ function where_(condition, a, b) {
     // TODO(julianoks): Return null for condition gradient
     // when backprop supports it.
     var grad = function (dy, saved) {
-        var $condition = saved.$condition;
+        var $condition = saved[0];
         return {
             $condition: function () { return tensor_ops_1.zerosLike($condition).toFloat(); },
             $a: function () { return dy.mul($condition.cast(dy.dtype)); },
@@ -23995,7 +24073,7 @@ function where_(condition, a, b) {
     };
     return environment_1.ENV.engine.runKernel(function (backend, save) {
         var res = backend.select($condition, $a, $b);
-        save({ $condition: $condition });
+        save([$condition]);
         return res;
     }, { $condition: $condition, $a: $a, $b: $b }, grad);
 }
@@ -24043,8 +24121,8 @@ exports.logicalXor = operation_1.op({ logicalXor_: logicalXor_ });
 exports.where = operation_1.op({ where_: where_ });
 exports.whereAsync = whereAsync_;
 //# sourceMappingURL=logical_ops.js.map
-}, function(modId) { var map = {"../environment":1553229508225,"../kernels/where_impl":1553229508330,"../tensor_util_env":1553229508238,"../util":1553229508229,"./broadcast_util":1553229508262,"./operation":1553229508249,"./tensor_ops":1553229508250}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508349, function(require, module, exports) {
+}, function(modId) { var map = {"../environment":1553811080037,"../kernels/where_impl":1553811080142,"../tensor_util_env":1553811080050,"../util":1553811080041,"./broadcast_util":1553811080074,"./operation":1553811080061,"./tensor_ops":1553811080062}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080161, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -24108,8 +24186,8 @@ function transpose_(x, perm) {
 }
 exports.transpose = operation_1.op({ transpose_: transpose_ });
 //# sourceMappingURL=transpose.js.map
-}, function(modId) { var map = {"../environment":1553229508225,"../tensor_util_env":1553229508238,"../util":1553229508229,"./axis_util":1553229508241,"./operation":1553229508249}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508350, function(require, module, exports) {
+}, function(modId) { var map = {"../environment":1553811080037,"../tensor_util_env":1553811080050,"../util":1553811080041,"./axis_util":1553811080053,"./operation":1553811080061}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080162, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -24162,14 +24240,14 @@ function localResponseNormalization_(x, depthRadius, bias, alpha, beta) {
         x4D = $x.as4D(1, $x.shape[0], $x.shape[1], $x.shape[2]);
     }
     var backward = function (dy, saved) {
-        var x4D = saved.x4D, y = saved.y;
+        var x4D = saved[0], y = saved[1];
         return {
             x4D: function () { return environment_1.ENV.engine.runKernel(function (backend) { return backend.LRNGrad(dy, x4D, y, depthRadius, bias, alpha, beta); }, {}); }
         };
     };
     var res = environment_1.ENV.engine.runKernel(function (backend, save) {
         var y = backend.localResponseNormalization4D(x4D, depthRadius, bias, alpha, beta);
-        save({ x4D: x4D, y: y });
+        save([x4D, y]);
         return y;
     }, { x4D: x4D }, backward);
     if (reshapedTo4D) {
@@ -24181,8 +24259,8 @@ function localResponseNormalization_(x, depthRadius, bias, alpha, beta) {
 }
 exports.localResponseNormalization = operation_1.op({ localResponseNormalization_: localResponseNormalization_ });
 //# sourceMappingURL=lrn.js.map
-}, function(modId) { var map = {"../environment":1553229508225,"../tensor_util_env":1553229508238,"../util":1553229508229,"./operation":1553229508249}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508351, function(require, module, exports) {
+}, function(modId) { var map = {"../environment":1553811080037,"../tensor_util_env":1553811080050,"../util":1553811080041,"./operation":1553811080061}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080163, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -24304,8 +24382,8 @@ function normImpl(x, p, axis) {
 }
 exports.norm = operation_1.op({ norm_: norm_ });
 //# sourceMappingURL=norm.js.map
-}, function(modId) { var map = {"../tensor_util_env":1553229508238,"./axis_util":1553229508241,"./operation":1553229508249,"./tensor_ops":1553229508250,"../util":1553229508229}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508352, function(require, module, exports) {
+}, function(modId) { var map = {"../tensor_util_env":1553811080050,"./axis_util":1553811080053,"./operation":1553811080061,"./tensor_ops":1553811080062,"../util":1553811080041}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080164, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -24357,7 +24435,7 @@ function unsortedSegmentSum_(x, segmentIds, numSegments) {
     var $segmentIds = tensor_util_env_1.convertToTensor(segmentIds, 'segmentIds', 'unsortedSegmentSum', 'int32');
     util_1.assert(util_1.isInt(numSegments), function () { return 'numSegments must be of dtype int'; });
     var gradFunc = function (dy, saved) {
-        var $segmentIds = saved.$segmentIds;
+        var $segmentIds = saved[0];
         var derX = function () {
             return gatherDropNegatives(dy, $segmentIds);
         };
@@ -24365,7 +24443,7 @@ function unsortedSegmentSum_(x, segmentIds, numSegments) {
     };
     return environment_1.ENV.engine.runKernel(function (backend, save) {
         var res = backend.unsortedSegmentSum($x, $segmentIds, numSegments);
-        save({ $segmentIds: $segmentIds });
+        save([$segmentIds]);
         return res;
     }, { $x: $x }, gradFunc);
 }
@@ -24397,7 +24475,7 @@ function gather_(x, indices, axis) {
     axis = util_1.parseAxisParam(axis, $x.shape)[0];
     var shapeInfo = segment_util_1.collectGatherOpShapeInfo($x, $indices, axis);
     var grad = function (dy, saved) {
-        var $indices = saved.$indices;
+        var $indices = saved[0];
         var derX = function () {
             var paramsShape = $x.shape;
             var indicesSize = $indices.size;
@@ -24421,7 +24499,7 @@ function gather_(x, indices, axis) {
     };
     return (environment_1.ENV.engine.runKernel(function (backend, save) {
         var res = backend.gather($x, $indices.flatten(), axis);
-        save({ $indices: $indices });
+        save([$indices]);
         return res;
     }, { $x: $x }, grad)).reshape(shapeInfo.outputShape);
 }
@@ -24459,8 +24537,8 @@ function gatherDropNegatives(x, indices) {
 exports.gather = operation_1.op({ gather_: gather_ });
 exports.unsortedSegmentSum = operation_1.op({ unsortedSegmentSum_: unsortedSegmentSum_ });
 //# sourceMappingURL=segment_ops.js.map
-}, function(modId) { var map = {"../environment":1553229508225,"../tensor_util_env":1553229508238,"../util":1553229508229,"./array_ops":1553229508331,"./axis_util":1553229508241,"./binary_ops":1553229508346,"./compare":1553229508345,"./logical_ops":1553229508348,"./operation":1553229508249,"./segment_util":1553229508246,"./tensor_ops":1553229508250}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508353, function(require, module, exports) {
+}, function(modId) { var map = {"../environment":1553811080037,"../tensor_util_env":1553811080050,"../util":1553811080041,"./array_ops":1553811080143,"./axis_util":1553811080053,"./binary_ops":1553811080158,"./compare":1553811080157,"./logical_ops":1553811080160,"./operation":1553811080061,"./segment_util":1553811080058,"./tensor_ops":1553811080062}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080165, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -24556,8 +24634,8 @@ function basicLSTMCell_(forgetBias, lstmKernel, lstmBias, data, c, h) {
 exports.basicLSTMCell = operation_1.op({ basicLSTMCell_: basicLSTMCell_ });
 exports.multiRNNCell = operation_1.op({ multiRNNCell_: multiRNNCell_ });
 //# sourceMappingURL=lstm.js.map
-}, function(modId) { var map = {"../tensor_util_env":1553229508238,"./operation":1553229508249}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508354, function(require, module, exports) {
+}, function(modId) { var map = {"../tensor_util_env":1553811080050,"./operation":1553811080061}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080166, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -24628,8 +24706,8 @@ function movingAverage_(v, x, decay, step, zeroDebias) {
 }
 exports.movingAverage = operation_1.op({ movingAverage_: movingAverage_ });
 //# sourceMappingURL=moving_average.js.map
-}, function(modId) { var map = {"../tensor_util":1553229508233,"../tensor_util_env":1553229508238,"../util":1553229508229,"./binary_ops":1553229508346,"./operation":1553229508249,"./tensor_ops":1553229508250}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508355, function(require, module, exports) {
+}, function(modId) { var map = {"../tensor_util":1553811080045,"../tensor_util_env":1553811080050,"../util":1553811080041,"./binary_ops":1553811080158,"./operation":1553811080061,"./tensor_ops":1553811080062}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080167, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -24708,8 +24786,8 @@ function stridedSlice_(x, begin, end, strides, beginMask, endMask, ellipsisMask,
 }
 exports.stridedSlice = operation_1.op({ stridedSlice_: stridedSlice_ });
 //# sourceMappingURL=strided_slice.js.map
-}, function(modId) { var map = {"../environment":1553229508225,"../tensor_util_env":1553229508238,"./operation":1553229508249,"./slice":1553229508343,"./slice_util":1553229508247}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508356, function(require, module, exports) {
+}, function(modId) { var map = {"../environment":1553811080037,"../tensor_util_env":1553811080050,"./operation":1553811080061,"./slice":1553811080155,"./slice_util":1553811080059}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080168, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -24771,8 +24849,8 @@ function topk_(x, k, sorted) {
 }
 exports.topk = operation_1.op({ topk_: topk_ });
 //# sourceMappingURL=topk.js.map
-}, function(modId) { var map = {"../environment":1553229508225,"../tensor_util_env":1553229508238,"./operation":1553229508249}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508357, function(require, module, exports) {
+}, function(modId) { var map = {"../environment":1553811080037,"../tensor_util_env":1553811080050,"./operation":1553811080061}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080169, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -24821,8 +24899,8 @@ function scatterND_(indices, updates, shape) {
 }
 exports.scatterND = operation_1.op({ scatterND_: scatterND_ });
 //# sourceMappingURL=scatter_nd.js.map
-}, function(modId) { var map = {"../environment":1553229508225,"../tensor_util_env":1553229508238,"./operation":1553229508249,"./scatter_nd_util":1553229508245}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508358, function(require, module, exports) {
+}, function(modId) { var map = {"../environment":1553811080037,"../tensor_util_env":1553811080050,"./operation":1553811080061,"./scatter_nd_util":1553811080057}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080170, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -24983,8 +25061,8 @@ exports.ifft = operation_1.op({ ifft_: ifft_ });
 exports.rfft = operation_1.op({ rfft_: rfft_ });
 exports.irfft = operation_1.op({ irfft_: irfft_ });
 //# sourceMappingURL=spectral_ops.js.map
-}, function(modId) { var map = {"../environment":1553229508225,"../ops/complex_ops":1553229508251,"../ops/operation":1553229508249,"../util":1553229508229,"./tensor_ops":1553229508250}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508359, function(require, module, exports) {
+}, function(modId) { var map = {"../environment":1553811080037,"../ops/complex_ops":1553811080063,"../ops/operation":1553811080061,"../util":1553811080041,"./tensor_ops":1553811080062}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080171, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -25051,8 +25129,8 @@ function sparseToDense_(sparseIndices, sparseValues, outputShape, defaultValue) 
 }
 exports.sparseToDense = operation_1.op({ sparseToDense_: sparseToDense_ });
 //# sourceMappingURL=sparse_to_dense.js.map
-}, function(modId) { var map = {"../environment":1553229508225,"../ops/sparse_to_dense_util":1553229508360,"../tensor_util_env":1553229508238,"./operation":1553229508249}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508360, function(require, module, exports) {
+}, function(modId) { var map = {"../environment":1553811080037,"../ops/sparse_to_dense_util":1553811080172,"../tensor_util_env":1553811080050,"./operation":1553811080061}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080172, function(require, module, exports) {
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 /**
@@ -25096,7 +25174,7 @@ function validateInput(sparseIndices, sparseValues, outputShape, defaultValues) 
 exports.validateInput = validateInput;
 //# sourceMappingURL=sparse_to_dense_util.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508361, function(require, module, exports) {
+__DEFINE__(1553811080173, function(require, module, exports) {
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 /**
@@ -25162,8 +25240,8 @@ function gatherND_(x, indices) {
 }
 exports.gatherND = operation_1.op({ gatherND_: gatherND_ });
 //# sourceMappingURL=gather_nd.js.map
-}, function(modId) { var map = {"../environment":1553229508225,"../tensor_util_env":1553229508238,"./operation":1553229508249}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508362, function(require, module, exports) {
+}, function(modId) { var map = {"../environment":1553811080037,"../tensor_util_env":1553811080050,"./operation":1553811080061}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080174, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -25527,11 +25605,11 @@ function softmaxCrossEntropyWithLogits_(labels, logits, dim) {
         var keepDims = true;
         var lse = logits.logSumExp([dim], keepDims);
         var logResult = logits.toFloat().sub(lse);
-        save({ labels: labels, logResult: logResult });
+        save([labels, logResult]);
         var costVector = logResult.mul(labels).neg();
         var value = costVector.sum([dim]);
         var gradFunc = function (dy, saved) {
-            var labels = saved.labels, logResult = saved.logResult;
+            var labels = saved[0], logResult = saved[1];
             var dyShape = axis_util_1.expandShapeToKeepDim(dy.shape, [dim]);
             return [
                 dy.reshape(dyShape).mul(labels.toFloat().sub(logResult.exp())),
@@ -25590,8 +25668,8 @@ exports.meanSquaredError = operation_1.op({ meanSquaredError_: meanSquaredError_
 exports.sigmoidCrossEntropy = operation_1.op({ sigmoidCrossEntropy_: sigmoidCrossEntropy_ });
 exports.softmaxCrossEntropy = operation_1.op({ softmaxCrossEntropy_: softmaxCrossEntropy_ });
 //# sourceMappingURL=loss_ops.js.map
-}, function(modId) { var map = {"../globals":1553229508236,"../tensor_util_env":1553229508238,"../util":1553229508229,"./axis_util":1553229508241,"./binary_ops":1553229508346,"./operation":1553229508249,"./tensor_ops":1553229508250}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508363, function(require, module, exports) {
+}, function(modId) { var map = {"../globals":1553811080048,"../tensor_util_env":1553811080050,"../util":1553811080041,"./axis_util":1553811080053,"./binary_ops":1553811080158,"./operation":1553811080061,"./tensor_ops":1553811080062}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080175, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -25844,8 +25922,8 @@ function qr2d(x, fullMatrices) {
 exports.gramSchmidt = operation_1.op({ gramSchmidt_: gramSchmidt_ });
 exports.qr = operation_1.op({ qr_: qr_ });
 //# sourceMappingURL=linalg_ops.js.map
-}, function(modId) { var map = {"../environment":1553229508225,"../globals":1553229508236,"../util":1553229508229,"./array_ops":1553229508331,"./concat_split":1553229508332,"./norm":1553229508351,"./operation":1553229508249,"./reduction_ops":1553229508344,"./tensor_ops":1553229508250}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508364, function(require, module, exports) {
+}, function(modId) { var map = {"../environment":1553811080037,"../globals":1553811080048,"../util":1553811080041,"./array_ops":1553811080143,"./concat_split":1553811080144,"./norm":1553811080163,"./operation":1553811080061,"./reduction_ops":1553811080156,"./tensor_ops":1553811080062}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080176, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -25933,12 +26011,12 @@ function resizeBilinear_(images, size, alignCorners) {
     }
     var newHeight = size[0], newWidth = size[1];
     var forward = function (backend, save) {
-        save({ batchImages: batchImages });
+        save([batchImages]);
         return backend.resizeBilinear(batchImages, newHeight, newWidth, alignCorners);
     };
     var backward = function (dy, saved) {
         return {
-            batchImages: function () { return environment_1.ENV.engine.runKernel(function (backend) { return backend.resizeBilinearBackprop(dy, saved.batchImages, alignCorners); }, {}); }
+            batchImages: function () { return environment_1.ENV.engine.runKernel(function (backend) { return backend.resizeBilinearBackprop(dy, saved[0], alignCorners); }, {}); }
         };
     };
     var res = environment_1.ENV.engine.runKernel(forward, { batchImages: batchImages }, backward);
@@ -25979,12 +26057,12 @@ function resizeNearestNeighbor_(images, size, alignCorners) {
     }
     var newHeight = size[0], newWidth = size[1];
     var forward = function (backend, save) {
-        save({ batchImages: batchImages });
+        save([batchImages]);
         return backend.resizeNearestNeighbor(batchImages, newHeight, newWidth, alignCorners);
     };
     var backward = function (dy, saved) {
         return {
-            batchImages: function () { return environment_1.ENV.engine.runKernel(function (backend) { return backend.resizeNearestNeighborBackprop(dy, saved.batchImages, alignCorners); }, {}); }
+            batchImages: function () { return environment_1.ENV.engine.runKernel(function (backend) { return backend.resizeNearestNeighborBackprop(dy, saved[0], alignCorners); }, {}); }
         };
     };
     var res = environment_1.ENV.engine.runKernel(forward, { batchImages: batchImages }, backward);
@@ -26124,8 +26202,8 @@ exports.nonMaxSuppression = operation_1.op({ nonMaxSuppression_: nonMaxSuppressi
 exports.nonMaxSuppressionAsync = nonMaxSuppressionAsync_;
 exports.cropAndResize = operation_1.op({ cropAndResize_: cropAndResize_ });
 //# sourceMappingURL=image_ops.js.map
-}, function(modId) { var map = {"../environment":1553229508225,"../kernels/non_max_suppression_impl":1553229508255,"../tensor_util_env":1553229508238,"../util":1553229508229,"./operation":1553229508249}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508365, function(require, module, exports) {
+}, function(modId) { var map = {"../environment":1553811080037,"../kernels/non_max_suppression_impl":1553811080067,"../tensor_util_env":1553811080050,"../util":1553811080041,"./operation":1553811080061}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080177, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -26208,7 +26286,7 @@ function matMul_(a, b, transposeA, transposeB, bias, activation) {
         broadcast_util.assertAndGetBroadcastShape(outShape, $bias.shape);
     }
     var grad = function (dy, saved) {
-        var y = saved.y, a3D = saved.a3D, b3D = saved.b3D;
+        var a3D = saved[0], b3D = saved[1], y = saved[2];
         var dyActivation;
         if (activation == null || activation === 'linear') {
             dyActivation = dy;
@@ -26267,15 +26345,15 @@ function matMul_(a, b, transposeA, transposeB, bias, activation) {
     }
     var res = environment_1.ENV.engine.runKernel(function (backend, save) {
         var y = backend.fusedBatchMatMul(a3D, b3D, transposeA, transposeB, $bias, activation);
-        save({ a3D: a3D, b3D: b3D, y: y });
+        save([a3D, b3D, y]);
         return y;
     }, inputs, grad);
     return res.reshape(outShape);
 }
 exports.matMul = operation_1.op({ matMul_: matMul_ });
 //# sourceMappingURL=fused_ops.js.map
-}, function(modId) { var map = {"../environment":1553229508225,"../ops/operation":1553229508249,"../tensor_util":1553229508233,"../tensor_util_env":1553229508238,"../util":1553229508229,"./broadcast_util":1553229508262}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508366, function(require, module, exports) {
+}, function(modId) { var map = {"../environment":1553811080037,"../ops/operation":1553811080061,"../tensor_util":1553811080045,"../tensor_util_env":1553811080050,"../util":1553811080041,"./broadcast_util":1553811080074}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080178, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -26318,7 +26396,7 @@ function nextFrame() {
 exports.nextFrame = nextFrame;
 //# sourceMappingURL=browser_util.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508367, function(require, module, exports) {
+__DEFINE__(1553811080179, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -26368,8 +26446,8 @@ exports.listModels = model_management_1.listModels;
 exports.moveModel = model_management_1.moveModel;
 exports.removeModel = model_management_1.removeModel;
 //# sourceMappingURL=io.js.map
-}, function(modId) { var map = {"./indexed_db":1553229508368,"./local_storage":1553229508373,"./browser_files":1553229508374,"./browser_http":1553229508375,"./io_utils":1553229508369,"./passthrough":1553229508378,"./router_registry":1553229508372,"./weights_loader":1553229508376,"./model_management":1553229508371}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508368, function(require, module, exports) {
+}, function(modId) { var map = {"./indexed_db":1553811080180,"./local_storage":1553811080185,"./browser_files":1553811080186,"./browser_http":1553811080187,"./io_utils":1553811080181,"./passthrough":1553811080190,"./router_registry":1553811080184,"./weights_loader":1553811080188,"./model_management":1553811080183}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080180, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -26765,8 +26843,8 @@ if (environment_1.ENV.get('IS_BROWSER')) {
     }
 }
 //# sourceMappingURL=indexed_db.js.map
-}, function(modId) { var map = {"../environment":1553229508225,"./io_utils":1553229508369,"./model_management":1553229508371,"./router_registry":1553229508372}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508369, function(require, module, exports) {
+}, function(modId) { var map = {"../environment":1553811080037,"./io_utils":1553811080181,"./model_management":1553811080183,"./router_registry":1553811080184}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080181, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -27102,8 +27180,8 @@ function getModelArtifactsInfoForJSON(modelArtifacts) {
 }
 exports.getModelArtifactsInfoForJSON = getModelArtifactsInfoForJSON;
 //# sourceMappingURL=io_utils.js.map
-}, function(modId) { var map = {"../ops/tensor_ops":1553229508250,"../util":1553229508229,"./types":1553229508370}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508370, function(require, module, exports) {
+}, function(modId) { var map = {"../ops/tensor_ops":1553811080062,"../util":1553811080041,"./types":1553811080182}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080182, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -27135,7 +27213,7 @@ exports.DTYPE_VALUE_SIZE_MAP = {
 };
 //# sourceMappingURL=types.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508371, function(require, module, exports) {
+__DEFINE__(1553811080183, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -27516,8 +27594,8 @@ function moveModel(sourceURL, destURL) {
 }
 exports.moveModel = moveModel;
 //# sourceMappingURL=model_management.js.map
-}, function(modId) { var map = {"../util":1553229508229,"./router_registry":1553229508372}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508372, function(require, module, exports) {
+}, function(modId) { var map = {"../util":1553811080041,"./router_registry":1553811080184}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080184, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -27618,7 +27696,7 @@ exports.getLoadHandlers = function (url, onProgress) {
 };
 //# sourceMappingURL=router_registry.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508373, function(require, module, exports) {
+__DEFINE__(1553811080185, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -27770,7 +27848,7 @@ var BrowserLocalStorage = /** @class */ (function () {
      */
     BrowserLocalStorage.prototype.save = function (modelArtifacts) {
         return __awaiter(this, void 0, void 0, function () {
-            var topology, weightSpecs, modelArtifactsInfo, key;
+            var topology, weightSpecs, modelArtifactsInfo;
             return __generator(this, function (_a) {
                 if (modelArtifacts.modelTopology instanceof ArrayBuffer) {
                     throw new Error('BrowserLocalStorage.save() does not support saving model topology ' +
@@ -27794,9 +27872,11 @@ var BrowserLocalStorage = /** @class */ (function () {
                     }
                     catch (err) {
                         // If saving failed, clean up all items saved so far.
-                        for (key in this.keys) {
-                            this.LS.removeItem(this.keys[key]);
-                        }
+                        this.LS.removeItem(this.keys.info);
+                        this.LS.removeItem(this.keys.topology);
+                        this.LS.removeItem(this.keys.weightSpecs);
+                        this.LS.removeItem(this.keys.weightData);
+                        this.LS.removeItem(this.keys.modelMetadata);
                         throw new Error("Failed to save model '" + this.modelPath + "' to local storage: " +
                             "size quota being exceeded is a possible cause of this failure: " +
                             ("modelTopologyBytes=" + modelArtifactsInfo.modelTopologyBytes + ", ") +
@@ -27960,8 +28040,8 @@ if (environment_1.ENV.get('IS_BROWSER')) {
     }
 }
 //# sourceMappingURL=local_storage.js.map
-}, function(modId) { var map = {"../environment":1553229508225,"../util":1553229508229,"./io_utils":1553229508369,"./model_management":1553229508371,"./router_registry":1553229508372}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508374, function(require, module, exports) {
+}, function(modId) { var map = {"../environment":1553811080037,"../util":1553811080041,"./io_utils":1553811080181,"./model_management":1553811080183,"./router_registry":1553811080184}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080186, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -28297,8 +28377,8 @@ function browserFiles(files) {
 }
 exports.browserFiles = browserFiles;
 //# sourceMappingURL=browser_files.js.map
-}, function(modId) { var map = {"../environment":1553229508225,"./io_utils":1553229508369,"./router_registry":1553229508372}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508375, function(require, module, exports) {
+}, function(modId) { var map = {"../environment":1553811080037,"./io_utils":1553811080181,"./router_registry":1553811080184}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080187, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -28758,8 +28838,8 @@ function browserHTTPRequest(path, loadOptions) {
 }
 exports.browserHTTPRequest = browserHTTPRequest;
 //# sourceMappingURL=browser_http.js.map
-}, function(modId) { var map = {"../environment":1553229508225,"../util":1553229508229,"./io_utils":1553229508369,"./router_registry":1553229508372,"./weights_loader":1553229508376}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508376, function(require, module, exports) {
+}, function(modId) { var map = {"../environment":1553811080037,"../util":1553811080041,"./io_utils":1553811080181,"./router_registry":1553811080184,"./weights_loader":1553811080188}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080188, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -29025,8 +29105,8 @@ function weightsLoaderFactory(fetchWeightsFunction) {
 }
 exports.weightsLoaderFactory = weightsLoaderFactory;
 //# sourceMappingURL=weights_loader.js.map
-}, function(modId) { var map = {"../util":1553229508229,"./io_utils":1553229508369,"./progress":1553229508377,"./types":1553229508370}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508377, function(require, module, exports) {
+}, function(modId) { var map = {"../util":1553811080041,"./io_utils":1553811080181,"./progress":1553811080189,"./types":1553811080182}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080189, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -29086,8 +29166,8 @@ function monitorPromisesProgress(promises, onProgress, startFraction, endFractio
 }
 exports.monitorPromisesProgress = monitorPromisesProgress;
 //# sourceMappingURL=progress.js.map
-}, function(modId) { var map = {"../util":1553229508229}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508378, function(require, module, exports) {
+}, function(modId) { var map = {"../util":1553811080041}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080190, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -29236,7 +29316,7 @@ function withSaveHandler(saveHandler) {
 exports.withSaveHandler = withSaveHandler;
 //# sourceMappingURL=passthrough.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508379, function(require, module, exports) {
+__DEFINE__(1553811080191, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -29261,8 +29341,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var confusion_matrix_1 = require("./ops/confusion_matrix");
 exports.confusionMatrix = confusion_matrix_1.confusionMatrix;
 //# sourceMappingURL=math.js.map
-}, function(modId) { var map = {"./ops/confusion_matrix":1553229508380}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508380, function(require, module, exports) {
+}, function(modId) { var map = {"./ops/confusion_matrix":1553811080192}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080192, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -29335,8 +29415,8 @@ function confusionMatrix_(labels, predictions, numClasses) {
 exports.confusionMatrix_ = confusionMatrix_;
 exports.confusionMatrix = operation_1.op({ confusionMatrix_: confusionMatrix_ });
 //# sourceMappingURL=confusion_matrix.js.map
-}, function(modId) { var map = {"../tensor_util_env":1553229508238,"../util":1553229508229,"./array_ops":1553229508331,"./operation":1553229508249}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508381, function(require, module, exports) {
+}, function(modId) { var map = {"../tensor_util_env":1553811080050,"../util":1553811080041,"./array_ops":1553811080143,"./operation":1553811080061}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080193, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -29534,8 +29614,8 @@ function toPixels(img, canvas) {
 exports.toPixels = toPixels;
 exports.fromPixels = operation_1.op({ fromPixels_: fromPixels_ });
 //# sourceMappingURL=browser.js.map
-}, function(modId) { var map = {"../environment":1553229508225,"../tensor":1553229508231,"../tensor_util_env":1553229508238,"./operation":1553229508249}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508382, function(require, module, exports) {
+}, function(modId) { var map = {"../environment":1553811080037,"../tensor":1553811080043,"../tensor_util_env":1553811080050,"./operation":1553811080061}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080194, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -29658,8 +29738,8 @@ function registerClass(cls) {
 }
 exports.registerClass = registerClass;
 //# sourceMappingURL=serialization.js.map
-}, function(modId) { var map = {"./util":1553229508229}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508383, function(require, module, exports) {
+}, function(modId) { var map = {"./util":1553811080041}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080195, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -29820,17 +29900,17 @@ function expectArrayBuffersEqual(actual, expected) {
 }
 exports.expectArrayBuffersEqual = expectArrayBuffersEqual;
 //# sourceMappingURL=test_util.js.map
-}, function(modId) { var map = {"./environment":1553229508225,"./tensor":1553229508231,"./util":1553229508229}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508384, function(require, module, exports) {
+}, function(modId) { var map = {"./environment":1553811080037,"./tensor":1553811080043,"./util":1553811080041}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080196, function(require, module, exports) {
 "use strict";
 /** @license See the LICENSE file. */
 Object.defineProperty(exports, "__esModule", { value: true });
 // This code is auto-generated, do not modify this file!
-var version = '1.0.2';
+var version = '1.0.3';
 exports.version = version;
 //# sourceMappingURL=version.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508385, function(require, module, exports) {
+__DEFINE__(1553811080197, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -29858,8 +29938,8 @@ exports.MathBackendWebGL = backend_webgl_1.MathBackendWebGL;
 var gpgpu_context_1 = require("./kernels/webgl/gpgpu_context");
 exports.GPGPUContext = gpgpu_context_1.GPGPUContext;
 //# sourceMappingURL=webgl.js.map
-}, function(modId) { var map = {"./kernels/webgl/gpgpu_util":1553229508291,"./kernels/webgl/webgl_util":1553229508293,"./kernels/backend_webgl":1553229508223,"./kernels/webgl/gpgpu_context":1553229508290}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508386, function(require, module, exports) {
+}, function(modId) { var map = {"./kernels/webgl/gpgpu_util":1553811080103,"./kernels/webgl/webgl_util":1553811080105,"./kernels/backend_webgl":1553811080035,"./kernels/webgl/gpgpu_context":1553811080102}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080198, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -29972,14 +30052,14 @@ var AdadeltaOptimizer = /** @class */ (function (_super) {
     };
     AdadeltaOptimizer.prototype.getConfig = function () {
         return {
-            learningRate: this.learningRate,
-            rho: this.rho,
-            epsilon: this.epsilon
+            'learningRate': this.learningRate,
+            'rho': this.rho,
+            'epsilon': this.epsilon
         };
     };
     /** @nocollapse */
     AdadeltaOptimizer.fromConfig = function (cls, config) {
-        return new cls(config.learningRate, config.rho, config.epsilon);
+        return new cls(config['learningRate'], config['rho'], config['epsilon']);
     };
     /** @nocollapse */
     AdadeltaOptimizer.className = 'AdadeltaOptimizer';
@@ -29988,8 +30068,8 @@ var AdadeltaOptimizer = /** @class */ (function (_super) {
 exports.AdadeltaOptimizer = AdadeltaOptimizer;
 serialization_1.registerClass(AdadeltaOptimizer);
 //# sourceMappingURL=adadelta_optimizer.js.map
-}, function(modId) { var map = {"../environment":1553229508225,"../globals":1553229508236,"../ops/ops":1553229508335,"../serialization":1553229508382,"./optimizer":1553229508387}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508387, function(require, module, exports) {
+}, function(modId) { var map = {"../environment":1553811080037,"../globals":1553811080048,"../ops/ops":1553811080147,"../serialization":1553811080194,"./optimizer":1553811080199}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080199, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -30085,8 +30165,8 @@ Object.defineProperty(Optimizer, Symbol.hasInstance, {
     }
 });
 //# sourceMappingURL=optimizer.js.map
-}, function(modId) { var map = {"../globals":1553229508236,"../serialization":1553229508382}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508388, function(require, module, exports) {
+}, function(modId) { var map = {"../globals":1553811080048,"../serialization":1553811080194}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080200, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -30175,13 +30255,13 @@ var AdagradOptimizer = /** @class */ (function (_super) {
     };
     AdagradOptimizer.prototype.getConfig = function () {
         return {
-            learningRate: this.learningRate,
-            initialAccumulatorValue: this.initialAccumulatorValue,
+            'learningRate': this.learningRate,
+            'initialAccumulatorValue': this.initialAccumulatorValue,
         };
     };
     /** @nocollapse */
     AdagradOptimizer.fromConfig = function (cls, config) {
-        return new cls(config.learningRate, config.initialAccumulatorValue);
+        return new cls(config['learningRate'], config['initialAccumulatorValue']);
     };
     /** @nocollapse */
     AdagradOptimizer.className = 'AdagradOptimizer';
@@ -30190,8 +30270,8 @@ var AdagradOptimizer = /** @class */ (function (_super) {
 exports.AdagradOptimizer = AdagradOptimizer;
 serialization_1.registerClass(AdagradOptimizer);
 //# sourceMappingURL=adagrad_optimizer.js.map
-}, function(modId) { var map = {"../environment":1553229508225,"../globals":1553229508236,"../ops/ops":1553229508335,"../serialization":1553229508382,"./optimizer":1553229508387}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508389, function(require, module, exports) {
+}, function(modId) { var map = {"../environment":1553811080037,"../globals":1553811080048,"../ops/ops":1553811080147,"../serialization":1553811080194,"./optimizer":1553811080199}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080201, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -30316,15 +30396,15 @@ var AdamOptimizer = /** @class */ (function (_super) {
     };
     AdamOptimizer.prototype.getConfig = function () {
         return {
-            learningRate: this.learningRate,
-            beta1: this.beta1,
-            beta2: this.beta2,
-            epsilon: this.epsilon,
+            'learningRate': this.learningRate,
+            'beta1': this.beta1,
+            'beta2': this.beta2,
+            'epsilon': this.epsilon,
         };
     };
     /** @nocollapse */
     AdamOptimizer.fromConfig = function (cls, config) {
-        return new cls(config.learningRate, config.beta1, config.beta2, config.epsilon);
+        return new cls(config['learningRate'], config['beta1'], config['beta2'], config['epsilon']);
     };
     /** @nocollapse */
     AdamOptimizer.className = 'AdamOptimizer';
@@ -30333,8 +30413,8 @@ var AdamOptimizer = /** @class */ (function (_super) {
 exports.AdamOptimizer = AdamOptimizer;
 serialization_1.registerClass(AdamOptimizer);
 //# sourceMappingURL=adam_optimizer.js.map
-}, function(modId) { var map = {"../environment":1553229508225,"../globals":1553229508236,"../ops/ops":1553229508335,"../serialization":1553229508382,"./optimizer":1553229508387}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508390, function(require, module, exports) {
+}, function(modId) { var map = {"../environment":1553811080037,"../globals":1553811080048,"../ops/ops":1553811080147,"../serialization":1553811080194,"./optimizer":1553811080199}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080202, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -30459,16 +30539,16 @@ var AdamaxOptimizer = /** @class */ (function (_super) {
     };
     AdamaxOptimizer.prototype.getConfig = function () {
         return {
-            learningRate: this.learningRate,
-            beta1: this.beta1,
-            beta2: this.beta2,
-            epsilon: this.epsilon,
-            decay: this.decay
+            'learningRate': this.learningRate,
+            'beta1': this.beta1,
+            'beta2': this.beta2,
+            'epsilon': this.epsilon,
+            'decay': this.decay
         };
     };
     /** @nocollapse */
     AdamaxOptimizer.fromConfig = function (cls, config) {
-        return new cls(config.learningRate, config.beta1, config.beta2, config.epsilon, config.decay);
+        return new cls(config['learningRate'], config['beta1'], config['beta2'], config['epsilon'], config['decay']);
     };
     /** @nocollapse */
     AdamaxOptimizer.className = 'AdamaxOptimizer';
@@ -30477,8 +30557,8 @@ var AdamaxOptimizer = /** @class */ (function (_super) {
 exports.AdamaxOptimizer = AdamaxOptimizer;
 serialization_1.registerClass(AdamaxOptimizer);
 //# sourceMappingURL=adamax_optimizer.js.map
-}, function(modId) { var map = {"../environment":1553229508225,"../globals":1553229508236,"../ops/ops":1553229508335,"../serialization":1553229508382,"./optimizer":1553229508387}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508391, function(require, module, exports) {
+}, function(modId) { var map = {"../environment":1553811080037,"../globals":1553811080048,"../ops/ops":1553811080147,"../serialization":1553811080194,"./optimizer":1553811080199}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080203, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -30579,14 +30659,14 @@ var MomentumOptimizer = /** @class */ (function (_super) {
     };
     MomentumOptimizer.prototype.getConfig = function () {
         return {
-            learningRate: this.learningRate,
-            momentum: this.momentum,
-            useNesterov: this.useNesterov
+            'learningRate': this.learningRate,
+            'momentum': this.momentum,
+            'useNesterov': this.useNesterov
         };
     };
     /** @nocollapse */
     MomentumOptimizer.fromConfig = function (cls, config) {
-        return new cls(config.learningRate, config.momentum, config.useNesterov);
+        return new cls(config['learningRate'], config['momentum'], config['useNesterov']);
     };
     /** @nocollapse */
     MomentumOptimizer.className = 'MomentumOptimizer';
@@ -30595,8 +30675,8 @@ var MomentumOptimizer = /** @class */ (function (_super) {
 exports.MomentumOptimizer = MomentumOptimizer;
 serialization_1.registerClass(MomentumOptimizer);
 //# sourceMappingURL=momentum_optimizer.js.map
-}, function(modId) { var map = {"../environment":1553229508225,"../globals":1553229508236,"../ops/ops":1553229508335,"../serialization":1553229508382,"./sgd_optimizer":1553229508392}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508392, function(require, module, exports) {
+}, function(modId) { var map = {"../environment":1553811080037,"../globals":1553811080048,"../ops/ops":1553811080147,"../serialization":1553811080194,"./sgd_optimizer":1553811080204}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080204, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -30668,11 +30748,11 @@ var SGDOptimizer = /** @class */ (function (_super) {
         this.c.dispose();
     };
     SGDOptimizer.prototype.getConfig = function () {
-        return { learningRate: this.learningRate };
+        return { 'learningRate': this.learningRate };
     };
     /** @nocollapse */
     SGDOptimizer.fromConfig = function (cls, config) {
-        return new cls(config.learningRate);
+        return new cls(config['learningRate']);
     };
     /** @nocollapse */
     SGDOptimizer.className = 'SGDOptimizer';
@@ -30681,8 +30761,8 @@ var SGDOptimizer = /** @class */ (function (_super) {
 exports.SGDOptimizer = SGDOptimizer;
 serialization_1.registerClass(SGDOptimizer);
 //# sourceMappingURL=sgd_optimizer.js.map
-}, function(modId) { var map = {"../environment":1553229508225,"../globals":1553229508236,"../ops/ops":1553229508335,"../serialization":1553229508382,"./optimizer":1553229508387}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508393, function(require, module, exports) {
+}, function(modId) { var map = {"../environment":1553811080037,"../globals":1553811080048,"../ops/ops":1553811080147,"../serialization":1553811080194,"./optimizer":1553811080199}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080205, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -30832,16 +30912,16 @@ var RMSPropOptimizer = /** @class */ (function (_super) {
     };
     RMSPropOptimizer.prototype.getConfig = function () {
         return {
-            learningRate: this.learningRate,
-            decay: this.decay,
-            momentum: this.momentum,
-            epsilon: this.epsilon,
-            centered: this.centered
+            'learningRate': this.learningRate,
+            'decay': this.decay,
+            'momentum': this.momentum,
+            'epsilon': this.epsilon,
+            'centered': this.centered
         };
     };
     /** @nocollapse */
     RMSPropOptimizer.fromConfig = function (cls, config) {
-        return new cls(config.learningRate, config.decay, config.momentum, config.epsilon, config.centered);
+        return new cls(config['learningRate'], config['decay'], config['momentum'], config['epsilon'], config['centered']);
     };
     /** @nocollapse */
     RMSPropOptimizer.className = 'RMSPropOptimizer';
@@ -30850,8 +30930,8 @@ var RMSPropOptimizer = /** @class */ (function (_super) {
 exports.RMSPropOptimizer = RMSPropOptimizer;
 serialization_1.registerClass(RMSPropOptimizer);
 //# sourceMappingURL=rmsprop_optimizer.js.map
-}, function(modId) { var map = {"../environment":1553229508225,"../globals":1553229508236,"../ops/ops":1553229508335,"../serialization":1553229508382,"./optimizer":1553229508387}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508394, function(require, module, exports) {
+}, function(modId) { var map = {"../environment":1553811080037,"../globals":1553811080048,"../ops/ops":1553811080147,"../serialization":1553811080194,"./optimizer":1553811080199}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080206, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -30892,8 +30972,8 @@ exports.train = {
     adam: optimizer_constructors_1.OptimizerConstructors.adam
 };
 //# sourceMappingURL=train.js.map
-}, function(modId) { var map = {"./optimizers/adadelta_optimizer":1553229508386,"./optimizers/adagrad_optimizer":1553229508388,"./optimizers/adam_optimizer":1553229508389,"./optimizers/adamax_optimizer":1553229508390,"./optimizers/momentum_optimizer":1553229508391,"./optimizers/optimizer_constructors":1553229508395,"./optimizers/rmsprop_optimizer":1553229508393,"./optimizers/sgd_optimizer":1553229508392}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553229508395, function(require, module, exports) {
+}, function(modId) { var map = {"./optimizers/adadelta_optimizer":1553811080198,"./optimizers/adagrad_optimizer":1553811080200,"./optimizers/adam_optimizer":1553811080201,"./optimizers/adamax_optimizer":1553811080202,"./optimizers/momentum_optimizer":1553811080203,"./optimizers/optimizer_constructors":1553811080207,"./optimizers/rmsprop_optimizer":1553811080205,"./optimizers/sgd_optimizer":1553811080204}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1553811080207, function(require, module, exports) {
 "use strict";
 /**
  * @license
@@ -31097,7 +31177,7 @@ var OptimizerConstructors = /** @class */ (function () {
 }());
 exports.OptimizerConstructors = OptimizerConstructors;
 //# sourceMappingURL=optimizer_constructors.js.map
-}, function(modId) { var map = {"./adadelta_optimizer":1553229508386,"./adagrad_optimizer":1553229508388,"./adam_optimizer":1553229508389,"./adamax_optimizer":1553229508390,"./momentum_optimizer":1553229508391,"./rmsprop_optimizer":1553229508393,"./sgd_optimizer":1553229508392}; return __REQUIRE__(map[modId], modId); })
-return __REQUIRE__(1553229508222);
+}, function(modId) { var map = {"./adadelta_optimizer":1553811080198,"./adagrad_optimizer":1553811080200,"./adam_optimizer":1553811080201,"./adamax_optimizer":1553811080202,"./momentum_optimizer":1553811080203,"./rmsprop_optimizer":1553811080205,"./sgd_optimizer":1553811080204}; return __REQUIRE__(map[modId], modId); })
+return __REQUIRE__(1553811080034);
 })()
 //# sourceMappingURL=index.js.map
