@@ -14,37 +14,20 @@
  * limitations under the License.
  * =============================================================================
  */
-const path = require('path');
-
 module.exports = function(config) {
   config.set({
     frameworks: ['jasmine', 'karma-typescript'],
     files: [
       'node_modules/miniprogram-simulate/build.js',
-      'plugin/test/*_test.ts',
-      'plugin/components/**/*.ts',
-      'plugin/components/**/*.wxml',
-      'plugin/components/**/*.json',
-      'plugin/components/**/*.wxss',
-      'plugin/components/**/*.js',
+      'dist/plugin/test/*_test.js',
+      'dist/plugin/utils/**/*.js',
+      'dist/plugin/components/**/*',
     ],
-    exclude: ["plugin/**/*.d.ts", "plugin/node_modules/**/*.ts"],
+    exclude: ["dist/plugin/**/*.d.ts"],
     preprocessors: {
-      'plugin/**/*.ts': ['karma-typescript'], // *.tsx for React Jsx
-      'plugin/components/tfjs-wechat/*.wxml': ['filemap'], // 组件文件使用 filemap 将各个文件内容注入到浏览器
-      'plugin/components/tfjs-wechat/*.wcss': ['filemap'], // 组件文件使用 filemap 将各个文件内容注入到浏览器
-      'plugin/components/tfjs-wechat/*.json': ['filemap'], // 组件文件使用 filemap 将各个文件内容注入到浏览器
-      'plugin/components/tfjs-wechat/tfjs-wechat.js': ['filemap'], // 组件文件使用 filemap 将各个文件内容注入到浏览器
-      'plugin/test/*_test.js': ['webpack', 'dirname']
-    },
-    karmaTypescriptConfig: {
-      tsconfig: 'tsconfig.json',
-      compilerOptions: {
-        allowJs: true,
-        declaration: false,
-        module: 'commonjs'
-      },
-      reports: {} // Do not produce coverage html.
+      'dist/plugin/components/tfjs-wechat/*': ['filemap'], // 组件文件使用 filemap 将各个文件内容注入到浏览器
+      'dist/plugin/test/*_test.js': ['webpack', 'dirname'],
+      'dist/plugin/miniprogram_npm/@tensorflow/tfjs/index.js': ['webpack', 'dirname']
     },
     webpack: {
       mode: 'development',
@@ -55,7 +38,7 @@ module.exports = function(config) {
           __dirname: false, // 不注入 __dirname，由 preprocessor 来处理
       },
     },
-    reporters: ['progress', 'karma-typescript'],
+    reporters: ['progress'],
     autoWatch: true,
     browsers: ['Chrome', 'Firefox'],
     browserStack: {

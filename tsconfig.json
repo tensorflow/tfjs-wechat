@@ -22,12 +22,13 @@
     "allowUnreachableCode": false,
     "typeRoots": [
       "plugin/typings",
-      "node_modules/@types"
-    ]
+      "plugin/node_modules/@types"
+    ],
+    "types": ["jasmine"],
+    "outDir": "dist"
   },
   "include": [
-    "plugin/",
-    "miniprogram/"
+    "src"
   ],
   "exclude": [
     "node_modules"

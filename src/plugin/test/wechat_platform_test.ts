@@ -14,4 +14,23 @@
  * limitations under the License.
  * =============================================================================
  */
-export {};
+
+import * as path from 'path';
+
+import {setupWechatPlatform} from '../utils/wechat_platform';
+
+let component = {};
+describe('setupWechatPlatform', () => {
+  beforeEach(() => {
+    const id = simulate.load(
+        path.resolve(
+            '/Users/piyu/WeChatProjects/tfjs-wechat/dist/plugin/components/tfjs-wechat/tfjs-wechat'),
+        'tfjs-wechat');
+    component = simulate.render(id, {prop: 'index.test.properties'});
+    spyOn(wx, 'getSystemInfoSync').and.returnValue({platform: 'devtools'});
+  });
+  it('should polyfill fetch', () => {
+    setupWechatPlatform(component, 'id', false);
+    expect(global.fetch).toBeDefined();
+  });
+});

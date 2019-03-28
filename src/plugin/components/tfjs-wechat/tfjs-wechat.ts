@@ -14,4 +14,12 @@
  * limitations under the License.
  * =============================================================================
  */
-export {};
+import {setupWechatPlatform} from '../../utils/wechat_platform';
+Component({
+  attached() {
+    setupWechatPlatform(this, 'webgl', true);
+  },
+  detatched() {
+    console.log('plugin detatched.');
+  }
+});
