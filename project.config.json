@@ -7,7 +7,11 @@
 			},
 			{
 				"type": "folder",
-				"value": "plugin/node_modules"
+				"value": "node_modules"
+			},
+			{
+				"type": "folder",
+				"value": "src"
 			}
 		]
 	},
@@ -24,11 +28,12 @@
 		"autoAudits": false
 	},
 	"appid": "wx2483d99d066bd53b",
-	"projectname": "tfjs-wechat",
+	"projectname": "TensorFlowJS",
 	"scripts": {
 		"beforeCompile": "",
 		"beforePreview": "",
 		"beforeUpload": ""
 	},
+	"libVersion": "2.6.4",
 	"condition": {}
 }

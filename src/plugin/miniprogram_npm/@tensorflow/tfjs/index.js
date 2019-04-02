@@ -29,18 +29,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 __export(require("@tensorflow/tfjs-core"));
 __export(require("@tensorflow/tfjs-layers"));
 __export(require("@tensorflow/tfjs-converter"));
-// Export data api as tf.data
-var data = require("@tensorflow/tfjs-data");
-exports.data = data;
 // Import versions of all sub-packages.
 var tfjs_core_1 = require("@tensorflow/tfjs-core");
-var tfjs_data_1 = require("@tensorflow/tfjs-data");
 var tfjs_layers_1 = require("@tensorflow/tfjs-layers");
 var tfjs_converter_1 = require("@tensorflow/tfjs-converter");
 var version_1 = require("./version");
 exports.version = {
     'tfjs-core': tfjs_core_1.version_core,
-    'tfjs-data': tfjs_data_1.version_data,
     'tfjs-layers': tfjs_layers_1.version_layers,
     'tfjs-converter': tfjs_converter_1.version_converter,
     'tfjs': version_1.version
