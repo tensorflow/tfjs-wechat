@@ -14,31 +14,31 @@
  * limitations under the License.
  * =============================================================================
  */
+ path = require('path');
+
 module.exports = function(config) {
   config.set({
-    frameworks: ['jasmine', 'karma-typescript'],
+    frameworks: ['jasmine'],
     files: [
       'node_modules/miniprogram-simulate/build.js',
-      {pattern: 'src/plugin/components/**/*.ts', serve: false},
-      {pattern: 'src/plugin/utils/**/*.ts'},
-      {pattern: 'src/plugin/test/**/*.ts'},
-      'dist/plugin/components/**/*',
+      'dist/plugin/utils/**/*.js',
+      'dist/plugin/test/**/*.js',
+      'dist/plugin/components/**/*.js',
+      'dist/plugin/components/tfjs-wechat/*'
     ],
-    exclude: ["src/plugin/**/*.d.ts", "dist/plugin/**/*.d.ts"],
+    exclude: ['dist/plugin/**/*.d.ts', 'dist/plugin/**/*.js.map'],
     preprocessors: {
-      'src/plugin/**/*.ts': ['karma-typescript'],
-      'dist/plugin/components/tfjs-wechat/*.*': ['filemap'], // 组件文件使用 filemap 将各个文件内容注入到浏览器
-    },
-    karmaTypescriptConfig: {
-      tsconfig: 'tsconfig.json',
-      // Disable coverage reports and instrumentation by default for tests
-      coverageOptions: {instrumentation: false},
-      reports: {},
-      bundlerOptions: {sourceMap: true}
+      'dist/plugin/components/tfjs-wechat/*.js': ['webpack','filemap'],
+      'dist/plugin/components/tfjs-wechat/*.wxml': ['filemap'], // 组件文件使用 filemap 将各个文件内容注入到浏览器
+      'dist/plugin/components/tfjs-wechat/*.json': ['filemap'], // 组件文件使用 filemap 将各个文件内容注入到浏览器
+      'dist/plugin/components/tfjs-wechat/*.wxss': ['filemap'], // 组件文件使用 filemap 将各个文件内容注入到浏览器
+      'dist/plugin/utils/*.js': ['webpack'],
+      'dist/plugin/api/*.js': ['webpack'],
+      'dist/plugin/test/*.js': ['webpack', 'dirname'],
     },
     reporters: ['progress'],
     autoWatch: true,
-    browsers: ['Chrome', 'Firefox'],
+    browsers: ['Chrome'],
     browserStack: {
       username: process.env.BROWSERSTACK_USERNAME,
       accessKey: process.env.BROWSERSTACK_KEY
@@ -63,6 +63,18 @@ module.exports = function(config) {
     },
     client: {
       args: ['--grep', config.grep || '']
-    }
+    },
+    webpack: {
+      mode: 'development',
+      optimization: {
+          minimize: false,
+      },
+      node: {
+          __dirname: false,
+      },
+      resolve: {
+        modules: [path.resolve(__dirname, 'src/plugin/node_modules'), 'node_modules']
+      }
+    },
   });
 };

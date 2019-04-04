@@ -23,8 +23,7 @@ let component = {};
 describe('setupWechatPlatform', () => {
   beforeEach(() => {
     const id = simulate.load(
-        path.resolve(
-            '/Users/piyu/WeChatProjects/tfjs-wechat/dist/plugin/components/tfjs-wechat/tfjs-wechat'),
+        path.resolve(__dirname, '../components/tfjs-wechat/tfjs-wechat'),
         'tfjs-wechat');
     component = simulate.render(id, {prop: 'index.test.properties'});
     spyOn(wx, 'getSystemInfoSync').and.returnValue({platform: 'devtools'});
@@ -32,5 +31,13 @@ describe('setupWechatPlatform', () => {
   it('should polyfill fetch', () => {
     setupWechatPlatform(component, 'id', false);
     expect(global.fetch).toBeDefined();
+  });
+  it('should polyfill btoa', () => {
+    setupWechatPlatform(component, 'id', false);
+    expect(global.btoa).toBeDefined();
+  });
+  it('should polyfill atob', () => {
+    setupWechatPlatform(component, 'id', false);
+    expect(global.atob).toBeDefined();
   });
 });
