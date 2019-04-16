@@ -16,7 +16,7 @@
  */
 import * as tfjs from '@tensorflow/tfjs';
 
-const tf = requirePlugin('myPlugin') as typeof tfjs;
+const tf = requirePlugin('tfjsPlugin') as typeof tfjs;
 
 import {IMAGENET_CLASSES} from './imagenet_classes';
 

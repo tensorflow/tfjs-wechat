@@ -3,9 +3,9 @@
     "pages/index/index"
   ],
   "plugins": {
-    "myPlugin": {
+    "tfjsPlugin": {
       "version": "dev",
-      "provider": "wx2483d99d066bd53b"
+      "provider": "wx6afed118d9e81df9"
     }
   }
 }

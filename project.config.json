@@ -27,7 +27,7 @@
 		"nodeModules": true,
 		"autoAudits": false
 	},
-	"appid": "wx2483d99d066bd53b",
+	"appid": "wx6afed118d9e81df9",
 	"projectname": "TensorFlowJS",
 	"scripts": {
 		"beforeCompile": "",

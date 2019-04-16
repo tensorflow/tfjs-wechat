@@ -14,13 +14,7 @@
  * limitations under the License.
  * =============================================================================
  */
-
-import * as tfjs from '@tensorflow/tfjs';
-import {fetchFunc} from 'fetch-wechat';
-
 import {Classifier} from '../../model/classifier';
-
-const tf = requirePlugin('myPlugin') as typeof tfjs;
 
 const CANVAS_ID = 'image-canvas';
 Page({
@@ -55,8 +49,6 @@ Page({
     }
   },
   async onReady() {
-    // tslint:disable-next-line:no-any
-    (tf as any).configPlugin({fetchFunc: fetchFunc()});
     this.canvas = wx.createCanvasContext(CANVAS_ID);
     const model = new Classifier(this);
     await model.load();

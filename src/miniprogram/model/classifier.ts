@@ -19,7 +19,7 @@ import {
   MobileNet
 } from './mobilenet';
 import * as tfjs from '@tensorflow/tfjs';
-const tf  = requirePlugin('myPlugin') as typeof tfjs;
+const tf  = requirePlugin('tfjsPlugin') as typeof tfjs;
 
 export class Classifier {
   private mobileNet: MobileNet;
