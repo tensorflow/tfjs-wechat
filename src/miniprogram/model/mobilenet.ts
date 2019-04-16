@@ -21,7 +21,7 @@ const tf = requirePlugin('tfjsPlugin') as typeof tfjs;
 import {IMAGENET_CLASSES} from './imagenet_classes';
 
 const GOOGLE_CLOUD_STORAGE_DIR =
-    'https://storage.googleapis.com/tfjs-models/savedmodel/';
+    'https://7465-tensorflowjs-e2061d-1259050850.tcb.qcloud.la/';
 const MODEL_FILE_URL = 'mobilenet_v2_1.0_224/model.json';
 const PREPROCESS_DIVISOR = tf.scalar(255 / 2);
 
