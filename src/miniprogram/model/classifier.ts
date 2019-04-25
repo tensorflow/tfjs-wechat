@@ -15,24 +15,21 @@
  * =============================================================================
  */
 
-import {
-  MobileNet
-} from './mobilenet';
-import * as tfjs from '@tensorflow/tfjs';
-const tf  = requirePlugin('tfjsPlugin') as typeof tfjs;
+import * as tf from '@tensorflow/tfjs';
+
+import {MobileNet} from './mobilenet';
 
 export class Classifier {
   private mobileNet: MobileNet;
   // tslint:disable-next-line:no-any
-  constructor(private page: any) {
-  }
+  constructor(private page: any) {}
   async load() {
     this.mobileNet = new MobileNet();
-    this.page.setData!({ result: 'loading model...' });
+    this.page.setData!({result: 'loading model...'});
     const start = Date.now();
     await this.mobileNet.load();
     const result = `model loaded: ${Date.now() - start}ms\n`;
-    this.page.setData!({ result });
+    this.page.setData!({result});
   }
 
   classify(ab: ArrayBuffer, size: CameraSize) {
@@ -42,12 +39,13 @@ export class Classifier {
     const start = Date.now();
     tf.tidy(() => {
       const pixels = tf.tensor3d(data, [size.height, size.width, 4], 'float32')
-          .slice([0, 0, 0], [-1, -1, 3]);
-      const tensor = this.mobileNet.predict(pixels) as tfjs.Tensor;
+                         .slice([0, 0, 0], [-1, -1, 3]);
+      const tensor = this.mobileNet.predict(pixels) as tf.Tensor;
 
       const topK = this.mobileNet.getTopKClasses(tensor, 5);
       result += `prediction: ${Date.now() - start}ms\n`;
-      result += topK.map((x, i) => `${x.value.toFixed(3)}: ${x.label}`).join('\n');
+      result +=
+          topK.map((x, i) => `${x.value.toFixed(3)}: ${x.label}`).join('\n');
       return result;
     });
     this.page.setData!({result});

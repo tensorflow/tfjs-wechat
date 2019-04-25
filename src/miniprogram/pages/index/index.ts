@@ -59,4 +59,4 @@ Page({
       this.model.dispose();
     }
   }
-})
+});

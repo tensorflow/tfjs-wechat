@@ -4,8 +4,8 @@ var __DEFINE__ = function(modId, func, req) { var m = { exports: {} }; __MODS__[
 var __REQUIRE__ = function(modId, source) { if(!__MODS__[modId]) return require(source); if(!__MODS__[modId].status) { var m = { exports: {} }; __MODS__[modId].status = 1; __MODS__[modId].func(__MODS__[modId].req, m, m.exports); if(typeof m.exports === "object") { Object.keys(m.exports).forEach(function(k) { __MODS__[modId].m.exports[k] = m.exports[k]; }); if(m.exports.__esModule) Object.defineProperty(__MODS__[modId].m.exports, "__esModule", { value: true }); } else { __MODS__[modId].m.exports = m.exports; } } return __MODS__[modId].m.exports; };
 var __REQUIRE_WILDCARD__ = function(obj) { if(obj && obj.__esModule) { return obj; } else { var newObj = {}; if(obj != null) { for(var k in obj) { if (Object.prototype.hasOwnProperty.call(obj, k)) newObj[k] = obj[k]; } } newObj.default = obj; return newObj; } };
 var __REQUIRE_DEFAULT__ = function(obj) { return obj && obj.__esModule ? obj.default : obj; };
-__DEFINE__(1553811080281, function(require, module, exports) {
-"use strict";
+__DEFINE__(1556088523320, function(require, module, exports) {
+
 /**
  * @license
  * Copyright 2018 Google LLC. All Rights Reserved.
@@ -27,30 +27,27 @@ function __export(m) {
 }
 Object.defineProperty(exports, "__esModule", { value: true });
 __export(require("@tensorflow/tfjs-core"));
-__export(require("@tensorflow/tfjs-layers"));
 __export(require("@tensorflow/tfjs-converter"));
 // Import versions of all sub-packages.
 var tfjs_core_1 = require("@tensorflow/tfjs-core");
-var tfjs_layers_1 = require("@tensorflow/tfjs-layers");
 var tfjs_converter_1 = require("@tensorflow/tfjs-converter");
 var version_1 = require("./version");
 exports.version = {
     'tfjs-core': tfjs_core_1.version_core,
-    'tfjs-layers': tfjs_layers_1.version_layers,
     'tfjs-converter': tfjs_converter_1.version_converter,
     'tfjs': version_1.version
 };
 //# sourceMappingURL=index.js.map
-}, function(modId) {var map = {"./version":1553811080282}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1553811080282, function(require, module, exports) {
-"use strict";
+}, function(modId) {var map = {"./version":1556088523321}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1556088523321, function(require, module, exports) {
+
 /** @license See the LICENSE file. */
 Object.defineProperty(exports, "__esModule", { value: true });
 // This code is auto-generated, do not modify this file!
-var version = '1.0.3';
+var version = '1.1.0';
 exports.version = version;
 //# sourceMappingURL=version.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-return __REQUIRE__(1553811080281);
+return __REQUIRE__(1556088523320);
 })()
 //# sourceMappingURL=index.js.map

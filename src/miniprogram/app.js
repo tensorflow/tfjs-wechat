@@ -1,8 +1,10 @@
 var fetchWechat = require('fetch-wechat');
-var tf = requirePlugin('tfjsPlugin');
+import * as tf from '@tensorflow/tfjs';
+
+var plugin = requirePlugin('tfjsPlugin');
 //app.js
 App({
   onLaunch: function () {
-    tf.configPlugin({fetchFunc: fetchWechat.fetchFunc()})
+    plugin.configPlugin({fetchFunc: fetchWechat.fetchFunc(), tf})
   }
 })

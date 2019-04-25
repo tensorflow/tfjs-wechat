@@ -7,10 +7,10 @@
   "main": "dist/index.js",
   "license": "Apache-2.0",
   "devDependencies": {
-    "@tensorflow/tfjs": "1.0.2",
     "typescript": "^3.3.3333"
   },
   "dependencies": {
-    "fetch-wechat": "0.0.3"
+    "fetch-wechat": "0.0.3",
+    "@tensorflow/tfjs": "1.1.0"
   }
 }

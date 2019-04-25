@@ -20,8 +20,15 @@ import * as path from 'path';
 import {setupWechatPlatform} from '../utils/wechat_platform';
 
 let component = {};
+const fetchFunc = () => {};
+const tf = {
+  getBackend: (): undefined => undefined,
+  ENV: {global: {}}
+};
+
 describe('setupWechatPlatform', () => {
   beforeEach(() => {
+    global.config = {fetchFunc, tf};
     const id = simulate.load(
         path.resolve(__dirname, '../components/tfjs-wechat/tfjs-wechat'),
         'tfjs-wechat');

@@ -12,6 +12,10 @@
 			{
 				"type": "folder",
 				"value": "src"
+			},
+			{
+				"type": "folder",
+				"value": "dist/plugin/test"
 			}
 		]
 	},
@@ -35,5 +39,7 @@
 		"beforeUpload": ""
 	},
 	"libVersion": "2.6.4",
+	"simulatorType": "wechat",
+	"simulatorPluginLibVersion": {},
 	"condition": {}
 }

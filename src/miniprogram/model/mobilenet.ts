@@ -14,9 +14,7 @@
  * limitations under the License.
  * =============================================================================
  */
-import * as tfjs from '@tensorflow/tfjs';
-
-const tf = requirePlugin('tfjsPlugin') as typeof tfjs;
+import * as tf from '@tensorflow/tfjs';
 
 import {IMAGENET_CLASSES} from './imagenet_classes';
 
@@ -30,7 +28,7 @@ export interface TopKValue {
   value: number;
 }
 export class MobileNet {
-  private model: tfjs.GraphModel;
+  private model: tf.GraphModel;
   constructor() {}
 
   async load() {
@@ -51,7 +49,7 @@ export class MobileNet {
    * @param input un-preprocessed input Array.
    * @return The softmax logits.
    */
-  predict(input: tfjs.Tensor) {
+  predict(input: tf.Tensor) {
     const preprocessedInput = tf.div(
         tf.sub(input.asType('float32'), PREPROCESS_DIVISOR),
         PREPROCESS_DIVISOR);
@@ -60,7 +58,7 @@ export class MobileNet {
     return this.model.predict(reshapedInput);
   }
 
-  getTopKClasses(logits: tfjs.Tensor, topK: number): TopKValue[] {
+  getTopKClasses(logits: tf.Tensor, topK: number): TopKValue[] {
     return tf.tidy(() => {
       const predictions = tf.softmax(logits);
       const values = predictions.dataSync();

@@ -16,8 +16,10 @@
  */
 import {setupWechatPlatform} from '../../utils/wechat_platform';
 Component({
+  properties: {debug: {type: Boolean, value: false}},
   attached() {
-    setupWechatPlatform(this, 'webgl', true);
+    // tslint:disable-next-line:no-any
+    setupWechatPlatform(this, 'webgl', (this.data as any).debug);
   },
   detatched() {
     console.log('plugin detatched.');

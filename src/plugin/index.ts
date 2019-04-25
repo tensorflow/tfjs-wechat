@@ -14,5 +14,4 @@
  * limitations under the License.
  * =============================================================================
  */
-export * from '@tensorflow/tfjs';
 export {configPlugin} from './api/config';

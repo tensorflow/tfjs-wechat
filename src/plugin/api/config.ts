@@ -19,12 +19,15 @@ export interface SystemConfig {
   /**
    * A function used to override the `window.fetch` function.
    */
-  fetchFunc?: Function;
+  fetchFunc: Function;
+  /**
+   * TensorFlow.js exported root object.
+   */
+  // tslint:disable-next-line:no-any
+  tf: any;
 }
 export function configPlugin(config: SystemConfig) {
-  if (config.fetchFunc) {
-    // tslint:disable-next-line:no-any
-    const typedGlobal = global as any;
-    typedGlobal.fetch = config.fetchFunc;
-  }
+  // tslint:disable-next-line:no-any
+  const typedGlobal = global as any;
+  typedGlobal.config = config;
 }

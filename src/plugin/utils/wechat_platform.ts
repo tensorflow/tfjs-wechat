@@ -15,9 +15,8 @@
  * =============================================================================
  */
 
-import * as tf from '@tensorflow/tfjs';
-import { setWechatFetch } from 'fetch-wechat';
-import { btoa, atob } from 'abab';
+import * as tfjs from '@tensorflow/tfjs';
+import {atob, btoa} from 'abab';
 
 // WeChat WebGL backend name
 export const WECHAT_WEBGL_BACKEND = 'wechat-webgl';
@@ -28,45 +27,70 @@ export const WECHAT_WEBGL_BACKEND = 'wechat-webgl';
  * @param debug: flag to enable/disable debugging.
  */
 export function setupWechatPlatform(
+    // tslint:disable-next-line:no-any
     component: any, canvasId: string, debug = true): void {
+  // tslint:disable-next-line:no-any
+  const typedGlobal = global as any;
+  const tf = typedGlobal.config.tf as typeof tfjs;
+  console.log(tf);
+  // Skip initialization if the backend has been set.
+  if (tf.getBackend() === WECHAT_WEBGL_BACKEND) {
+    return;
+  }
   const systemInfo = wx.getSystemInfoSync();
   if (debug) {
-    console.log('selecting node ' + '#' + canvasId);
+    console.log(
+        'selecting node ' +
+        '#' + canvasId);
   }
 
-  setWechatFetch();
-  setBase64Methods();
+  setWechatFetch(tf, typedGlobal);
+  setBase64Methods(tf);
   // devtools still not supporting webgl apis
   if (systemInfo.platform !== 'devtools') {
     setTimeout(() => {
       const selector = wx.createSelectorQuery().in(component);
+      // tslint:disable-next-line:no-any
       (selector.select('#' + canvasId) as any)
-        .node((res: any) => initWebGL(res, systemInfo.platform, debug))
-        .exec();
+          // tslint:disable-next-line:no-any
+          .node((res: any) => initWebGL(tf, res, systemInfo.platform, debug))
+          .exec();
     }, 500);
   }
+}
+/**
+ * Polyfill btoa and atob method on the global scope which will be used by
+ * model parser.
+ */
+// tslint:disable-next-line:no-any
+export function setWechatFetch(tf: typeof tfjs, global: any) {
+  tf.ENV.global.fetch = global.config.fetchFunc;
 }
 
 /**
  * Polyfill btoa and atob method on the global scope which will be used by
  * model parser.
  */
-export function setBase64Methods() {
-  global.btoa = btoa;
-  global.atob = atob;
+export function setBase64Methods(tf: typeof tfjs) {
+  tf.ENV.global.btoa = btoa;
+  tf.ENV.global.atob = atob;
 }
 /**
- * Initialize webgl backend using the GlRenderingContext from the webgl canvas node.
+ * Initialize webgl backend using the GlRenderingContext from the webgl canvas
+ * node.
  * @param res: webgl canvas node container return from node selector.
- * @param platform: platform name where the mini app is running (ios, android, devtool).
+ * @param platform: platform name where the mini app is running (ios, android,
+ *     devtool).
  * @param debug: enable/disable debug logging.
  */
-export function initWebGL(res: any, platform: string, debug = false): void {
+export function initWebGL(
+    // tslint:disable-next-line:no-any
+    tf: typeof tfjs, res: any, platform: string, debug = false): void {
   const canvas = res.node;
   if (debug) {
-    console.log('found the canvas: ' + canvas);
+    console.log(`found the canvas:  ${canvas}`);
   }
-  if (tf.ENV.findBackend(WECHAT_WEBGL_BACKEND) == null) {
+  if (tf.findBackend(WECHAT_WEBGL_BACKEND) == null) {
     const WEBGL_ATTRIBUTES = {
       alpha: false,
       antialias: false,
@@ -85,14 +109,14 @@ export function initWebGL(res: any, platform: string, debug = false): void {
       tf.ENV.set('WEBGL_RENDER_FLOAT32_ENABLED', false);
     }
     try {
-      tf.ENV.registerBackend('wechat-webgl', () => {
+      tf.registerBackend('wechat-webgl', () => {
         const context = new tf.webgl.GPGPUContext(gl);
         return new tf.webgl.MathBackendWebGL(context);
       }, 2);
     } catch (e) {
       console.error(e);
     }
-    if (tf.ENV.findBackend(WECHAT_WEBGL_BACKEND) != null) {
+    if (tf.findBackend(WECHAT_WEBGL_BACKEND) != null) {
       tf.setBackend(WECHAT_WEBGL_BACKEND);
     }
     if (debug) {
