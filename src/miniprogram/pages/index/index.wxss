@@ -1,4 +1,16 @@
 /* pages/index/index.wxss */
+.buttons {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+}
+
+.buttons .button {
+  width: 100px;
+  height: 36px;
+  font-size: 15px;
+}
+
 .image-canvas {
   width: 224px;
   height: 224px;

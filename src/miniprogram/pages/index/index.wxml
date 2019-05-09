@@ -1,16 +1,17 @@
+<view class="buttons">
+  <button size="mini" class="button" type="{{selectedBtn == 'mobilenet' ? 'primary' : 'default'}}" bindtap="mobilenet">MobileNet</button>
+  <button size="mini" class="button" type="{{selectedBtn == 'posenet' ? 'primary' : 'default'}}" bindtap="posenet">PoseNet</button>
+</view>
+
 <view class="container">
 <camera
   device-position="back"
   flash="off"
   binderror="error"
-  style="width: 224px; height: 224px;"
-></camera>
-<button type="primary" bindtap="takePhoto">Classify</button>
-  <canvas
-  class="image-canvas"
-  id="image-canvas"
-  canvas-id="image-canvas"
-  ></canvas>
+  style="width: 288px; height: 352px;"
+  frame-size="small"
+><canvas wx:if="{{insert}}" id="image" canvas-id="image" style="width: 100%; height: 100%;" bindtouchstart="touchstart" bindtouchmove="touchmove" bindtouchend="touchend" bindtouchcancel="touchcancel">
+    </canvas></camera>
   <text class="result">{{result}}</text>
 </view>
 <tfjs-wechat />

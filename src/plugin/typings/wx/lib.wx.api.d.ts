@@ -4434,7 +4434,7 @@ declare namespace wx {
      * 创建 `camera` 上下文 `CameraContext` 对象。
      *
      * 最低基础库： `1.6.0` */
-    createCameraContext(): CameraContext;
+    createCameraContext(page: any): CameraContext;
     /** [[InnerAudioContext]((InnerAudioContext)) wx.createInnerAudioContext()](wx.createInnerAudioContext.md)
      *
      * 创建内部 `audio` 上下文 `InnerAudioContext` 对象。

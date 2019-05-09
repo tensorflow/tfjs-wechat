@@ -14,49 +14,99 @@
  * limitations under the License.
  * =============================================================================
  */
-import {Classifier} from '../../model/classifier';
 
-const CANVAS_ID = 'image-canvas';
+import * as posenet from '@tensorflow-models/posenet';
+import {Classifier} from '../../model/classifier';
+import { detectPoseInRealTime, drawPoses } from '../../posenet/posenet';
+const CANVAS_ID = 'image';
 Page({
-  data: {result: ''},
-  model: undefined,
+  data: { result: '', selectedBtn: 'mobilenet'},
+  mobilenetModel: undefined,
+  posenetModel: undefined,
+  selectedModel: undefined,  
   canvas: undefined,
-  takePhoto() {
-    if (this.model) {
-      const ctx = wx.createCameraContext();
-      ctx.takePhoto({
-        quality: 'high',
-        success: (res) => {
-          this.canvas.drawImage(res.tempImagePath, 0, 0, 224, 224);
-          this.canvas.draw(false, () => {
-            wx.canvasGetImageData({
-              canvasId: CANVAS_ID,
-              x: 0,
-              y: 0,
-              width: 224,
-              height: 224,
-              success: (res) => {
-                // tslint:disable-next-line:no-any
-                const result = (res as any) as ImageData;
-                this.model.classify(
-                    result.data.buffer,
-                    {width: result.width, height: result.height});
-              }
-            });
-          });
-        }
+  poses: undefined,
+  ctx: undefined,
+  mobilenet() {
+    this.setData!({ selectedBtn: 'mobilenet' });
+    this.selectedModel = this.mobilenetModel;
+    if (this.mobilenetModel == null) {
+      const model = new Classifier(this);
+      model.load().then(() => {
+        this.setData!({ result: 'loading mobilenet model...' });
+        this.mobilenetModel = model;
+        this.selectedModel = this.mobilenetModel;
+        this.setData!({ result: 'model loaded.' });
       });
     }
   },
+  posenet() {
+    this.setData!({ selectedBtn: 'posenet' });
+    this.selectedModel = this.posenetModel;
+    if (this.posenetModel == null) {
+      this.setData!({ result: 'loading posenet model...' });
+      posenet.load(0.5).then((model) => {
+        this.posenetModel = model;
+        this.selectedModel = this.posenetModel;
+        this.setData!({ result: 'model loaded.' });
+      });
+    }
+  },
+  executePosenet(frame) {
+    if (this.posenetModel) {
+      const start = Date.now();
+      detectPoseInRealTime(frame, this.posenetModel, false)
+        .then((poses) => {
+          this.poses = poses;
+          drawPoses(this);
+          const result =
+            `${Date.now() - start}ms`;
+          this.setData!({ result });
+        })
+        .catch((err) => {
+          console.log(err, err.stack);
+        });
+    }
+  },  
+  executeMobilenet(frame) {
+    if (this.mobilenetModel) {
+      this.mobilenetModel.classify(frame.data, {width: frame.width, height: frame.height});
+    }
+  },  
   async onReady() {
-    this.canvas = wx.createCanvasContext(CANVAS_ID);
-    const model = new Classifier(this);
-    await model.load();
-    this.model = model;
+    setTimeout(() => {
+      this.setData({ insert: true });
+      console.log('create canvas context for #image...');
+      setTimeout(() => {
+        this.ctx = wx.createCanvasContext(CANVAS_ID);
+        console.log('ctx', this.ctx);
+      }, 250);  
+    }, 500);  
+
+    this.mobilenet();
+    const context = wx.createCameraContext(this);
+    let count = 0;
+    const listener =
+      (context as any)
+        .onCameraFrame((frame) => {
+          count++;
+          if (count === 3) {
+            if (this.data.selectedBtn === 'posenet') {
+              this.executePosenet(frame);
+            } else {
+              this.executeMobilenet(frame);
+            }
+            count = 0;
+          }
+        });
+    listener.start();
   },
   onUnload() {
-    if (this.model) {
-      this.model.dispose();
+    if (this.mobilenetModel) {
+      this.mobilenetModel.dispose();
+    }
+    if (this.posenetModel) {
+      this.posenetModel.dispose();
     }
   }
 });

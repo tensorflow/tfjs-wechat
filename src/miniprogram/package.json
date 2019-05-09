@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "fetch-wechat": "0.0.3",
-    "@tensorflow/tfjs": "1.1.0"
+    "@tensorflow/tfjs": "1.1.0",
+    "@tensorflow-models/posenet": "1.0.1"
   }
 }
