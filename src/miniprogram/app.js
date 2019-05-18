@@ -5,6 +5,6 @@ var plugin = requirePlugin('tfjsPlugin');
 //app.js
 App({
   onLaunch: function () {
-    plugin.configPlugin({fetchFunc: fetchWechat.fetchFunc(), tf});
+    plugin.configPlugin({ fetchFunc: fetchWechat.fetchFunc(), tf, canvas: wx.createOffscreenCanvas()}, true);
   }
 })

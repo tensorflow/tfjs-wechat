@@ -15,36 +15,40 @@
  * =============================================================================
  */
 
-import * as path from 'path';
+// import * as path from 'path';
 
 import {setupWechatPlatform} from '../utils/wechat_platform';
 
-let component = {};
+// let component = {};
 const fetchFunc = () => {};
 const tf = {
   getBackend: (): undefined => undefined,
   ENV: {global: {}}
 };
-
+const canvas = {};
+const config = {
+  fetchFunc,
+  tf,
+  canvas
+};
 describe('setupWechatPlatform', () => {
   beforeEach(() => {
-    global.config = {fetchFunc, tf};
-    const id = simulate.load(
-        path.resolve(__dirname, '../components/tfjs-wechat/tfjs-wechat'),
-        'tfjs-wechat');
-    component = simulate.render(id, {prop: 'index.test.properties'});
+    // const id = simulate.load(
+    //     path.resolve(__dirname, '../components/tfjs-wechat/tfjs-wechat'),
+    //     'tfjs-wechat');
+    // component = simulate.render(id, {prop: 'index.test.properties'});
     spyOn(wx, 'getSystemInfoSync').and.returnValue({platform: 'devtools'});
   });
   it('should polyfill fetch', () => {
-    setupWechatPlatform(component, 'id', false);
+    setupWechatPlatform(config);
     expect(global.fetch).toBeDefined();
   });
   it('should polyfill btoa', () => {
-    setupWechatPlatform(component, 'id', false);
+    setupWechatPlatform(config);
     expect(global.btoa).toBeDefined();
   });
   it('should polyfill atob', () => {
-    setupWechatPlatform(component, 'id', false);
+    setupWechatPlatform(config);
     expect(global.atob).toBeDefined();
   });
 });

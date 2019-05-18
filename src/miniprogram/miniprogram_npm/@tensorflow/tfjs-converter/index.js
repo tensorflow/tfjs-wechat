@@ -4,7 +4,7 @@ var __DEFINE__ = function(modId, func, req) { var m = { exports: {} }; __MODS__[
 var __REQUIRE__ = function(modId, source) { if(!__MODS__[modId]) return require(source); if(!__MODS__[modId].status) { var m = { exports: {} }; __MODS__[modId].status = 1; __MODS__[modId].func(__MODS__[modId].req, m, m.exports); if(typeof m.exports === "object") { Object.keys(m.exports).forEach(function(k) { __MODS__[modId].m.exports[k] = m.exports[k]; }); if(m.exports.__esModule) Object.defineProperty(__MODS__[modId].m.exports, "__esModule", { value: true }); } else { __MODS__[modId].m.exports = m.exports; } } return __MODS__[modId].m.exports; };
 var __REQUIRE_WILDCARD__ = function(obj) { if(obj && obj.__esModule) { return obj; } else { var newObj = {}; if(obj != null) { for(var k in obj) { if (Object.prototype.hasOwnProperty.call(obj, k)) newObj[k] = obj[k]; } } newObj.default = obj; return newObj; } };
 var __REQUIRE_DEFAULT__ = function(obj) { return obj && obj.__esModule ? obj.default : obj; };
-__DEFINE__(1556088523028, function(require, module, exports) {
+__DEFINE__(1557782889612, function(require, module, exports) {
 
 Object.defineProperty(exports, "__esModule", { value: true });
 /**
@@ -29,8 +29,8 @@ exports.loadGraphModel = graph_model_1.loadGraphModel;
 var version_1 = require("./version");
 exports.version_converter = version_1.version;
 //# sourceMappingURL=index.js.map
-}, function(modId) {var map = {"./executor/graph_model":1556088523029,"./version":1556088523069}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1556088523029, function(require, module, exports) {
+}, function(modId) {var map = {"./executor/graph_model":1557782889613,"./version":1557782889653}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1557782889613, function(require, module, exports) {
 
 /**
  * @license
@@ -417,8 +417,8 @@ function loadGraphModel(modelUrl, options) {
 }
 exports.loadGraphModel = loadGraphModel;
 //# sourceMappingURL=graph_model.js.map
-}, function(modId) { var map = {"../operations/operation_mapper":1556088523030,"./graph_executor":1556088523049}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1556088523030, function(require, module, exports) {
+}, function(modId) { var map = {"../operations/operation_mapper":1557782889614,"./graph_executor":1557782889633}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1557782889614, function(require, module, exports) {
 
 /**
  * @license
@@ -705,8 +705,8 @@ var OperationMapper = /** @class */ (function () {
 }());
 exports.OperationMapper = OperationMapper;
 //# sourceMappingURL=operation_mapper.js.map
-}, function(modId) { var map = {"../data/compiled_api":1556088523031,"./executors/utils":1556088523032,"./op_list/arithmetic":1556088523033,"./op_list/basic_math":1556088523034,"./op_list/control":1556088523035,"./op_list/convolution":1556088523036,"./op_list/creation":1556088523037,"./op_list/dynamic":1556088523038,"./op_list/evaluation":1556088523039,"./op_list/graph":1556088523040,"./op_list/image":1556088523041,"./op_list/logical":1556088523042,"./op_list/matrices":1556088523043,"./op_list/normalization":1556088523044,"./op_list/reduction":1556088523045,"./op_list/slice_join":1556088523046,"./op_list/spectral":1556088523047,"./op_list/transformation":1556088523048}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1556088523031, function(require, module, exports) {
+}, function(modId) { var map = {"../data/compiled_api":1557782889615,"./executors/utils":1557782889616,"./op_list/arithmetic":1557782889617,"./op_list/basic_math":1557782889618,"./op_list/control":1557782889619,"./op_list/convolution":1557782889620,"./op_list/creation":1557782889621,"./op_list/dynamic":1557782889622,"./op_list/evaluation":1557782889623,"./op_list/graph":1557782889624,"./op_list/image":1557782889625,"./op_list/logical":1557782889626,"./op_list/matrices":1557782889627,"./op_list/normalization":1557782889628,"./op_list/reduction":1557782889629,"./op_list/slice_join":1557782889630,"./op_list/spectral":1557782889631,"./op_list/transformation":1557782889632}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1557782889615, function(require, module, exports) {
 
 /**
  * @license
@@ -771,7 +771,7 @@ var SaverDef;
 })(SaverDef = exports.SaverDef || (exports.SaverDef = {}));
 //# sourceMappingURL=compiled_api.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1556088523032, function(require, module, exports) {
+__DEFINE__(1557782889616, function(require, module, exports) {
 
 /**
  * @license
@@ -873,7 +873,7 @@ function split(arr, size) {
 exports.split = split;
 //# sourceMappingURL=utils.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1556088523033, function(require, module, exports) {
+__DEFINE__(1557782889617, function(require, module, exports) {
 
 Object.defineProperty(exports, "__esModule", { value: true });
 /**
@@ -1041,7 +1041,7 @@ exports.json = [
 ];
 //# sourceMappingURL=arithmetic.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1556088523034, function(require, module, exports) {
+__DEFINE__(1557782889618, function(require, module, exports) {
 
 Object.defineProperty(exports, "__esModule", { value: true });
 /**
@@ -1465,7 +1465,7 @@ exports.json = [
 ];
 //# sourceMappingURL=basic_math.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1556088523035, function(require, module, exports) {
+__DEFINE__(1557782889619, function(require, module, exports) {
 
 Object.defineProperty(exports, "__esModule", { value: true });
 /**
@@ -1649,7 +1649,7 @@ exports.json = [
 ];
 //# sourceMappingURL=control.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1556088523036, function(require, module, exports) {
+__DEFINE__(1557782889620, function(require, module, exports) {
 
 Object.defineProperty(exports, "__esModule", { value: true });
 /**
@@ -1805,7 +1805,7 @@ exports.json = [
 ];
 //# sourceMappingURL=convolution.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1556088523037, function(require, module, exports) {
+__DEFINE__(1557782889621, function(require, module, exports) {
 
 Object.defineProperty(exports, "__esModule", { value: true });
 /**
@@ -1970,7 +1970,7 @@ exports.json = [
 ];
 //# sourceMappingURL=creation.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1556088523038, function(require, module, exports) {
+__DEFINE__(1557782889622, function(require, module, exports) {
 
 Object.defineProperty(exports, "__esModule", { value: true });
 /**
@@ -2038,7 +2038,7 @@ exports.json = [
 ];
 //# sourceMappingURL=dynamic.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1556088523039, function(require, module, exports) {
+__DEFINE__(1557782889623, function(require, module, exports) {
 
 Object.defineProperty(exports, "__esModule", { value: true });
 /**
@@ -2068,7 +2068,7 @@ exports.json = [{
     }];
 //# sourceMappingURL=evaluation.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1556088523040, function(require, module, exports) {
+__DEFINE__(1557782889624, function(require, module, exports) {
 
 Object.defineProperty(exports, "__esModule", { value: true });
 /**
@@ -2183,7 +2183,7 @@ exports.json = [
 ];
 //# sourceMappingURL=graph.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1556088523041, function(require, module, exports) {
+__DEFINE__(1557782889625, function(require, module, exports) {
 
 Object.defineProperty(exports, "__esModule", { value: true });
 /**
@@ -2247,7 +2247,7 @@ exports.json = [
 ];
 //# sourceMappingURL=image.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1556088523042, function(require, module, exports) {
+__DEFINE__(1557782889626, function(require, module, exports) {
 
 Object.defineProperty(exports, "__esModule", { value: true });
 /**
@@ -2383,7 +2383,7 @@ exports.json = [
 ];
 //# sourceMappingURL=logical.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1556088523043, function(require, module, exports) {
+__DEFINE__(1557782889627, function(require, module, exports) {
 
 Object.defineProperty(exports, "__esModule", { value: true });
 /**
@@ -2466,7 +2466,7 @@ exports.json = [
 ];
 //# sourceMappingURL=matrices.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1556088523044, function(require, module, exports) {
+__DEFINE__(1557782889628, function(require, module, exports) {
 
 Object.defineProperty(exports, "__esModule", { value: true });
 /**
@@ -2594,7 +2594,7 @@ exports.json = [
 ];
 //# sourceMappingURL=normalization.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1556088523045, function(require, module, exports) {
+__DEFINE__(1557782889629, function(require, module, exports) {
 
 Object.defineProperty(exports, "__esModule", { value: true });
 /**
@@ -2696,7 +2696,7 @@ exports.json = [
 ];
 //# sourceMappingURL=reduction.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1556088523046, function(require, module, exports) {
+__DEFINE__(1557782889630, function(require, module, exports) {
 
 Object.defineProperty(exports, "__esModule", { value: true });
 /**
@@ -2918,7 +2918,7 @@ exports.json = [
 ];
 //# sourceMappingURL=slice_join.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1556088523047, function(require, module, exports) {
+__DEFINE__(1557782889631, function(require, module, exports) {
 
 Object.defineProperty(exports, "__esModule", { value: true });
 /**
@@ -2975,7 +2975,7 @@ exports.json = [
 ];
 //# sourceMappingURL=spectral.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1556088523048, function(require, module, exports) {
+__DEFINE__(1557782889632, function(require, module, exports) {
 
 Object.defineProperty(exports, "__esModule", { value: true });
 /**
@@ -3099,7 +3099,7 @@ exports.json = [
 ];
 //# sourceMappingURL=transformation.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1556088523049, function(require, module, exports) {
+__DEFINE__(1557782889633, function(require, module, exports) {
 
 /**
  * @license
@@ -3612,8 +3612,8 @@ var GraphExecutor = /** @class */ (function () {
 }());
 exports.GraphExecutor = GraphExecutor;
 //# sourceMappingURL=graph_executor.js.map
-}, function(modId) { var map = {"../operations/executors/utils":1556088523032,"../operations/operation_executor":1556088523050,"./execution_context":1556088523068}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1556088523050, function(require, module, exports) {
+}, function(modId) { var map = {"../operations/executors/utils":1557782889616,"../operations/operation_executor":1557782889634,"./execution_context":1557782889652}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1557782889634, function(require, module, exports) {
 
 /**
  * @license
@@ -3699,8 +3699,8 @@ function executeOp(node, tensorMap, context) {
 }
 exports.executeOp = executeOp;
 //# sourceMappingURL=operation_executor.js.map
-}, function(modId) { var map = {"./executors/arithmetic_executor":1556088523051,"./executors/basic_math_executor":1556088523052,"./executors/control_executor":1556088523053,"./executors/convolution_executor":1556088523055,"./executors/creation_executor":1556088523056,"./executors/dynamic_executor":1556088523057,"./executors/evaluation_executor":1556088523058,"./executors/graph_executor":1556088523059,"./executors/image_executor":1556088523060,"./executors/logical_executor":1556088523061,"./executors/matrices_executor":1556088523062,"./executors/normalization_executor":1556088523063,"./executors/reduction_executor":1556088523064,"./executors/slice_join_executor":1556088523065,"./executors/spectral_executor":1556088523066,"./executors/transformation_executor":1556088523067}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1556088523051, function(require, module, exports) {
+}, function(modId) { var map = {"./executors/arithmetic_executor":1557782889635,"./executors/basic_math_executor":1557782889636,"./executors/control_executor":1557782889637,"./executors/convolution_executor":1557782889639,"./executors/creation_executor":1557782889640,"./executors/dynamic_executor":1557782889641,"./executors/evaluation_executor":1557782889642,"./executors/graph_executor":1557782889643,"./executors/image_executor":1557782889644,"./executors/logical_executor":1557782889645,"./executors/matrices_executor":1557782889646,"./executors/normalization_executor":1557782889647,"./executors/reduction_executor":1557782889648,"./executors/slice_join_executor":1557782889649,"./executors/spectral_executor":1557782889650,"./executors/transformation_executor":1557782889651}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1557782889635, function(require, module, exports) {
 
 /**
  * @license
@@ -3763,8 +3763,8 @@ exports.executeOp = function (node, tensorMap, context) {
 };
 exports.CATEGORY = 'arithmetic';
 //# sourceMappingURL=arithmetic_executor.js.map
-}, function(modId) { var map = {"./utils":1556088523032}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1556088523052, function(require, module, exports) {
+}, function(modId) { var map = {"./utils":1557782889616}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1557782889636, function(require, module, exports) {
 
 /**
  * @license
@@ -3876,8 +3876,8 @@ exports.executeOp = function (node, tensorMap, context) {
 };
 exports.CATEGORY = 'basic_math';
 //# sourceMappingURL=basic_math_executor.js.map
-}, function(modId) { var map = {"./utils":1556088523032}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1556088523053, function(require, module, exports) {
+}, function(modId) { var map = {"./utils":1557782889616}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1557782889637, function(require, module, exports) {
 
 /**
  * @license
@@ -4052,8 +4052,8 @@ function executeOp(node, tensorMap, context) {
 exports.executeOp = executeOp;
 exports.CATEGORY = 'control';
 //# sourceMappingURL=control_executor.js.map
-}, function(modId) { var map = {"../../executor/tensor_array":1556088523054,"./utils":1556088523032}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1556088523054, function(require, module, exports) {
+}, function(modId) { var map = {"../../executor/tensor_array":1557782889638,"./utils":1557782889616}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1557782889638, function(require, module, exports) {
 
 Object.defineProperty(exports, "__esModule", { value: true });
 /**
@@ -4315,7 +4315,7 @@ var TensorArray = /** @class */ (function () {
 exports.TensorArray = TensorArray;
 //# sourceMappingURL=tensor_array.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1556088523055, function(require, module, exports) {
+__DEFINE__(1557782889639, function(require, module, exports) {
 
 /**
  * @license
@@ -4388,8 +4388,8 @@ exports.executeOp = function (node, tensorMap, context) {
 };
 exports.CATEGORY = 'convolution';
 //# sourceMappingURL=convolution_executor.js.map
-}, function(modId) { var map = {"./utils":1556088523032}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1556088523056, function(require, module, exports) {
+}, function(modId) { var map = {"./utils":1557782889616}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1557782889640, function(require, module, exports) {
 
 /**
  * @license
@@ -4467,8 +4467,8 @@ exports.executeOp = function (node, tensorMap, context) {
 };
 exports.CATEGORY = 'creation';
 //# sourceMappingURL=creation_executor.js.map
-}, function(modId) { var map = {"./utils":1556088523032}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1556088523057, function(require, module, exports) {
+}, function(modId) { var map = {"./utils":1557782889616}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1557782889641, function(require, module, exports) {
 
 /**
  * @license
@@ -4558,8 +4558,8 @@ function executeOp(node, tensorMap, context) {
 exports.executeOp = executeOp;
 exports.CATEGORY = 'dynamic';
 //# sourceMappingURL=dynamic_executor.js.map
-}, function(modId) { var map = {"./utils":1556088523032}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1556088523058, function(require, module, exports) {
+}, function(modId) { var map = {"./utils":1557782889616}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1557782889642, function(require, module, exports) {
 
 /**
  * @license
@@ -4595,8 +4595,8 @@ exports.executeOp = function (node, tensorMap, context) {
 };
 exports.CATEGORY = 'evaluation';
 //# sourceMappingURL=evaluation_executor.js.map
-}, function(modId) { var map = {"./utils":1556088523032}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1556088523059, function(require, module, exports) {
+}, function(modId) { var map = {"./utils":1557782889616}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1557782889643, function(require, module, exports) {
 
 /**
  * @license
@@ -4668,8 +4668,8 @@ exports.executeOp = function (node, tensorMap, context) {
 };
 exports.CATEGORY = 'graph';
 //# sourceMappingURL=graph_executor.js.map
-}, function(modId) { var map = {"./utils":1556088523032}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1556088523060, function(require, module, exports) {
+}, function(modId) { var map = {"./utils":1557782889616}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1557782889644, function(require, module, exports) {
 
 /**
  * @license
@@ -4719,8 +4719,8 @@ exports.executeOp = function (node, tensorMap, context) {
 };
 exports.CATEGORY = 'image';
 //# sourceMappingURL=image_executor.js.map
-}, function(modId) { var map = {"./utils":1556088523032}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1556088523061, function(require, module, exports) {
+}, function(modId) { var map = {"./utils":1557782889616}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1557782889645, function(require, module, exports) {
 
 /**
  * @license
@@ -4779,8 +4779,8 @@ exports.executeOp = function (node, tensorMap, context) {
 };
 exports.CATEGORY = 'logical';
 //# sourceMappingURL=logical_executor.js.map
-}, function(modId) { var map = {"./utils":1556088523032}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1556088523062, function(require, module, exports) {
+}, function(modId) { var map = {"./utils":1557782889616}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1557782889646, function(require, module, exports) {
 
 /**
  * @license
@@ -4814,8 +4814,8 @@ exports.executeOp = function (node, tensorMap, context) {
 };
 exports.CATEGORY = 'matrices';
 //# sourceMappingURL=matrices_executor.js.map
-}, function(modId) { var map = {"./utils":1556088523032}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1556088523063, function(require, module, exports) {
+}, function(modId) { var map = {"./utils":1557782889616}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1557782889647, function(require, module, exports) {
 
 /**
  * @license
@@ -4860,8 +4860,8 @@ exports.executeOp = function (node, tensorMap, context) {
 };
 exports.CATEGORY = 'normalization';
 //# sourceMappingURL=normalization_executor.js.map
-}, function(modId) { var map = {"./utils":1556088523032}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1556088523064, function(require, module, exports) {
+}, function(modId) { var map = {"./utils":1557782889616}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1557782889648, function(require, module, exports) {
 
 /**
  * @license
@@ -4933,8 +4933,8 @@ exports.executeOp = function (node, tensorMap, context) {
 };
 exports.CATEGORY = 'reduction';
 //# sourceMappingURL=reduction_executor.js.map
-}, function(modId) { var map = {"./utils":1556088523032}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1556088523065, function(require, module, exports) {
+}, function(modId) { var map = {"./utils":1557782889616}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1557782889649, function(require, module, exports) {
 
 /**
  * @license
@@ -5063,8 +5063,8 @@ exports.executeOp = function (node, tensorMap, context) {
 };
 exports.CATEGORY = 'slice_join';
 //# sourceMappingURL=slice_join_executor.js.map
-}, function(modId) { var map = {"./utils":1556088523032}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1556088523066, function(require, module, exports) {
+}, function(modId) { var map = {"./utils":1557782889616}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1557782889650, function(require, module, exports) {
 
 /**
  * @license
@@ -5105,8 +5105,8 @@ exports.executeOp = function (node, tensorMap, context) {
 };
 exports.CATEGORY = 'spectral';
 //# sourceMappingURL=spectral_executor.js.map
-}, function(modId) { var map = {"./utils":1556088523032}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1556088523067, function(require, module, exports) {
+}, function(modId) { var map = {"./utils":1557782889616}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1557782889651, function(require, module, exports) {
 
 /**
  * @license
@@ -5168,8 +5168,8 @@ exports.executeOp = function (node, tensorMap, context) {
 };
 exports.CATEGORY = 'transformation';
 //# sourceMappingURL=transformation_executor.js.map
-}, function(modId) { var map = {"./utils":1556088523032}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1556088523068, function(require, module, exports) {
+}, function(modId) { var map = {"./utils":1557782889616}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1557782889652, function(require, module, exports) {
 
 Object.defineProperty(exports, "__esModule", { value: true });
 /**
@@ -5308,15 +5308,15 @@ var ExecutionContext = /** @class */ (function () {
 exports.ExecutionContext = ExecutionContext;
 //# sourceMappingURL=execution_context.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1556088523069, function(require, module, exports) {
+__DEFINE__(1557782889653, function(require, module, exports) {
 
 /** @license See the LICENSE file. */
 Object.defineProperty(exports, "__esModule", { value: true });
 // This code is auto-generated, do not modify this file!
-var version = '1.1.0';
+var version = '1.1.2';
 exports.version = version;
 //# sourceMappingURL=version.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-return __REQUIRE__(1556088523028);
+return __REQUIRE__(1557782889612);
 })()
 //# sourceMappingURL=index.js.map

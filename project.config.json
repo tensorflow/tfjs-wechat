@@ -23,13 +23,14 @@
 	"pluginRoot": "dist/plugin/",
 	"compileType": "plugin",
 	"setting": {
-		"urlCheck": true,
+		"urlCheck": false,
 		"es6": true,
 		"postcss": true,
 		"minified": true,
 		"newFeature": true,
 		"nodeModules": true,
-		"autoAudits": false
+		"autoAudits": false,
+		"checkInvalidKey": true
 	},
 	"appid": "wx6afed118d9e81df9",
 	"projectname": "TensorFlowJS",
@@ -38,7 +39,7 @@
 		"beforePreview": "",
 		"beforeUpload": ""
 	},
-	"libVersion": "2.6.4",
+	"libVersion": "2.7.0",
 	"simulatorType": "wechat",
 	"simulatorPluginLibVersion": {},
 	"condition": {}

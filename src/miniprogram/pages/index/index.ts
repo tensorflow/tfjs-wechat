@@ -19,8 +19,9 @@ import * as posenet from '@tensorflow-models/posenet';
 import {Classifier} from '../../model/classifier';
 import { detectPoseInRealTime, drawPoses } from '../../posenet/posenet';
 const CANVAS_ID = 'image';
+const POSENET_URL = "https://7465-tensorflowjs-e2061d-1259050850.tcb.qcloud.la/posenet/";
 Page({
-  data: { result: '', selectedBtn: 'mobilenet'},
+  data: { insertCamera: false, insert: false, result: '', selectedBtn: 'mobilenet'},
   mobilenetModel: undefined,
   posenetModel: undefined,
   selectedModel: undefined,  
@@ -45,7 +46,7 @@ Page({
     this.selectedModel = this.posenetModel;
     if (this.posenetModel == null) {
       this.setData!({ result: 'loading posenet model...' });
-      posenet.load(0.5).then((model) => {
+      posenet.load(0.5, POSENET_URL).then((model) => {
         this.posenetModel = model;
         this.selectedModel = this.posenetModel;
         this.setData!({ result: 'model loaded.' });
@@ -74,13 +75,10 @@ Page({
     }
   },  
   async onReady() {
+    console.log('create canvas context for #image...');
     setTimeout(() => {
-      this.setData({ insert: true });
-      console.log('create canvas context for #image...');
-      setTimeout(() => {
-        this.ctx = wx.createCanvasContext(CANVAS_ID);
-        console.log('ctx', this.ctx);
-      }, 250);  
+      this.ctx = wx.createCanvasContext(CANVAS_ID);
+      console.log('ctx', this.ctx);
     }, 500);  
 
     this.mobilenet();
@@ -90,7 +88,7 @@ Page({
       (context as any)
         .onCameraFrame((frame) => {
           count++;
-          if (count === 3) {
+          if (count === 2) {
             if (this.data.selectedBtn === 'posenet') {
               this.executePosenet(frame);
             } else {

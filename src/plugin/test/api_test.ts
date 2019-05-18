@@ -19,9 +19,10 @@ import {configPlugin} from '../api/config';
 
 const fetchFunc = () => {};
 const tf = {};
+const canvas = {};
 describe('api', () => {
   it('should set the fetch', () => {
-    configPlugin({fetchFunc, tf});
-    expect(global.config).toEqual({fetchFunc, tf});
+    configPlugin({fetchFunc, tf, canvas});
+    expect(global.config).toEqual({fetchFunc, tf, canvas});
   });
 });

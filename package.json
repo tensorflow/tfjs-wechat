@@ -25,12 +25,13 @@
     "karma-webpack": "^3.0.5",
     "miniprogram-simulate": "^1.0.1",
     "ncp": "2.0.0",
-    "rimraf": "~2.6.2",
     "path": "0.12.7",
+    "rimraf": "~2.6.2",
     "tslint": "~5.8.0",
     "tslint-no-circular-imports": "~0.5.0",
     "typescript": "^3.3.3333",
     "webpack": "4.29.6",
-    "webpack-cli": "^3.2.3"
+    "webpack-cli": "^3.2.3",
+    "yalc": "^1.0.0-pre.27"
   }
 }

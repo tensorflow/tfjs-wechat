@@ -18,10 +18,10 @@ import * as tf from '@tensorflow/tfjs';
 
 import {IMAGENET_CLASSES} from './imagenet_classes';
 
-// const GOOGLE_CLOUD_STORAGE_DIR =
-//     'https://7465-tensorflowjs-e2061d-1259050850.tcb.qcloud.la/';
 const GOOGLE_CLOUD_STORAGE_DIR =
-  'https://storage.googleapis.com/tfjs-models/savedmodel/';
+    'https://7465-tensorflowjs-e2061d-1259050850.tcb.qcloud.la/';
+// const GOOGLE_CLOUD_STORAGE_DIR =
+//   'https://storage.googleapis.com/tfjs-models/savedmodel/';
 const MODEL_FILE_URL = 'mobilenet_v2_1.0_224/model.json';
 const PREPROCESS_DIVISOR = tf.scalar(255 / 2);
 
@@ -62,7 +62,7 @@ export class MobileNet {
 
   getTopKClasses(logits: tf.Tensor, topK: number): TopKValue[] {
     return tf.tidy(() => {
-      const predictions = tf.softmax(logits);
+      const predictions = logits;
       const values = predictions.dataSync();
       let predictionList = [];
       for (let i = 0; i < values.length; i++) {

@@ -14,20 +14,12 @@
  * limitations under the License.
  * =============================================================================
  */
+import { setupWechatPlatform, SystemConfig } from '../utils/wechat_platform';
 
-export interface SystemConfig {
-  /**
-   * A function used to override the `window.fetch` function.
-   */
-  fetchFunc: Function;
-  /**
-   * TensorFlow.js exported root object.
-   */
-  // tslint:disable-next-line:no-any
-  tf: any;
-}
-export function configPlugin(config: SystemConfig) {
-  // tslint:disable-next-line:no-any
-  const typedGlobal = global as any;
-  typedGlobal.config = config;
+/**
+ * @param config SystemConfig object that contains the Tensorflow.js runtime, fetch polyfill and WeChat offline canvas.
+ * @param debug enable debug logging for the plugin.
+ */
+export function configPlugin(config: SystemConfig, debug?: boolean) {
+  setupWechatPlatform(config, debug);
 }

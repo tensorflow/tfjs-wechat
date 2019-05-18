@@ -16,7 +16,7 @@
  */
 import * as tf from '@tensorflow/tfjs-core';
 
-import { drawBoundingBox, drawKeypoints, drawSkeleton } from './util';
+import {drawBoundingBox, drawKeypoints, drawSkeleton} from './util';
 
 export const videoWidth = 288;
 export const videoHeight = 352;
@@ -57,12 +57,12 @@ const guiState = {
  * happens. This function loops with a requestAnimationFrame method.
  */
 export async function detectPoseInRealTime(image, net, mirror) {
-  //const sliceWidth = Math.floor(image.height / (videoHeight / videoWidth));
+  // const sliceWidth = Math.floor(image.height / (videoHeight / videoWidth));
+  const data = {data: new Uint8Array(image.data), width: image.width, height: image.height};
   const video = tf.tidy(() => {
-    return tf.tensor3d(
-      new Uint8Array(image.data), [image.height, image.width, 4], 'float32')
-      .slice([0, 0, 0], [-1, -1, 3])
-      .resizeBilinear([scaledVideoHeight, scaledVideoWidth]);
+    const temp = tf.browser.fromPixels(data, 4);
+    return temp.slice([0, 0, 0], [-1, -1, 3])
+        .resizeBilinear([scaledVideoHeight, scaledVideoWidth]);
   });
   //  .transpose([1, 0, 2]).reverse(1).slice([0,0,0], [-1, -1, 3])
 
@@ -79,18 +79,19 @@ export async function detectPoseInRealTime(image, net, mirror) {
   switch (guiState.algorithm) {
     case 'single-pose':
       const pose = await guiState.net.estimateSinglePose(
-        video, imageScaleFactor, flipHorizontal, outputStride);
+          video, imageScaleFactor, flipHorizontal, outputStride);
       poses.push(pose);
 
       break;
     case 'multi-pose':
       poses = await guiState.net.estimateMultiplePoses(
-        video, imageScaleFactor, flipHorizontal, outputStride,
-        guiState.multiPoseDetection.maxPoseDetections,
-        guiState.multiPoseDetection.minPartConfidence,
-        guiState.multiPoseDetection.nmsRadius);
+          video, imageScaleFactor, flipHorizontal, outputStride,
+          guiState.multiPoseDetection.maxPoseDetections,
+          guiState.multiPoseDetection.minPartConfidence,
+          guiState.multiPoseDetection.nmsRadius);
 
       break;
+    default:
   }
   video.dispose();
   return scalePoses(poses);
@@ -98,9 +99,10 @@ export async function detectPoseInRealTime(image, net, mirror) {
 export function scalePoses(poses) {
   poses.forEach(pose => {
     pose.keypoints.forEach((keypoint) => {
-      keypoint.position.y = keypoint.position.y * videoHeight / scaledVideoHeight;
+      keypoint.position.y =
+          keypoint.position.y * videoHeight / scaledVideoHeight;
       keypoint.position.x = keypoint.position.x * videoWidth / scaledVideoWidth;
-    })
+    });
   });
   return poses;
 }
@@ -115,7 +117,7 @@ export function drawPoses(page) {
   // For each pose (i.e. person) detected in an image, loop through the poses
   // and draw the resulting skeleton and keypoints if over certain confidence
   // scores
-  poses.forEach(({ score, keypoints }) => {
+  poses.forEach(({score, keypoints}) => {
     if (score >= minPoseConfidence) {
       if (guiState.output.showPoints) {
         drawKeypoints(keypoints, minPartConfidence, ctx);

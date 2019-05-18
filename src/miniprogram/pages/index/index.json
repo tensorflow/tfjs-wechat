@@ -1,5 +1,2 @@
 {
-  "usingComponents": {
-    "tfjs-wechat": "plugin://tfjsPlugin/tfjs-wechat"
-  }
 }
