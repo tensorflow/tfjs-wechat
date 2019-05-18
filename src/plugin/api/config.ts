@@ -14,10 +14,11 @@
  * limitations under the License.
  * =============================================================================
  */
-import { setupWechatPlatform, SystemConfig } from '../utils/wechat_platform';
+import {setupWechatPlatform, SystemConfig} from '../utils/wechat_platform';
 
 /**
- * @param config SystemConfig object that contains the Tensorflow.js runtime, fetch polyfill and WeChat offline canvas.
+ * @param config SystemConfig object that contains the Tensorflow.js runtime,
+ *     fetch polyfill and WeChat offline canvas.
  * @param debug enable debug logging for the plugin.
  */
 export function configPlugin(config: SystemConfig, debug?: boolean) {

@@ -49,10 +49,11 @@ export const WECHAT_WEBGL_BACKEND = 'wechat-webgl';
 
 /**
  * Setup the fetch polyfill and WebGL backend for WeChat.
- * @param config: SystemConfig object contains Tensorflow.js runtime, fetch polyfill and WeChat offline canvas.
+ * @param config: SystemConfig object contains Tensorflow.js runtime, fetch
+ *     polyfill and WeChat offline canvas.
  * @param debug: flag to enable/disable debugging.
  */
-export function setupWechatPlatform(config: SystemConfig, debug = true): void {
+export function setupWechatPlatform(config: SystemConfig, debug = false): void {
   const tf = config.tf as typeof tfjs;
   if (debug) {
     console.log(tf);
@@ -120,11 +121,11 @@ export function initWebGL(
     } catch (e) {
       console.error(e);
     }
-    if (tf.findBackend(WECHAT_WEBGL_BACKEND) != null) {
-      tf.setBackend(WECHAT_WEBGL_BACKEND);
-    }
-    if (debug) {
-      console.log('current backend = ', tf.getBackend());
-    }
+  }
+  if (tf.findBackend(WECHAT_WEBGL_BACKEND) != null) {
+    tf.setBackend(WECHAT_WEBGL_BACKEND);
+  }
+  if (debug) {
+    console.log('current backend = ', tf.getBackend());
   }
 }

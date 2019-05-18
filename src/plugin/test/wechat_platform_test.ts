@@ -17,27 +17,36 @@
 
 // import * as path from 'path';
 
-import {setupWechatPlatform} from '../utils/wechat_platform';
+import {setupWechatPlatform, WECHAT_WEBGL_BACKEND} from '../utils/wechat_platform';
 
 // let component = {};
 const fetchFunc = () => {};
+let backends: {[key: string]: {}} = {};
 const tf = {
-  getBackend: (): undefined => undefined,
-  ENV: {global: {}}
+  getBackend: () => {},
+  findBackend: (name: string) => backends[name],
+  registerBackend: (name: string, callback: {}, priority: number) => {
+    backends[name] = callback;
+  },
+  setBackend: (name: string) => {},
+  ENV: {global: {}, setPlatform: () => {}, set: (flag: string) => {}}
 };
-const canvas = {};
+const gl = {};
+const canvas = {
+  getContext: () => gl
+};
 const config = {
   fetchFunc,
   tf,
   canvas
 };
+// tslint:disable-next-line:no-any
+let systemInfo: any;
 describe('setupWechatPlatform', () => {
   beforeEach(() => {
-    // const id = simulate.load(
-    //     path.resolve(__dirname, '../components/tfjs-wechat/tfjs-wechat'),
-    //     'tfjs-wechat');
-    // component = simulate.render(id, {prop: 'index.test.properties'});
-    spyOn(wx, 'getSystemInfoSync').and.returnValue({platform: 'devtools'});
+    backends = {};
+    systemInfo = {platform: 'devtools'};
+    spyOn(wx, 'getSystemInfoSync').and.returnValue(systemInfo);
   });
   it('should polyfill fetch', () => {
     setupWechatPlatform(config);
@@ -50,5 +59,28 @@ describe('setupWechatPlatform', () => {
   it('should polyfill atob', () => {
     setupWechatPlatform(config);
     expect(global.atob).toBeDefined();
+  });
+  it('should register wechat-webgl backend', () => {
+    spyOn(tf, 'registerBackend');
+    setupWechatPlatform(config);
+    expect(tf.registerBackend)
+        .toHaveBeenCalledWith(WECHAT_WEBGL_BACKEND, jasmine.any(Function), 2);
+  });
+  it('should set tf backend to wechat-webgl', () => {
+    spyOn(tf, 'setBackend');
+    setupWechatPlatform(config);
+    expect(tf.setBackend).toHaveBeenCalledWith(WECHAT_WEBGL_BACKEND);
+  });
+  it('should set the WEBGL version to 1', () => {
+    spyOn(tf.ENV, 'set');
+    setupWechatPlatform(config);
+    expect(tf.ENV.set).toHaveBeenCalledWith('WEBGL_VERSION', 1);
+  });
+  it('should disable float32 rendering for iOS ', () => {
+    systemInfo.platform = 'ios';
+    spyOn(tf.ENV, 'set');
+    setupWechatPlatform(config);
+    expect(tf.ENV.set)
+        .toHaveBeenCalledWith('WEBGL_RENDER_FLOAT32_ENABLED', false);
   });
 });

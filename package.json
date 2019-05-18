@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "scripts": {
     "compile": "rimraf dist/ && tsc && ncp src dist --filter='^(((?!node_modules)(?!typings).)(?!\\.ts$))*$'",
-    "test": "karma start",
+    "test": "yarn compile && karma start",
     "lint": "tslint -p . -t verbose"
   },
   "main": "dist/index.js",
