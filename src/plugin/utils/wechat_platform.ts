@@ -66,7 +66,9 @@ export function setupWechatPlatform(config: SystemConfig, debug = false): void {
 
   setWechatFetch(config.tf, config.fetchFunc);
   setBase64Methods(tf);
-  initWebGL(tf, config.canvas, systemInfo.platform, debug);
+  if (config.canvas) {
+    initWebGL(tf, config.canvas, systemInfo.platform, debug);
+  }
 }
 /**
  * Polyfill btoa and atob method on the global scope which will be used by

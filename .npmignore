@@ -1,6 +1,4 @@
 .rpt2_cache
-.travis.yml
-.pylintrc
 .vscode
 .DS_Store
 .babelrc
@@ -22,10 +20,6 @@ tslint.json
 tsconfig.json
 yarn.lock
 yarn-error.log
-python/
-package/
-DEVELOPMENT.md
-ISSUE_TEMPLATE.md
 rollup.config.js
 test_results
 rollup.config.google.js
