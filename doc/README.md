@@ -13,7 +13,7 @@ TensorFlow.js 微信小程序插件封装了TensorFlow.js库，用于提供给�
 {
   "plugins": {
     "tfjsPlugin": {
-      "version": "0.0.1",
+      "version": "0.0.4",
       "provider": "wx6afed118d9e81df9"
     }
   }
@@ -31,7 +31,7 @@ TensorFlow.js 最新版本是以npm包的形式发布，小程序需要使用npm
   "main": "dist/index.js",
   "license": "Apache-2.0",
   "dependencies": {
-    "@tensorflow/tfjs": "1.1.0"
+    "@tensorflow/tfjs": "1.1.2"
   }
 }
 ```
