@@ -15,4 +15,4 @@ bazel-*
 **.yalc
 **yalc.lock
 
-src/miniprogram/miniprogram_npm/
+src/*/miniprogram_npm/
