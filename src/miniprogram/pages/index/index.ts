@@ -17,88 +17,100 @@
 
 import * as posenet from '@tensorflow-models/posenet';
 import {Classifier} from '../../model/classifier';
-import { detectPoseInRealTime, drawPoses } from '../../posenet/posenet';
+import {detectPoseInRealTime, drawPoses} from '../../posenet/posenet';
 const CANVAS_ID = 'image';
-// const POSENET_URL = "https://7465-tensorflowjs-e2061d-1259050850.tcb.qcloud.la/posenet/";
+// const POSENET_URL =
+// "https://7465-tensorflowjs-e2061d-1259050850.tcb.qcloud.la/posenet/";
 const POSENET_URL =
-  'https://storage.googleapis.com/tfjs-models/weights/posenet/';
+    'https://storage.googleapis.com/tfjs-models/weights/posenet/';
 Page({
-  data: { insertCamera: false, insert: false, result: '', selectedBtn: 'mobilenet'},
+  data: {
+    insertCamera: false,
+    insert: false,
+    result: '',
+    selectedBtn: 'mobilenet'
+  },
   mobilenetModel: undefined,
   posenetModel: undefined,
-  selectedModel: undefined,  
+  selectedModel: undefined,
   canvas: undefined,
   poses: undefined,
   ctx: undefined,
   mobilenet() {
-    this.setData!({ selectedBtn: 'mobilenet' });
+    this.setData!({selectedBtn: 'mobilenet'});
     this.selectedModel = this.mobilenetModel;
     if (this.mobilenetModel == null) {
       const model = new Classifier(this);
       model.load().then(() => {
-        this.setData!({ result: 'loading mobilenet model...' });
+        this.setData!({result: 'loading mobilenet model...'});
         this.mobilenetModel = model;
         this.selectedModel = this.mobilenetModel;
-        this.setData!({ result: 'model loaded.' });
+        this.setData!({result: 'model loaded.'});
       });
     }
   },
   posenet() {
-    this.setData!({ selectedBtn: 'posenet' });
+    this.setData!({selectedBtn: 'posenet'});
     this.selectedModel = this.posenetModel;
     if (this.posenetModel == null) {
-      this.setData!({ result: 'loading posenet model...' });
-      posenet.load(0.5, POSENET_URL).then((model) => {
-        this.posenetModel = model;
-        this.selectedModel = this.posenetModel;
-        this.setData!({ result: 'model loaded.' });
-      });
+      this.setData!({result: 'loading posenet model...'});
+      posenet
+          .load({
+            architecture: 'MobileNetV1',
+            outputStride: 16,
+            inputResolution: 193,
+            multiplier: 0.5,
+            modelUrl: POSENET_URL
+          })
+          .then((model) => {
+            this.posenetModel = model;
+            this.selectedModel = this.posenetModel;
+            this.setData!({result: 'model loaded.'});
+          });
     }
   },
   executePosenet(frame) {
     if (this.posenetModel) {
       const start = Date.now();
       detectPoseInRealTime(frame, this.posenetModel, false)
-        .then((poses) => {
-          this.poses = poses;
-          drawPoses(this);
-          const result =
-            `${Date.now() - start}ms`;
-          this.setData!({ result });
-        })
-        .catch((err) => {
-          console.log(err, err.stack);
-        });
+          .then((poses) => {
+            this.poses = poses;
+            drawPoses(this);
+            const result = `${Date.now() - start}ms`;
+            this.setData!({result});
+          })
+          .catch((err) => {
+            console.log(err, err.stack);
+          });
     }
-  },  
+  },
   executeMobilenet(frame) {
     if (this.mobilenetModel) {
-      this.mobilenetModel.classify(frame.data, {width: frame.width, height: frame.height});
+      this.mobilenetModel.classify(
+          frame.data, {width: frame.width, height: frame.height});
     }
-  },  
+  },
   async onReady() {
     console.log('create canvas context for #image...');
     setTimeout(() => {
       this.ctx = wx.createCanvasContext(CANVAS_ID);
       console.log('ctx', this.ctx);
-    }, 500);  
+    }, 500);
 
     this.mobilenet();
     const context = wx.createCameraContext(this);
     let count = 0;
-    const listener =
-      (context as any)
-        .onCameraFrame((frame) => {
-          count++;
-          if (count === 2) {
-            if (this.data.selectedBtn === 'posenet') {
-              this.executePosenet(frame);
-            } else {
-              this.executeMobilenet(frame);
-            }
-            count = 0;
-          }
-        });
+    const listener = (context as any).onCameraFrame((frame) => {
+      count++;
+      if (count === 2) {
+        if (this.data.selectedBtn === 'posenet') {
+          this.executePosenet(frame);
+        } else {
+          this.executeMobilenet(frame);
+        }
+        count = 0;
+      }
+    });
     listener.start();
   },
   onUnload() {

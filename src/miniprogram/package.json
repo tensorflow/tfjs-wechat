@@ -10,7 +10,7 @@
     "typescript": "^3.3.3333"
   },
   "dependencies": {
-    "@tensorflow-models/posenet": "file:.yalc/@tensorflow-models/posenet",
+    "@tensorflow-models/posenet": "1.0.3",
     "@tensorflow/tfjs": "1.1.2",
     "fetch-wechat": "0.0.3"
   }

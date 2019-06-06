@@ -15,21 +15,34 @@
  * =============================================================================
  */
 
-// import * as path from 'path';
+import {Platform} from '@tensorflow/tfjs-core/dist/platforms/platform';
 
 import {setupWechatPlatform, WECHAT_WEBGL_BACKEND} from '../utils/wechat_platform';
 
-// let component = {};
 const fetchFunc = () => {};
 let backends: {[key: string]: {}} = {};
+let platformName: string;
+let platform: Platform;
+let flags: {[key: string]: boolean|
+            number} = {WEBGL_RENDER_FLOAT32_ENABLED: true};
+let currentBackend: string;
+// tslint:disable-next-line:no-any
+let global: any = {};
 const tf = {
-  getBackend: () => {},
+  getBackend: () => currentBackend,
   findBackend: (name: string) => backends[name],
   registerBackend: (name: string, callback: {}, priority: number) => {
     backends[name] = callback;
   },
-  setBackend: (name: string) => {},
-  ENV: {global: {}, setPlatform: () => {}, set: (flag: string) => {}}
+  setBackend: (name: string) => currentBackend = name,
+  ENV: {
+    global,
+    setPlatform: (name, p) => {
+      platformName = name;
+      platform = p;
+    },
+    set: (flag: string, value: boolean|number) => flags[flag] = value
+  }
 };
 const gl = {};
 const canvas = {
@@ -42,45 +55,78 @@ const config = {
 };
 // tslint:disable-next-line:no-any
 let systemInfo: any;
-describe('setupWechatPlatform', () => {
+
+function clearState() {
+  platform = undefined;
+  platformName = undefined;
+  backends = {};
+  flags = {WEBGL_RENDER_FLOAT32_ENABLED: true};
+  currentBackend = undefined;
+  global = {};
+}
+describe('setupWechatPlatform android', () => {
   beforeEach(() => {
     backends = {};
-    systemInfo = {platform: 'devtools'};
+    systemInfo = {platform: 'android'};
     spyOn(wx, 'getSystemInfoSync').and.returnValue(systemInfo);
   });
+
+  afterEach(() => clearState());
+
+  it('should register platform', () => {
+    setupWechatPlatform(config);
+    expect(platformName).toEqual('wechat');
+    expect(platform).toBeDefined();
+  });
+
   it('should polyfill fetch', () => {
     setupWechatPlatform(config);
-    expect(global.fetch).toBeDefined();
+    expect(platform.fetch).toBeDefined();
   });
+
   it('should polyfill btoa', () => {
     setupWechatPlatform(config);
-    expect(global.btoa).toBeDefined();
+    expect(tf.ENV.global.btoa).toBeDefined();
   });
+
   it('should polyfill atob', () => {
     setupWechatPlatform(config);
-    expect(global.atob).toBeDefined();
+    expect(tf.ENV.global.atob).toBeDefined();
   });
+
   it('should register wechat-webgl backend', () => {
-    spyOn(tf, 'registerBackend');
     setupWechatPlatform(config);
-    expect(tf.registerBackend)
-        .toHaveBeenCalledWith(WECHAT_WEBGL_BACKEND, jasmine.any(Function), 2);
+    expect(tf.findBackend(WECHAT_WEBGL_BACKEND)).toBeDefined();
   });
+
   it('should set tf backend to wechat-webgl', () => {
-    spyOn(tf, 'setBackend');
     setupWechatPlatform(config);
-    expect(tf.setBackend).toHaveBeenCalledWith(WECHAT_WEBGL_BACKEND);
+    expect(tf.getBackend()).toEqual(WECHAT_WEBGL_BACKEND);
   });
+
   it('should set the WEBGL version to 1', () => {
-    spyOn(tf.ENV, 'set');
     setupWechatPlatform(config);
-    expect(tf.ENV.set).toHaveBeenCalledWith('WEBGL_VERSION', 1);
+    expect(flags['WEBGL_VERSION']).toBe(1);
   });
-  it('should disable float32 rendering for iOS ', () => {
-    systemInfo.platform = 'ios';
-    spyOn(tf.ENV, 'set');
+
+  it('should not disable float32 rendering for android ', () => {
     setupWechatPlatform(config);
-    expect(tf.ENV.set)
-        .toHaveBeenCalledWith('WEBGL_RENDER_FLOAT32_ENABLED', false);
+    expect(flags['WEBGL_RENDER_FLOAT32_ENABLED']).toBeTruthy();
+  });
+});
+
+describe('setupWechatPlatform android', () => {
+  beforeEach(() => {
+    backends = {};
+    systemInfo = {platform: 'ios'};
+    spyOn(wx, 'getSystemInfoSync').and.returnValue(systemInfo);
+  });
+
+  afterEach(() => clearState());
+
+  it('should disable float32 rendering for ios ', () => {
+    setupWechatPlatform(config);
+
+    expect(flags['WEBGL_RENDER_FLOAT32_ENABLED']).toBeFalsy();
   });
 });

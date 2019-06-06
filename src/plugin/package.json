@@ -11,7 +11,7 @@
     "fetch-wechat": "0.0.3"
   },
   "devDependencies": {
-    "@tensorflow/tfjs": "1.1.2",
+    "@tensorflow/tfjs-core": "1.2.0",
     "typescript": "^3.3.3333"
   }
 }

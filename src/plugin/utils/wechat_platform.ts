@@ -15,7 +15,8 @@
  * =============================================================================
  */
 
-import * as tfjs from '@tensorflow/tfjs';
+import * as tfjs from '@tensorflow/tfjs-core';
+import {Platform} from '@tensorflow/tfjs-core/dist/platforms/platform';
 import {atob, btoa} from 'abab';
 
 export interface SystemConfig {
@@ -37,7 +38,7 @@ export interface SystemConfig {
 }
 
 // Implement the WeChat Platform for TFJS
-export class PlatformWeChat implements tfjs.Platform {
+export class PlatformWeChat implements Platform {
   constructor(private fetchFunc: Function) {}
   fetch(path: string, requestInits?: RequestInit): Promise<Response> {
     return this.fetchFunc(path, requestInits);
@@ -63,19 +64,11 @@ export function setupWechatPlatform(config: SystemConfig, debug = false): void {
     return;
   }
   const systemInfo = wx.getSystemInfoSync();
-
-  setWechatFetch(config.tf, config.fetchFunc);
+  tf.ENV.setPlatform('wechat', new PlatformWeChat(config.fetchFunc));
   setBase64Methods(tf);
   if (config.canvas) {
     initWebGL(tf, config.canvas, systemInfo.platform, debug);
   }
-}
-/**
- * Polyfill btoa and atob method on the global scope which will be used by
- * model parser.
- */
-export function setWechatFetch(tf: typeof tfjs, fetchFunc: Function) {
-  tf.ENV.setPlatform('wechat', new PlatformWeChat(fetchFunc));
 }
 
 /**
@@ -94,6 +87,8 @@ export function setBase64Methods(tf: typeof tfjs) {
  *     devtool).
  * @param debug: enable/disable debug logging.
  */
+
+const BACKEND_PRIORITY = 2;
 export function initWebGL(
     // tslint:disable-next-line:no-any
     tf: typeof tfjs, canvas: any, platform: string, debug = false): void {
@@ -119,14 +114,12 @@ export function initWebGL(
       tf.registerBackend('wechat-webgl', () => {
         const context = new tf.webgl.GPGPUContext(gl);
         return new tf.webgl.MathBackendWebGL(context);
-      }, 2);
+      }, BACKEND_PRIORITY);
     } catch (e) {
-      console.error(e);
+      throw (new Error('Failed to register Webgl backend: ' + e.message));
     }
   }
-  if (tf.findBackend(WECHAT_WEBGL_BACKEND) != null) {
-    tf.setBackend(WECHAT_WEBGL_BACKEND);
-  }
+  tf.setBackend(WECHAT_WEBGL_BACKEND);
   if (debug) {
     console.log('current backend = ', tf.getBackend());
   }
