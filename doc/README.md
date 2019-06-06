@@ -68,9 +68,12 @@ var plugin = requirePlugin('tfjsPlugin');
 //app.js
 App({
   onLaunch: function () {
-    plugin.configPlugin({fetchFunc: fetchWechat.fetchFunc(), tf, canvas: wx.createOffscreenCanvas()})
+    plugin.configPlugin({
+      fetchFunc: fetchWechat.fetchFunc(),
+      tf, canvas: wx.createOffscreenCanvas()
+    });
   }
-})
+});
 ```
 
 组件设置完毕就可以开始使用 TensorFlow.js库的[API](https://js.tensorflow.org/api/latest/)了。
