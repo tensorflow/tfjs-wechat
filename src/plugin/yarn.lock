@@ -35,11 +35,6 @@ abab@2.0.0:
   resolved "https://registry.yarnpkg.com/abab/-/abab-2.0.0.tgz#aba0ab4c5eee2d4c79d3487d85450fb2376ebb0f"
   integrity sha512-sY5AXXVZv4Y1VACTtR11UJCPHHudgY5i26Qj5TypE6DKlIApbwb5uqhXcJ5UUGbvZNRh7EeIoW+LrJumBsKp7w==
 
-fetch-wechat@0.0.3:
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/fetch-wechat/-/fetch-wechat-0.0.3.tgz#2789c332a24bf9f4114b580c02d2934646e74f12"
-  integrity sha512-uEvCnHSaM53AjYmtiU8n7dB3RO4JX4RBxF3lXNf+cBHr5NRclmTAr5XiRtLL2lSdBcRwvLixhnjwCRJhyEKZgQ==
-
 is-wsl@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/is-wsl/-/is-wsl-1.1.0.tgz#1f16e4aa22b04d1336b66188a66af3c600c3a66d"

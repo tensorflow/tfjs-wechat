@@ -21,8 +21,6 @@ import {detectPoseInRealTime, drawPoses} from '../../posenet/posenet';
 const CANVAS_ID = 'image';
 // const POSENET_URL =
 // "https://7465-tensorflowjs-e2061d-1259050850.tcb.qcloud.la/posenet/";
-const POSENET_URL =
-    'https://storage.googleapis.com/tfjs-models/weights/posenet/';
 Page({
   data: {
     insertCamera: false,
@@ -59,8 +57,7 @@ Page({
             architecture: 'MobileNetV1',
             outputStride: 16,
             inputResolution: 193,
-            multiplier: 0.5,
-            modelUrl: POSENET_URL
+            multiplier: 0.5
           })
           .then((model) => {
             this.posenetModel = model;

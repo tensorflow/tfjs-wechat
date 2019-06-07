@@ -14,7 +14,8 @@
  * limitations under the License.
  * =============================================================================
  */
-import * as tf from '@tensorflow/tfjs';
+import * as tf from '@tensorflow/tfjs-core';
+import * as tfc from '@tensorflow/tfjs-converter';
 
 import {IMAGENET_CLASSES} from './imagenet_classes';
 
@@ -30,12 +31,12 @@ export interface TopKValue {
   value: number;
 }
 export class MobileNet {
-  private model: tf.GraphModel;
+  private model: tfc.GraphModel;
   constructor() {}
 
   async load() {
     this.model =
-        await tf.loadGraphModel(GOOGLE_CLOUD_STORAGE_DIR + MODEL_FILE_URL);
+        await tfc.loadGraphModel(GOOGLE_CLOUD_STORAGE_DIR + MODEL_FILE_URL);
   }
 
   dispose() {

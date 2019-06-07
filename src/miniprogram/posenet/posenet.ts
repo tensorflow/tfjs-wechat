@@ -15,95 +15,42 @@
  * =============================================================================
  */
 import * as tf from '@tensorflow/tfjs-core';
+import {Tensor} from '@tensorflow/tfjs-core';
 
-import {drawBoundingBox, drawKeypoints, drawSkeleton} from './util';
+import {drawKeypoints, drawSkeleton} from './util';
 
 export const videoWidth = 288;
 export const videoHeight = 352;
-export const scaledVideoWidth = 198;
-export const scaledVideoHeight = 242;
 export interface Point {
   x: number;
   y: number;
 }
-const guiState = {
-  algorithm: 'single-pose',
-  input: {
-    mobileNetArchitecture: '0.5',
-    outputStride: 16,
-    imageScaleFactor: 1.0,
-  },
-  singlePoseDetection: {
-    minPoseConfidence: 0.1,
-    minPartConfidence: 0.3,
-  },
-  multiPoseDetection: {
-    maxPoseDetections: 5,
-    minPoseConfidence: 0.15,
-    minPartConfidence: 0.1,
-    nmsRadius: 30.0,
-  },
-  output: {
-    showVideo: false,
-    showSkeleton: true,
-    showPoints: true,
-    showBoundingBox: false,
-  },
-  net: null,
-};
 
 /**
  * Feeds an image to posenet to estimate poses - this is where the magic
  * happens. This function loops with a requestAnimationFrame method.
  */
 export async function detectPoseInRealTime(image, net, mirror) {
-  // const sliceWidth = Math.floor(image.height / (videoHeight / videoWidth));
-  const data = {data: new Uint8Array(image.data), width: image.width, height: image.height};
-  const video = tf.tidy(() => {
+  const data = {
+    data: new Uint8Array(image.data),
+    width: image.width,
+    height: image.height
+  };
+  const video: Tensor = tf.tidy(() => {
     const temp = tf.browser.fromPixels(data, 4);
-    return temp.slice([0, 0, 0], [-1, -1, 3])
-        .resizeBilinear([scaledVideoHeight, scaledVideoWidth]);
+    return temp.slice([0, 0, 0], [-1, -1, 3]);
   });
-  //  .transpose([1, 0, 2]).reverse(1).slice([0,0,0], [-1, -1, 3])
 
-  guiState.net = net;
   // since images are being fed from a webcam
   const flipHorizontal = mirror;
 
-  // Scale an image down to a certain factor. Too large of an image will slow
-  // down the GPU
-  const imageScaleFactor = guiState.input.imageScaleFactor;
-  const outputStride = +guiState.input.outputStride;
-
-  let poses = [];
-  switch (guiState.algorithm) {
-    case 'single-pose':
-      const pose = await guiState.net.estimateSinglePose(
-          video, imageScaleFactor, flipHorizontal, outputStride);
-      poses.push(pose);
-
-      break;
-    case 'multi-pose':
-      poses = await guiState.net.estimateMultiplePoses(
-          video, imageScaleFactor, flipHorizontal, outputStride,
-          guiState.multiPoseDetection.maxPoseDetections,
-          guiState.multiPoseDetection.minPartConfidence,
-          guiState.multiPoseDetection.nmsRadius);
-
-      break;
-    default:
-  }
-  video.dispose();
-  return scalePoses(poses);
-}
-export function scalePoses(poses) {
-  poses.forEach(pose => {
-    pose.keypoints.forEach((keypoint) => {
-      keypoint.position.y =
-          keypoint.position.y * videoHeight / scaledVideoHeight;
-      keypoint.position.x = keypoint.position.x * videoWidth / scaledVideoWidth;
-    });
+  const poses = await net.estimatePoses(image, {
+    flipHorizontal,
+    decodingMethod: 'single-person',
+    scoreThreshold: 0.5,
+    nmsRadius: 20
   });
+  video.dispose();
   return poses;
 }
 
@@ -111,23 +58,15 @@ export function drawPoses(page) {
   if (page.poses == null || page.ctx == null) return;
   const ctx = page.ctx;
   const poses = page.poses;
-  const minPoseConfidence = +guiState.singlePoseDetection.minPoseConfidence;
-  const minPartConfidence = +guiState.singlePoseDetection.minPartConfidence;
-
+  const minPoseConfidence = 0.5;
+  const minPartConfidence = 0.5;
   // For each pose (i.e. person) detected in an image, loop through the poses
   // and draw the resulting skeleton and keypoints if over certain confidence
   // scores
   poses.forEach(({score, keypoints}) => {
     if (score >= minPoseConfidence) {
-      if (guiState.output.showPoints) {
-        drawKeypoints(keypoints, minPartConfidence, ctx);
-      }
-      if (guiState.output.showSkeleton) {
-        drawSkeleton(keypoints, minPartConfidence, ctx);
-      }
-      if (guiState.output.showBoundingBox) {
-        drawBoundingBox(keypoints, ctx);
-      }
+      drawKeypoints(keypoints, minPartConfidence, ctx);
+      drawSkeleton(keypoints, minPartConfidence, ctx);
     }
   });
   ctx.draw();

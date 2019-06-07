@@ -16,7 +16,7 @@
  */
 
 const fetchWechat = require('fetch-wechat');
-import * as tf from '@tensorflow/tfjs';
+import * as tf from '@tensorflow/tfjs-core';
 
 const plugin = requirePlugin('tfjsPlugin');
 const ENABLE_DEBUG = true;
