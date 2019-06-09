@@ -11,19 +11,31 @@ TensorFlow.js 微信小程序插件封装了TensorFlow.js库，用于提供给�
 代码示例：
 ```
 {
+  ...
   "plugins": {
     "tfjsPlugin": {
       "version": "0.0.4",
       "provider": "wx6afed118d9e81df9"
     }
   }
+  ...
 }
 ```
 ### 引入TensorFlow.js npm
-TensorFlow.js 最新版本是以npm包的形式发布，小程序需要使用npm或者yarn来载入TensorFlow.js npm包。
+TensorFlow.js 最新版本是以npm包的形式发布，小程序需要使用npm或者yarn来载入TensorFlow.js npm包。也可以手动修改 package.json 文件来加入。
 
-也可以手动修改 package.json 文件来加入。
-代码示例：
+
+TensorFlow.js有一个联合包 - @tensorflow/tfjs，包含了四个分npm包：
+- tfjs-core: 基础包
+- tfjs-converter: GraphModel 导入和执行包
+- tfjs-layers: LayersModel 创建，导入和执行包
+- tfjs-data：数据流工具包
+
+对于小程序而言，由于有2M的app大小限制，不建议直接使用联合包，而是按照需求加载分包。
+- 如果小程序只需要导入和运行GraphModel模型的的话，建议只加入tfjs-core和tfjs-converter包。这样可以尽量减少导入包的大小。
+- 如果需要创建,导入或训练LayersModel模型，需要再加入 tfjs-layers包。
+
+下面的例子是只用到tfjs-core和tfjs-converter包。代码示例：
 ```
 {
   "name": "yourProject",
@@ -31,7 +43,8 @@ TensorFlow.js 最新版本是以npm包的形式发布，小程序需要使用npm
   "main": "dist/index.js",
   "license": "Apache-2.0",
   "dependencies": {
-    "@tensorflow/tfjs": "1.1.2"
+    "@tensorflow/tfjs-core": "1.1.2"，
+    "@tensorflow/tfjs-converter": "1.1.2"
   }
 }
 ```
@@ -50,7 +63,8 @@ TensorFlow.js 最新版本是以npm包的形式发布，小程序需要使用npm
   "main": "dist/index.js",
   "license": "Apache-2.0",
   "dependencies": {
-    "@tensorflow/tfjs": "1.1.0",
+    "@tensorflow/tfjs-core": "1.1.2"，
+    "@tensorflow/tfjs-converter": "1.1.2"，
     "fetch-wechat": "0.0.3"
   }
 }
@@ -63,7 +77,7 @@ https://cdn.jsdelivr.net/npm/fetch-wechat@0.0.3/dist/fetch_wechat.min.js
 
 ```
 var fetchWechat = require('fetch-wechat');
-var tf = require('@tensorflow/tfjs');
+var tf = require('@tensorflow/tfjs-core');
 var plugin = requirePlugin('tfjsPlugin');
 //app.js
 App({
@@ -84,4 +98,5 @@ App({
 ## 更新说明
 0.0.2 plugin不再映射TensorFlow.js API库，由小程序端提供。
 0.0.3 使用offscreen canvas，小程序无需加入plugin component。
+0.0.5 修改例子程序使用tfjs分包来降低小程序大小。
 

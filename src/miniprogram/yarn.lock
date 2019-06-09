@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@tensorflow-models/posenet@1.0.3":
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/@tensorflow-models/posenet/-/posenet-1.0.3.tgz#7f069eb895c06694840223cb8f4d3f94a46dc998"
-  integrity sha512-8VK8cNqX/qwsIGvG/opz0b5tbv27kqNI21JnL79EQ/oHRYHXz6JOqVFfCtNuLGwpvtypdGfcFDQwvJEZ7WniDw==
+"@tensorflow-models/posenet@2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@tensorflow-models/posenet/-/posenet-2.0.0.tgz#11e04f58e0a381dd681fd3f35a6af151986f510e"
+  integrity sha512-4ozg2iWtFE4dlyHRwC0BuqxCOa55xVVMcdo6iqLnHV5ecG1EoABLoKU1JmvgL4qj7+qHHWCB+Mbvhb7pxBO2ew==
 
 "@tensorflow/tfjs-converter@1.1.2":
   version "1.1.2"
