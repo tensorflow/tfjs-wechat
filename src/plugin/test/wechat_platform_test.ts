@@ -94,11 +94,6 @@ describe('setupWechatPlatform android', () => {
     expect(tf.ENV.global.atob).toBeDefined();
   });
 
-  it('should register wechat-webgl backend', () => {
-    setupWechatPlatform(config);
-    expect(tf.findBackend(WECHAT_WEBGL_BACKEND)).toBeDefined();
-  });
-
   it('should set tf backend to wechat-webgl', () => {
     setupWechatPlatform(config);
     expect(tf.getBackend()).toEqual(WECHAT_WEBGL_BACKEND);

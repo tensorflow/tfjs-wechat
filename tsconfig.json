@@ -21,13 +21,15 @@
     "noFallthroughCasesInSwitch": true,
     "allowUnreachableCode": false,
     "typeRoots": [
+      "plugin/node_modules",
       "plugin/typings",
       "node_modules/@types"
     ],
-    "types": ["jasmine"],
+    "types": ["jasmine", "miniprogram-api-typings"],
     "outDir": "dist"
   },
   "include": [
-    "src"
+    "src/**/*",
+    "demo/**/*"
   ]
 }

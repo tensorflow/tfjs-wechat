@@ -21,15 +21,14 @@ import {MobileNet} from './mobilenet';
 
 export class Classifier {
   private mobileNet: MobileNet;
-  // tslint:disable-next-line:no-any
-  constructor(private page: any) {}
+  constructor(private page: Page.PageInstanceBaseProps) {}
   async load() {
     this.mobileNet = new MobileNet();
-    this.page.setData!({result: 'loading model...'});
+    this.page.setData({result: 'loading model...'});
     const start = Date.now();
     await this.mobileNet.load();
     const result = `model loaded: ${Date.now() - start}ms\n`;
-    this.page.setData!({result});
+    this.page.setData({result});
   }
 
   classify(ab: ArrayBuffer, size: CameraSize) {
@@ -47,7 +46,7 @@ export class Classifier {
           topK.map((x, i) => `${x.value.toFixed(3)}: ${x.label}`).join('\n');
       return result;
     });
-    this.page.setData!({result});
+    this.page.setData({result});
   }
   dispose() {
     this.mobileNet.dispose();

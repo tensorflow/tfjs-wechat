@@ -3693,6 +3693,11 @@ minipass@^2.2.1, minipass@^2.3.4:
     safe-buffer "^5.1.2"
     yallist "^3.0.0"
 
+miniprogram-api-typings@^2.6.5-2:
+  version "2.6.5-2"
+  resolved "https://registry.yarnpkg.com/miniprogram-api-typings/-/miniprogram-api-typings-2.6.5-2.tgz#990e3e5b91074ba4306bf6b8173cf38b632b4d3f"
+  integrity sha512-P0NdPNfaCYL7E7w1VHhpYCeu6WcN7h3xejqwWv5jmqdTTdHda+EJKby1VNc49rPn/w45NiNJD5gHgeMHGlb9xA==
+
 miniprogram-compiler@latest:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/miniprogram-compiler/-/miniprogram-compiler-0.1.0.tgz#eb78abc1559ffcfb9a3aa39b3eddcb2de405d6ba"

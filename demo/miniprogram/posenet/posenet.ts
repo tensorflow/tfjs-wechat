@@ -47,8 +47,7 @@ export async function detectPoseInRealTime(image, net, mirror) {
   const poses = await net.estimatePoses(image, {
     flipHorizontal,
     decodingMethod: 'single-person',
-    scoreThreshold: 0.5,
-    nmsRadius: 20
+    scoreThreshold: 0.3
   });
   video.dispose();
   return poses;

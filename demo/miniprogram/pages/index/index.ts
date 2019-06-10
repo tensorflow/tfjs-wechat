@@ -35,23 +35,23 @@ Page({
   poses: undefined,
   ctx: undefined,
   mobilenet() {
-    this.setData!({selectedBtn: 'mobilenet'});
+    this.setData({selectedBtn: 'mobilenet'});
     this.selectedModel = this.mobilenetModel;
     if (this.mobilenetModel == null) {
       const model = new Classifier(this);
       model.load().then(() => {
-        this.setData!({result: 'loading mobilenet model...'});
+        this.setData({result: 'loading mobilenet model...'});
         this.mobilenetModel = model;
         this.selectedModel = this.mobilenetModel;
-        this.setData!({result: 'model loaded.'});
+        this.setData({result: 'model loaded.'});
       });
     }
   },
   posenet() {
-    this.setData!({selectedBtn: 'posenet'});
+    this.setData({selectedBtn: 'posenet'});
     this.selectedModel = this.posenetModel;
     if (this.posenetModel == null) {
-      this.setData!({result: 'loading posenet model...'});
+      this.setData({result: 'loading posenet model...'});
       posenet
           .load({
             architecture: 'MobileNetV1',
@@ -62,7 +62,7 @@ Page({
           .then((model) => {
             this.posenetModel = model;
             this.selectedModel = this.posenetModel;
-            this.setData!({result: 'model loaded.'});
+            this.setData({result: 'model loaded.'});
           });
     }
   },
@@ -74,7 +74,7 @@ Page({
             this.poses = poses;
             drawPoses(this);
             const result = `${Date.now() - start}ms`;
-            this.setData!({result});
+            this.setData({result});
           })
           .catch((err) => {
             console.log(err, err.stack);
@@ -95,6 +95,7 @@ Page({
     }, 500);
 
     this.mobilenet();
+    // @ts-ignore the ts definition for this method is worng.
     const context = wx.createCameraContext(this);
     let count = 0;
     const listener = (context as any).onCameraFrame((frame) => {
