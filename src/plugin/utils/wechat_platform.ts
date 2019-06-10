@@ -106,10 +106,7 @@ export function initWebGL(
     if (debug) {
       console.log('start backend registration');
     }
-    tf.ENV.set('WEBGL_VERSION', 1);
-    if (platform === 'ios') {
-      tf.ENV.set('WEBGL_RENDER_FLOAT32_ENABLED', false);
-    }
+    tf.webgl.setWebGLContext(1, gl);
     try {
       tf.registerBackend('wechat-webgl', () => {
         const context = new tf.webgl.GPGPUContext(gl);
