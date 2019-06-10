@@ -64,6 +64,7 @@ function clearState() {
   currentBackend = undefined;
   global = {};
 }
+
 describe('setupWechatPlatform android', () => {
   beforeEach(() => {
     backends = {};
@@ -80,8 +81,10 @@ describe('setupWechatPlatform android', () => {
   });
 
   it('should polyfill fetch', () => {
+    spyOn(config, 'fetchFunc');
     setupWechatPlatform(config);
-    expect(platform.fetch).toBeDefined();
+    platform.fetch('url', {});
+    expect(config.fetchFunc).toHaveBeenCalledWith('url', {});
   });
 
   it('should polyfill btoa', () => {

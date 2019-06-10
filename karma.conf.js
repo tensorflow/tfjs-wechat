@@ -21,20 +21,14 @@ module.exports = function(config) {
     frameworks: ['jasmine'],
     files: [
       'node_modules/miniprogram-simulate/build.js',
-      'dist/plugin/utils/**/*.js',
-      'dist/plugin/test/**/*.js',
-      'dist/plugin/components/**/*.js',
-      'dist/plugin/components/tfjs-wechat/*'
+      'dist/src/plugin/utils/**/*.js',
+      'dist/src/plugin/test/**/*.js',
     ],
-    exclude: ['dist/plugin/**/*.d.ts', 'dist/plugin/**/*.js.map'],
+    exclude: ['dist/src/plugin/**/*.d.ts', 'dist/src/plugin/**/*.js.map'],
     preprocessors: {
-      'dist/plugin/components/tfjs-wechat/*.js': ['webpack','filemap'],
-      'dist/plugin/components/tfjs-wechat/*.wxml': ['filemap'], // 组件文件使用 filemap 将各个文件内容注入到浏览器
-      'dist/plugin/components/tfjs-wechat/*.json': ['filemap'], // 组件文件使用 filemap 将各个文件内容注入到浏览器
-      'dist/plugin/components/tfjs-wechat/*.wxss': ['filemap'], // 组件文件使用 filemap 将各个文件内容注入到浏览器
-      'dist/plugin/utils/*.js': ['webpack'],
-      'dist/plugin/api/*.js': ['webpack'],
-      'dist/plugin/test/*.js': ['webpack', 'dirname'],
+      'dist/src/plugin/utils/*.js': ['webpack'],
+      'dist/src/plugin/api/*.js': ['webpack'],
+      'dist/src/plugin/test/*.js': ['webpack', 'dirname'],
     },
     reporters: ['progress'],
     autoWatch: true,
