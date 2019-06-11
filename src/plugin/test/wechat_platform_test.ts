@@ -23,8 +23,6 @@ const fetchFunc = () => {};
 let backends: {[key: string]: {}} = {};
 let platformName: string;
 let platform: Platform;
-let flags: {[key: string]: boolean|
-            number} = {WEBGL_RENDER_FLOAT32_ENABLED: true};
 let currentBackend: string;
 // tslint:disable-next-line:no-any
 let global: any = {};
@@ -35,13 +33,15 @@ const tf = {
     backends[name] = callback;
   },
   setBackend: (name: string) => currentBackend = name,
+  webgl: {
+    setWebGLContext: () => {},
+  },
   ENV: {
     global,
     setPlatform: (name, p) => {
       platformName = name;
       platform = p;
-    },
-    set: (flag: string, value: boolean|number) => flags[flag] = value
+    }
   }
 };
 const gl = {};
@@ -60,12 +60,11 @@ function clearState() {
   platform = undefined;
   platformName = undefined;
   backends = {};
-  flags = {WEBGL_RENDER_FLOAT32_ENABLED: true};
   currentBackend = undefined;
   global = {};
 }
 
-describe('setupWechatPlatform android', () => {
+describe('setupWechatPlatform', () => {
   beforeEach(() => {
     backends = {};
     systemInfo = {platform: 'android'};
@@ -102,29 +101,9 @@ describe('setupWechatPlatform android', () => {
     expect(tf.getBackend()).toEqual(WECHAT_WEBGL_BACKEND);
   });
 
-  it('should set the WEBGL version to 1', () => {
+  it('should set the WEBGL context', () => {
+    spyOn(tf.webgl, 'setWebGLContext');
     setupWechatPlatform(config);
-    expect(flags['WEBGL_VERSION']).toBe(1);
-  });
-
-  it('should not disable float32 rendering for android ', () => {
-    setupWechatPlatform(config);
-    expect(flags['WEBGL_RENDER_FLOAT32_ENABLED']).toBeTruthy();
-  });
-});
-
-describe('setupWechatPlatform android', () => {
-  beforeEach(() => {
-    backends = {};
-    systemInfo = {platform: 'ios'};
-    spyOn(wx, 'getSystemInfoSync').and.returnValue(systemInfo);
-  });
-
-  afterEach(() => clearState());
-
-  it('should disable float32 rendering for ios ', () => {
-    setupWechatPlatform(config);
-
-    expect(flags['WEBGL_RENDER_FLOAT32_ENABLED']).toBeFalsy();
+    expect(tf.webgl.setWebGLContext).toHaveBeenCalledWith(1, gl);
   });
 });

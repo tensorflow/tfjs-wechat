@@ -14,22 +14,27 @@
  * limitations under the License.
  * =============================================================================
  */
- path = require('path');
+path = require('path');
 
+const karmaTypescriptConfig = {
+  tsconfig: 'tsconfig.json',
+  // Disable coverage reports and instrumentation by default for tests
+  coverageOptions: {instrumentation: false},
+  reports: {},
+  bundlerOptions: {sourceMap: true}
+};
 module.exports = function(config) {
   config.set({
-    frameworks: ['jasmine'],
+    frameworks: ['jasmine', 'karma-typescript'],
     files: [
       'node_modules/miniprogram-simulate/build.js',
-      'dist/src/plugin/utils/**/*.js',
-      'dist/src/plugin/test/**/*.js',
+      'src/plugin/utils/**/*.ts',
+      'src/plugin/test/**/*.ts',
     ],
-    exclude: ['dist/src/plugin/**/*.d.ts', 'dist/src/plugin/**/*.js.map'],
     preprocessors: {
-      'dist/src/plugin/utils/*.js': ['webpack'],
-      'dist/src/plugin/api/*.js': ['webpack'],
-      'dist/src/plugin/test/*.js': ['webpack', 'dirname'],
+      'src/plugin/**/*.ts': 'karma-typescript'
     },
+    karmaTypescriptConfig,
     reporters: ['progress'],
     autoWatch: true,
     browsers: ['Chrome'],
@@ -57,18 +62,6 @@ module.exports = function(config) {
     },
     client: {
       args: ['--grep', config.grep || '']
-    },
-    webpack: {
-      mode: 'development',
-      optimization: {
-          minimize: false,
-      },
-      node: {
-          __dirname: false,
-      },
-      resolve: {
-        modules: [path.resolve(__dirname, 'src/plugin/node_modules'), 'node_modules']
-      }
-    },
+    }
   });
 };

@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "scripts": {
     "compile": "rimraf dist/ && tsc && ncp src dist/src --filter='^(((?!node_modules)(?!typings).)(?!\\.ts$))*$' && ncp demo dist/demo --filter='^(((?!node_modules)(?!typings).)(?!\\.ts$))*$'",
-    "test": "yarn compile && karma start",
+    "test": "karma start",
     "lint": "tslint -p . -t verbose"
   },
   "main": "dist/index.js",
@@ -22,7 +22,6 @@
     "karma-jasmine": "~2.0.1",
     "karma-typescript": "~4.0.0",
     "karma-typescript-es6-transform": "4.0.0",
-    "karma-webpack": "^3.0.5",
     "miniprogram-simulate": "^1.0.1",
     "ncp": "2.0.0",
     "path": "0.12.7",
@@ -30,8 +29,6 @@
     "tslint": "~5.8.0",
     "tslint-no-circular-imports": "~0.5.0",
     "typescript": "^3.3.3333",
-    "webpack": "4.29.6",
-    "webpack-cli": "^3.2.3",
     "yalc": "^1.0.0-pre.27",
     "miniprogram-api-typings": "^2.6.5-2"
   }
