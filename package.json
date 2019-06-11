@@ -2,7 +2,7 @@
   "name": "tfjs-wechat",
   "version": "0.0.1",
   "scripts": {
-    "compile": "rimraf dist/ && tsc && ncp src dist/src --filter='^(((?!node_modules)(?!typings).)(?!\\.ts$))*$' && ncp demo dist/demo --filter='^(((?!node_modules)(?!typings).)(?!\\.ts$))*$'",
+    "build": "rimraf dist/ && tsc && ncp src dist/src --filter='^(((?!node_modules)(?!typings).)(?!\\.ts$))*$' && ncp demo dist/demo --filter='^(((?!node_modules)(?!typings).)(?!\\.ts$))*$'",
     "test": "karma start",
     "lint": "tslint -p . -t verbose"
   },

@@ -17,7 +17,7 @@
 
 import {Platform} from '@tensorflow/tfjs-core/dist/platforms/platform';
 
-import {setupWechatPlatform, WECHAT_WEBGL_BACKEND} from '../utils/wechat_platform';
+import {setupWechatPlatform, WECHAT_WEBGL_BACKEND_NAME} from '../utils/wechat_platform';
 
 const fetchFunc = () => {};
 let backends: {[key: string]: {}} = {};
@@ -98,7 +98,7 @@ describe('setupWechatPlatform', () => {
 
   it('should set tf backend to wechat-webgl', () => {
     setupWechatPlatform(config);
-    expect(tf.getBackend()).toEqual(WECHAT_WEBGL_BACKEND);
+    expect(tf.getBackend()).toEqual(WECHAT_WEBGL_BACKEND_NAME);
   });
 
   it('should set the WEBGL context', () => {

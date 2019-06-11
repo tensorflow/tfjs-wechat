@@ -2,7 +2,7 @@
   "name": "tfjs-wechat",
   "version": "0.0.1",
   "scripts": {
-    "compile": "tsc"
+    "build": "tsc"
   },
   "main": "dist/index.js",
   "license": "Apache-2.0",

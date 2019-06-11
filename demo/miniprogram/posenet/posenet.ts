@@ -15,7 +15,6 @@
  * =============================================================================
  */
 import * as tf from '@tensorflow/tfjs-core';
-import {Tensor} from '@tensorflow/tfjs-core';
 
 import {drawKeypoints, drawSkeleton} from './util';
 
@@ -24,6 +23,12 @@ export const videoHeight = 352;
 export interface Point {
   x: number;
   y: number;
+}
+export interface CanvasNode {
+  width: number;
+  height: number;
+  getContext: Function;
+  createImage: Function;
 }
 
 /**
@@ -36,7 +41,7 @@ export async function detectPoseInRealTime(image, net, mirror) {
     width: image.width,
     height: image.height
   };
-  const video: Tensor = tf.tidy(() => {
+  const video: tf.Tensor = tf.tidy(() => {
     const temp = tf.browser.fromPixels(data, 4);
     return temp.slice([0, 0, 0], [-1, -1, 3]);
   });
@@ -44,11 +49,9 @@ export async function detectPoseInRealTime(image, net, mirror) {
   // since images are being fed from a webcam
   const flipHorizontal = mirror;
 
-  const poses = await net.estimatePoses(image, {
-    flipHorizontal,
-    decodingMethod: 'single-person',
-    scoreThreshold: 0.3
-  });
+  const poses = await net.estimatePoses(
+      image,
+      {flipHorizontal, decodingMethod: 'single-person', scoreThreshold: 0.3});
   video.dispose();
   return poses;
 }

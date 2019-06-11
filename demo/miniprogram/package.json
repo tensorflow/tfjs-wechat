@@ -1,8 +1,8 @@
 {
-  "name": "tfjs-wechat",
+  "name": "tfjs-wechat-lugin-example",
   "version": "0.0.1",
   "scripts": {
-    "compile": "tsc"
+    "build": "tsc"
   },
   "main": "dist/index.js",
   "license": "Apache-2.0",

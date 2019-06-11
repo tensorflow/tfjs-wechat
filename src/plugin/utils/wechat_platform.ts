@@ -45,8 +45,7 @@ export class PlatformWeChat implements Platform {
   }
 }
 
-// WeChat WebGL backend name
-export const WECHAT_WEBGL_BACKEND = 'wechat-webgl';
+export const WECHAT_WEBGL_BACKEND_NAME = 'wechat-webgl';
 
 /**
  * Setup the fetch polyfill and WebGL backend for WeChat.
@@ -60,7 +59,7 @@ export function setupWechatPlatform(config: SystemConfig, debug = false): void {
     console.log(tf);
   }
   // Skip initialization if the backend has been set.
-  if (tf.getBackend() === WECHAT_WEBGL_BACKEND) {
+  if (tf.getBackend() === WECHAT_WEBGL_BACKEND_NAME) {
     return;
   }
   const systemInfo = wx.getSystemInfoSync();
@@ -80,19 +79,18 @@ export function setBase64Methods(tf: typeof tfjs) {
   tf.ENV.global.atob = atob;
 }
 /**
- * Initialize webgl backend using the GlRenderingContext from the webgl canvas
- * node.
+ * Initialize webgl backend using the WebGLRenderingContext from the webgl
+ * canvas node.
  * @param res: webgl canvas node container return from node selector.
  * @param platform: platform name where the mini app is running (ios, android,
  *     devtool).
  * @param debug: enable/disable debug logging.
  */
-
 const BACKEND_PRIORITY = 2;
 export function initWebGL(
     // tslint:disable-next-line:no-any
     tf: typeof tfjs, canvas: any, platform: string, debug = false): void {
-  if (tf.findBackend(WECHAT_WEBGL_BACKEND) == null) {
+  if (tf.findBackend(WECHAT_WEBGL_BACKEND_NAME) == null) {
     const WEBGL_ATTRIBUTES = {
       alpha: false,
       antialias: false,
@@ -116,7 +114,7 @@ export function initWebGL(
       throw (new Error('Failed to register Webgl backend: ' + e.message));
     }
   }
-  tf.setBackend(WECHAT_WEBGL_BACKEND);
+  tf.setBackend(WECHAT_WEBGL_BACKEND_NAME);
   if (debug) {
     console.log('current backend = ', tf.getBackend());
   }

@@ -29,7 +29,7 @@
     "outDir": "dist"
   },
   "include": [
-    "src/**/*",
-    "demo/**/*"
+    "src/plugin",
+    "demo/miniprogram"
   ]
 }

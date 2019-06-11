@@ -19,6 +19,11 @@ import * as tf from '@tensorflow/tfjs-core';
 
 import {MobileNet} from './mobilenet';
 
+export interface CameraSize {
+  width: number;
+  height: number
+}
+
 export class Classifier {
   private mobileNet: MobileNet;
   constructor(private page: Page.PageInstanceBaseProps) {}
