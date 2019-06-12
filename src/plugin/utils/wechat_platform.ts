@@ -16,7 +16,6 @@
  */
 
 import * as tfjs from '@tensorflow/tfjs-core';
-import {Platform} from '@tensorflow/tfjs-core/dist/platforms/platform';
 import {atob, btoa} from 'abab';
 
 export interface SystemConfig {
@@ -38,7 +37,7 @@ export interface SystemConfig {
 }
 
 // Implement the WeChat Platform for TFJS
-export class PlatformWeChat implements Platform {
+export class PlatformWeChat implements tfjs.Platform {
   constructor(private fetchFunc: Function) {}
   fetch(path: string, requestInits?: RequestInit): Promise<Response> {
     return this.fetchFunc(path, requestInits);

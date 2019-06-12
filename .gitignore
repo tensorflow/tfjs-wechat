@@ -4,6 +4,7 @@ npm-debug.log
 yarn-error.log
 .DS_Store
 dist/
+demo/dist
 .idea/
 *.tgz
 .cache

@@ -36,13 +36,8 @@ export interface CanvasNode {
  * happens. This function loops with a requestAnimationFrame method.
  */
 export async function detectPoseInRealTime(image, net, mirror) {
-  const data = {
-    data: new Uint8Array(image.data),
-    width: image.width,
-    height: image.height
-  };
   const video: tf.Tensor = tf.tidy(() => {
-    const temp = tf.browser.fromPixels(data, 4);
+    const temp = tf.tensor(new Uint8Array(image.data), [image.height, image.width, 4]);
     return temp.slice([0, 0, 0], [-1, -1, 3]);
   });
 
@@ -50,7 +45,7 @@ export async function detectPoseInRealTime(image, net, mirror) {
   const flipHorizontal = mirror;
 
   const poses = await net.estimatePoses(
-      image,
+      video,
       {flipHorizontal, decodingMethod: 'single-person', scoreThreshold: 0.3});
   video.dispose();
   return poses;

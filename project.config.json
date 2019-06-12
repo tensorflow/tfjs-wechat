@@ -19,8 +19,8 @@
       }
     ]
   },
-  "miniprogramRoot": "dist/demo/miniprogram/",
-  "pluginRoot": "dist/src/plugin/",
+  "miniprogramRoot": "demo/dist/",
+  "pluginRoot": "dist/",
   "compileType": "plugin",
   "setting": {
     "urlCheck": false,

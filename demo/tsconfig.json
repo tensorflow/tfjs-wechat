@@ -27,9 +27,9 @@
       "node_modules/@types"
     ],
     "types": ["jasmine", "miniprogram-api-typings"],
-    "outDir": "dist"
+    "outDir": "./dist"
   },
   "include": [
-    "src/plugin"
+    "miniprogram"
   ]
 }

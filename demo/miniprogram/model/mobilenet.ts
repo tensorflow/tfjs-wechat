@@ -17,8 +17,6 @@
 import * as tf from '@tensorflow/tfjs-core';
 import * as tfc from '@tensorflow/tfjs-converter';
 
-import {IMAGENET_CLASSES} from './imagenet_classes';
-
 const GOOGLE_CLOUD_STORAGE_DIR =
     'https://7465-tensorflowjs-e2061d-1259050850.tcb.qcloud.la/';
 // const GOOGLE_CLOUD_STORAGE_DIR =
@@ -76,7 +74,7 @@ export class MobileNet {
                            .slice(0, topK);
 
       return predictionList.map(x => {
-        return {label: IMAGENET_CLASSES[x.index], value: x.value};
+        return {label: x.index, value: x.value};
       });
     });
   }
