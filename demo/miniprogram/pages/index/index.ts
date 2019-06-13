@@ -22,12 +22,7 @@ const CANVAS_ID = 'image';
 const POSENET_URL =
     'https://7465-tensorflowjs-e2061d-1259050850.tcb.qcloud.la/posenet/mobilenet/model.json';
 Page({
-  data: {
-    insertCamera: false,
-    insert: false,
-    result: '',
-    selectedBtn: 'mobilenet'
-  },
+  data: {result: '', selectedBtn: 'mobilenet'},
   mobilenetModel: undefined,
   posenetModel: undefined,
   selectedModel: undefined,
@@ -96,6 +91,8 @@ Page({
     }, 500);
 
     this.mobilenet();
+
+    // Start the camera API to feed the captured images to the models.
     // @ts-ignore the ts definition for this method is worng.
     const context = wx.createCameraContext(this);
     let count = 0;
