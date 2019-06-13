@@ -14,15 +14,13 @@
  * limitations under the License.
  * =============================================================================
  */
-import * as tf from '@tensorflow/tfjs-core';
 import * as tfc from '@tensorflow/tfjs-converter';
+import * as tf from '@tensorflow/tfjs-core';
 
 const GOOGLE_CLOUD_STORAGE_DIR =
     'https://7465-tensorflowjs-e2061d-1259050850.tcb.qcloud.la/';
-// const GOOGLE_CLOUD_STORAGE_DIR =
-//   'https://storage.googleapis.com/tfjs-models/savedmodel/';
 const MODEL_FILE_URL = 'mobilenet_v2_1.0_224/model.json';
-const PREPROCESS_DIVISOR = tf.scalar(255 / 2);
+const PREPROCESS_DIVISOR = 255 / 2;
 
 export interface TopKValue {
   label: string;
@@ -57,25 +55,5 @@ export class MobileNet {
     const reshapedInput =
         preprocessedInput.reshape([1, ...preprocessedInput.shape]);
     return this.model.predict(reshapedInput);
-  }
-
-  getTopKClasses(logits: tf.Tensor, topK: number): TopKValue[] {
-    return tf.tidy(() => {
-      const predictions = logits;
-      const values = predictions.dataSync();
-      let predictionList = [];
-      for (let i = 0; i < values.length; i++) {
-        predictionList.push({value: values[i], index: i});
-      }
-      predictionList = predictionList
-                           .sort((a, b) => {
-                             return b.value - a.value;
-                           })
-                           .slice(0, topK);
-
-      return predictionList.map(x => {
-        return {label: x.index, value: x.value};
-      });
-    });
   }
 }

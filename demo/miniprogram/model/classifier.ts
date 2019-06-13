@@ -21,7 +21,7 @@ import {MobileNet} from './mobilenet';
 
 export interface CameraSize {
   width: number;
-  height: number
+  height: number;
 }
 
 export class Classifier {
@@ -45,10 +45,10 @@ export class Classifier {
       const pixels =
           temp.slice([0, 0, 0], [-1, -1, 3]).resizeBilinear([224, 224]);
       const tensor = this.mobileNet.predict(pixels) as tf.Tensor;
-      const topK = this.mobileNet.getTopKClasses(tensor, 5);
+
+      const topIndex = tensor.argMax().dataSync()[0];
       result += `prediction: ${Date.now() - start}ms\n`;
-      result +=
-          topK.map((x, i) => `${x.value.toFixed(3)}: ${x.label}`).join('\n');
+      result += `${tensor.dataSync()[topIndex]}`;
       return result;
     });
     this.page.setData({result});
