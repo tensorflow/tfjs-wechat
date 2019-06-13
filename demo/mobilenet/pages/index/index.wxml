@@ -1,0 +1,11 @@
+<view class="container">
+<camera
+  device-position="back"
+  flash="off"
+  binderror="error"
+  style="width: 288px; height: 352px;z-index: 5;"
+  frame-size="small"
+>
+</camera>
+  <text class="result">{{result}}</text>
+</view>

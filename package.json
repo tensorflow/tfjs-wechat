@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "scripts": {
     "build": "rimraf dist/ && tsc && ncp src/plugin dist --filter='^(((?!node_modules)(?!typings).)(?!\\.ts$))*$'",
-    "build-demo": "cd demo && rimraf dist/ && tsc && ncp miniprogram dist --filter='^(((?!node_modules)(?!typings).)(?!\\.ts$))*$'",
+    "build-demo": "cd demo && rimraf dist/ && cd posenet && tsc && cd .. && ncp posenet dist --filter='^(((?!node_modules)(?!typings).)(?!\\.ts$))*$'",
     "test": "karma start",
     "lint": "tslint -p . -t verbose"
   },

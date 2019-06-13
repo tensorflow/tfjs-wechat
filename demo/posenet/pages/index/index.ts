@@ -16,35 +16,17 @@
  */
 
 import * as posenet from '@tensorflow-models/posenet';
-import {Classifier} from '../../model/classifier';
 import {detectPoseInRealTime, drawPoses} from '../../posenet/posenet';
 const CANVAS_ID = 'image';
 const POSENET_URL =
     'https://7465-tensorflowjs-e2061d-1259050850.tcb.qcloud.la/posenet/mobilenet/model.json';
 Page({
-  data: {result: '', selectedBtn: 'mobilenet'},
-  mobilenetModel: undefined,
+  data: {result: ''},
   posenetModel: undefined,
-  selectedModel: undefined,
   canvas: undefined,
   poses: undefined,
   ctx: undefined,
-  mobilenet() {
-    this.setData({selectedBtn: 'mobilenet'});
-    this.selectedModel = this.mobilenetModel;
-    if (this.mobilenetModel == null) {
-      const model = new Classifier(this);
-      model.load().then(() => {
-        this.setData({result: 'loading mobilenet model...'});
-        this.mobilenetModel = model;
-        this.selectedModel = this.mobilenetModel;
-        this.setData({result: 'model loaded.'});
-      });
-    }
-  },
   posenet() {
-    this.setData({selectedBtn: 'posenet'});
-    this.selectedModel = this.posenetModel;
     if (this.posenetModel == null) {
       this.setData({result: 'loading posenet model...'});
       posenet
@@ -57,7 +39,6 @@ Page({
           })
           .then((model) => {
             this.posenetModel = model;
-            this.selectedModel = this.posenetModel;
             this.setData({result: 'model loaded.'});
           });
     }
@@ -77,12 +58,6 @@ Page({
           });
     }
   },
-  executeMobilenet(frame) {
-    if (this.mobilenetModel) {
-      this.mobilenetModel.classify(
-          frame.data, {width: frame.width, height: frame.height});
-    }
-  },
   async onReady() {
     console.log('create canvas context for #image...');
     setTimeout(() => {
@@ -90,7 +65,7 @@ Page({
       console.log('ctx', this.ctx);
     }, 500);
 
-    this.mobilenet();
+    this.posenet();
 
     // Start the camera API to feed the captured images to the models.
     // @ts-ignore the ts definition for this method is worng.
@@ -98,21 +73,14 @@ Page({
     let count = 0;
     const listener = (context as any).onCameraFrame((frame) => {
       count++;
-      if (count === 2) {
-        if (this.data.selectedBtn === 'posenet') {
-          this.executePosenet(frame);
-        } else {
-          this.executeMobilenet(frame);
-        }
+      if (count === 3) {
+        this.executePosenet(frame);
         count = 0;
       }
     });
     listener.start();
   },
   onUnload() {
-    if (this.mobilenetModel) {
-      this.mobilenetModel.dispose();
-    }
     if (this.posenetModel) {
       this.posenetModel.dispose();
     }

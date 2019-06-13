@@ -26,10 +26,6 @@
       "plugin/typings",
       "node_modules/@types"
     ],
-    "types": ["jasmine", "miniprogram-api-typings"],
-    "outDir": "./dist"
-  },
-  "include": [
-    "miniprogram"
-  ]
+    "types": ["jasmine", "miniprogram-api-typings"]
+  }
 }

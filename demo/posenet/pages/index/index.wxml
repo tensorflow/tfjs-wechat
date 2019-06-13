@@ -1,8 +1,3 @@
-<view class="buttons">
-  <button size="mini" class="button" type="{{selectedBtn == 'mobilenet' ? 'primary' : 'default'}}" bindtap="mobilenet">MobileNet</button>
-  <button size="mini" class="button" type="{{selectedBtn == 'posenet' ? 'primary' : 'default'}}" bindtap="posenet">PoseNet</button>
-</view>
-
 <view class="container">
 <camera
   device-position="back"

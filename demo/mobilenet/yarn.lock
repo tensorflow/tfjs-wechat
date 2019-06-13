@@ -2,11 +2,6 @@
 # yarn lockfile v1
 
 
-"@tensorflow-models/posenet@2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@tensorflow-models/posenet/-/posenet-2.0.0.tgz#11e04f58e0a381dd681fd3f35a6af151986f510e"
-  integrity sha512-4ozg2iWtFE4dlyHRwC0BuqxCOa55xVVMcdo6iqLnHV5ecG1EoABLoKU1JmvgL4qj7+qHHWCB+Mbvhb7pxBO2ew==
-
 "@tensorflow/tfjs-converter@1.1.2":
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/@tensorflow/tfjs-converter/-/tfjs-converter-1.1.2.tgz#2400ac77b30f973f1fcb26c912b28271f7f4d605"
@@ -54,6 +49,11 @@ minimist@0.0.8:
   version "0.0.8"
   resolved "https://registry.yarnpkg.com/minimist/-/minimist-0.0.8.tgz#857fcabfc3397d2625b8228262e86aa7a011b05d"
   integrity sha1-hX/Kv8M5fSYluCKCYuhqp6ARsF0=
+
+miniprogram-api-typings@^2.6.5-2:
+  version "2.6.5-2"
+  resolved "https://registry.yarnpkg.com/miniprogram-api-typings/-/miniprogram-api-typings-2.6.5-2.tgz#990e3e5b91074ba4306bf6b8173cf38b632b4d3f"
+  integrity sha512-P0NdPNfaCYL7E7w1VHhpYCeu6WcN7h3xejqwWv5jmqdTTdHda+EJKby1VNc49rPn/w45NiNJD5gHgeMHGlb9xA==
 
 mkdirp@^0.5.1:
   version "0.5.1"
