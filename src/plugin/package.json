@@ -1,0 +1,16 @@
+{
+  "name": "tfjs-wechat",
+  "version": "0.0.1",
+  "scripts": {
+    "build": "tsc"
+  },
+  "main": "dist/index.js",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "abab": "2.0.0"
+  },
+  "devDependencies": {
+    "@tensorflow/tfjs-core": "1.2.1",
+    "typescript": "^3.3.3333"
+  }
+}

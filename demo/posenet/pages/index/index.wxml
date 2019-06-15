@@ -1,0 +1,12 @@
+<view class="container">
+<camera
+  device-position="back"
+  flash="off"
+  binderror="error"
+  style="width: 288px; height: 352px;z-index: 5;"
+  frame-size="small"
+><canvas id="image" canvas-id="image" style="width: 100%; height: 100%;z-index: 10;" bindtouchstart="touchstart" bindtouchmove="touchmove" bindtouchend="touchend" bindtouchcancel="touchcancel">
+    </canvas>
+</camera>
+  <text class="result">{{result}}</text>
+</view>

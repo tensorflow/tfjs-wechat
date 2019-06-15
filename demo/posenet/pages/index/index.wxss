@@ -1,0 +1,29 @@
+/* pages/index/index.wxss */
+.buttons {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+}
+
+.buttons .button {
+  width: 100px;
+  height: 36px;
+  font-size: 15px;
+}
+
+.image-canvas {
+  width: 224px;
+  height: 224px;
+  position: absolute;
+  top: -300px;
+}
+.container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20rpx 0;
+  box-sizing: border-box;
+  position: relative;
+} 
