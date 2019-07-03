@@ -1,7 +1,7 @@
 # TensorFlow.js 微信小程序插件
 [TensorFlow.js](https://github.com/tensorflow/tfjs)是谷歌开发的机器学习开源项目，致力于为javascript提供具有硬件加速的机器学习模型训练和部署。
 TensorFlow.js 微信小程序插件封装了TensorFlow.js库，用于提供给第三方小程序调用。
-例子可以看TFJS Mobilenet [物体识别小程序](https://github.com/tensorflow/tfjs-wechat/demo/miniprogram)
+例子可以看TFJS Mobilenet [物体识别小程序](https://github.com/tensorflow/tfjs-wechat/demo/mobilenet)
 ## 添加插件
 在使用插件前，首先要在小程序管理后台的“设置-第三方服务-插件管理”中添加插件。开发者可登录小程序管理后台，通过 appid [wx6afed118d9e81df9] 查找插件并添加。本插件无需申请，添加后可直接使用。
 
@@ -14,7 +14,7 @@ TensorFlow.js 微信小程序插件封装了TensorFlow.js库，用于提供给�
   ...
   "plugins": {
     "tfjsPlugin": {
-      "version": "0.0.4",
+      "version": "0.0.5",
       "provider": "wx6afed118d9e81df9"
     }
   }
@@ -43,8 +43,8 @@ TensorFlow.js有一个联合包 - @tensorflow/tfjs，包含了四个分npm包：
   "main": "dist/index.js",
   "license": "Apache-2.0",
   "dependencies": {
-    "@tensorflow/tfjs-core": "1.1.2"，
-    "@tensorflow/tfjs-converter": "1.1.2"
+    "@tensorflow/tfjs-core": "1.2.2"，
+    "@tensorflow/tfjs-converter": "1.2.2"
   }
 }
 ```
@@ -63,8 +63,8 @@ TensorFlow.js有一个联合包 - @tensorflow/tfjs，包含了四个分npm包：
   "main": "dist/index.js",
   "license": "Apache-2.0",
   "dependencies": {
-    "@tensorflow/tfjs-core": "1.1.2"，
-    "@tensorflow/tfjs-converter": "1.1.2"，
+    "@tensorflow/tfjs-core": "1.2.2"，
+    "@tensorflow/tfjs-converter": "1.2.2"，
     "fetch-wechat": "0.0.3"
   }
 }
@@ -93,7 +93,9 @@ App({
 组件设置完毕就可以开始使用 TensorFlow.js库的[API](https://js.tensorflow.org/api/latest/)了。
 
 ## 版本需求
-基础库版本 >= 2.7.0
+微信基础库版本 >= 2.7.3
+微信开发者工具 >= v1.02.1907022
+tfjs-core >= 1.2.2
 
 ## 更新说明
 0.0.2 plugin不再映射TensorFlow.js API库，由小程序端提供。
