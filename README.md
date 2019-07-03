@@ -51,6 +51,9 @@ TensorFlow.js有一个联合包 - @tensorflow/tfjs，包含了四个分npm包：
 
 参考小程序npm工具[文档](https://developers.weixin.qq.com/miniprogram/dev/devtools/npm.html)如何编译npm包到小程序中。
 
+__注意__
+请从微信小程序[开发版Nightly Build更新日志](https://developers.weixin.qq.com/miniprogram/dev/devtools/nightly.html)下载最新的微信开发者工具，保证版本号>=v1.02.1907022.
+
 ### Polyfill fetch 函数
 如果需要使用tf.loadGraphModel或tf.loadLayersModel API来载入模型，小程序需要按以下流程填充fetch函数：
 
