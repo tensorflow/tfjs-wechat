@@ -86,8 +86,12 @@ var plugin = requirePlugin('tfjsPlugin');
 App({
   onLaunch: function () {
     plugin.configPlugin({
+      // polyfill fetch function
       fetchFunc: fetchWechat.fetchFunc(),
-      tf, canvas: wx.createOffscreenCanvas()
+      // inject tfjs runtime
+      tf,
+      // provide webgl canvas
+      canvas: wx.createOffscreenCanvas()
     });
   }
 });
@@ -96,12 +100,11 @@ App({
 组件设置完毕就可以开始使用 TensorFlow.js库的[API](https://js.tensorflow.org/api/latest/)了。
 
 ## 版本需求
-微信基础库版本 >= 2.7.3
-微信开发者工具 >= v1.02.1907022
-tfjs-core >= 1.2.2
+- 微信基础库版本 >= 2.7.3
+- 微信开发者工具 >= v1.02.1907022
+- tfjs-core >= 1.2.2
 
 ## 更新说明
-0.0.2 plugin不再映射TensorFlow.js API库，由小程序端提供。
-0.0.3 使用offscreen canvas，小程序无需加入plugin component。
-0.0.5 修改例子程序使用tfjs分包来降低小程序大小。
-
+- 0.0.2 plugin不再映射TensorFlow.js API库，由小程序端提供。
+- 0.0.3 使用offscreen canvas，小程序无需加入plugin component。
+- 0.0.5 修改例子程序使用tfjs分包来降低小程序大小。
