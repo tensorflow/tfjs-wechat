@@ -6,7 +6,7 @@ steps:
 - name: 'node:10'
   entrypoint: 'yarn'
   id: 'build'
-  args: ['build-ci']
+  args: ['build']
   waitFor: ['yarn']
 - name: 'node:10'
   entrypoint: 'yarn'

@@ -18,7 +18,7 @@ import * as tfc from '@tensorflow/tfjs-converter';
 import * as tf from '@tensorflow/tfjs-core';
 
 const GOOGLE_CLOUD_STORAGE_DIR =
-    'https://7465-tensorflowjs-e2061d-1259050850.tcb.qcloud.la/';
+    'https://www.gstaticcnapps.cn/tfjs-models/savedmodel/';
 const MODEL_FILE_URL = 'mobilenet_v2_1.0_224/model.json';
 const PREPROCESS_DIVISOR = 255 / 2;
 
