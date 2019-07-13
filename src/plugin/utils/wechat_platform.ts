@@ -110,7 +110,7 @@ export function initWebGL(
         return new tf.webgl.MathBackendWebGL(context);
       }, BACKEND_PRIORITY);
     } catch (e) {
-      throw (new Error('Failed to register Webgl backend: ' + e.message));
+      throw (new Error(`Failed to register Webgl backend: ${e.message}`));
     }
   }
   tf.setBackend(WECHAT_WEBGL_BACKEND_NAME);
