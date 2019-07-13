@@ -5,6 +5,8 @@
     "build": "rimraf dist/ && tsc && ncp src/plugin dist --filter='^(((?!node_modules)(?!typings).)(?!\\.ts$))*$'",
     "build-demo": "cd demo && rimraf dist/ && cd posenet && tsc && cd .. && ncp posenet dist --filter='^(((?!node_modules)(?!typings).)(?!\\.ts$))*$'",
     "test": "karma start",
+    "test-ci": "yarn build && yarn lint && yarn run-browserstack",  
+    "run-browserstack": "karma start --singleRun --browsers='bs_firefox_mac,bs_chrome_mac' --reporters='dots,karma-typescript,BrowserStack'",
     "lint": "tslint -p . -t verbose"
   },
   "main": "dist/index.js",
