@@ -11,6 +11,9 @@
   },
   "main": "dist/index.js",
   "license": "Apache-2.0",
+  "dependencies": {
+    "abab": "2.0.0" 
+  },
   "devDependencies": {
     "@tensorflow/tfjs-core": "1.2.1",
     "@types/jasmine": "~2.8.6",
