@@ -1,7 +1,7 @@
 # TensorFlow.js 微信小程序插件
 [TensorFlow.js](https://github.com/tensorflow/tfjs)是谷歌开发的机器学习开源项目，致力于为javascript提供具有硬件加速的机器学习模型训练和部署。
 TensorFlow.js 微信小程序插件封装了TensorFlow.js库，用于提供给第三方小程序调用。
-例子可以看TFJS Mobilenet [物体识别小程序](https://github.com/tensorflow/tfjs-wechat/demo/mobilenet)
+例子可以看TFJS Mobilenet [物体识别小程序](https://github.com/tensorflow/tfjs-wechat/tree/master/demo/mobilenet)
 ## 添加插件
 在使用插件前，首先要在小程序管理后台的“设置-第三方服务-插件管理”中添加插件。开发者可登录小程序管理后台，通过 appid [wx6afed118d9e81df9] 查找插件并添加。本插件无需申请，添加后可直接使用。
 
@@ -98,6 +98,40 @@ App({
 ```
 
 组件设置完毕就可以开始使用 TensorFlow.js库的[API](https://js.tensorflow.org/api/latest/)了。
+
+### 使用 [tfjs-models](https://github.com/tensorflow/tfjs-models) 模型库注意事项
+模型库提供了一系列训练好的模型，方便大家快速的给小程序注入ML功能。模型分类包括
+- 图像识别
+- 语音识别
+- 人体姿态识别
+- 物体识别
+- 文字分类
+
+由于这些API默认模型文件都存储在谷歌云上，直接使用会导致中国用户无法直接读取。在小程序内使用模型API时要提供 modelUrl 的参数，可以指向我们在谷歌中国的影像服务器。
+谷歌云的base url是 https://storage.googleapis.com， 中国镜像的base url是https://www.gstaticcnapps.cn
+模型的url path是一致的，比如
+- posenet模型的谷歌云地址是：
+https://storage.googleapis.com/tfjs-models/savedmodel/posenet/mobilenet/float/050/model-stride16.json
+- 中国镜像的地址为 https://www.gstaticcnapps.cn/tfjs-models/savedmodel/posenet/mobilenet/float/050/model-stride16.json
+
+下面时加载posenet模型的例子：
+
+```
+import * as posenet from '@tensorflow-models/posenet';
+
+const POSENET_URL =
+    'https://www.gstaticcnapps.cn/tfjs-models/savedmodel/posenet/mobilenet/float/050/model-stride16.json';
+
+const model = await posenet.load({
+  architecture: 'MobileNetV1',
+  outputStride: 16,
+  inputResolution: 193,
+  multiplier: 0.5,
+  modelUrl: POSENET_URL
+});
+```
+
+
 
 ## 版本需求
 - 微信基础库版本 >= 2.7.3

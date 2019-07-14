@@ -22,8 +22,6 @@
     "noFallthroughCasesInSwitch": true,
     "allowUnreachableCode": false,
     "typeRoots": [
-      "plugin/node_modules",
-      "plugin/typings",
       "node_modules/@types"
     ],
     "types": ["jasmine", "miniprogram-api-typings"]

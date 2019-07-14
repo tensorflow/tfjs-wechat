@@ -19,7 +19,6 @@
       }
     ]
   },
-  "miniprogramRoot": "./",
   "compileType": "miniprogram",
   "setting": {
     "urlCheck": false,
@@ -27,9 +26,17 @@
     "postcss": true,
     "minified": true,
     "newFeature": true,
+    "coverView": true,
     "nodeModules": true,
     "autoAudits": false,
-    "checkInvalidKey": true
+    "checkInvalidKey": true,
+    "checkSiteMap": true,
+    "uploadWithSourceMap": true,
+    "babelSetting": {
+      "ignore": [],
+      "disablePlugins": [],
+      "outputPath": ""
+    }
   },
   "appid": "wx5809925511b85ad7",
   "projectname": "TensorFlowJS",
@@ -38,7 +45,7 @@
     "beforePreview": "",
     "beforeUpload": ""
   },
-  "libVersion": "2.7.3",
+  "libVersion": "2.7.5",
   "simulatorType": "wechat",
   "simulatorPluginLibVersion": {},
   "condition": {}
