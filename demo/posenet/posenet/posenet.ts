@@ -44,19 +44,18 @@ export async function detectPoseInRealTime(image, net, mirror) {
   // since images are being fed from a webcam
   const flipHorizontal = mirror;
 
-  const poses = await net.estimatePoses(
-      video,
-      {flipHorizontal, decodingMethod: 'single-person', scoreThreshold: 0.3});
+  const pose = await net.estimateSinglePose(
+      video, {flipHorizontal});
   video.dispose();
-  return poses;
+  return [pose];
 }
 
 export function drawPoses(page) {
   if (page.poses == null || page.ctx == null) return;
   const ctx = page.ctx;
   const poses = page.poses;
-  const minPoseConfidence = 0.5;
-  const minPartConfidence = 0.5;
+  const minPoseConfidence = 0.3;
+  const minPartConfidence = 0.3;
   // For each pose (i.e. person) detected in an image, loop through the poses
   // and draw the resulting skeleton and keypoints if over certain confidence
   // scores
