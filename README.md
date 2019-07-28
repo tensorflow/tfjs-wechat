@@ -43,7 +43,7 @@ TensorFlow.js有一个联合包 - @tensorflow/tfjs，包含了四个分npm包：
   "main": "dist/index.js",
   "license": "Apache-2.0",
   "dependencies": {
-    "@tensorflow/tfjs-core": "1.2.5"，
+    "@tensorflow/tfjs-core": "1.2.6"，
     "@tensorflow/tfjs-converter": "1.2.5"
   }
 }
@@ -66,7 +66,7 @@ __注意__
   "main": "dist/index.js",
   "license": "Apache-2.0",
   "dependencies": {
-    "@tensorflow/tfjs-core": "1.2.5"，
+    "@tensorflow/tfjs-core": "1.2.6"，
     "@tensorflow/tfjs-converter": "1.2.5"，
     "fetch-wechat": "0.0.3"
   }
@@ -131,12 +131,13 @@ const model = await posenet.load({
 });
 ```
 
-
+## [tfjs-examples](https://github.com/tensorflow/tfjs-examples) tfjs例子库
+tfjs API 使用实例。
 
 ## 版本需求
 - 微信基础库版本 >= 2.7.3
 - 微信开发者工具 >= v1.02.1907022
-- tfjs-core >= 1.2.5
+- tfjs-core >= 1.2.6
 
 ## 更新说明
 - 0.0.2 plugin不再映射TensorFlow.js API库，由小程序端提供。
