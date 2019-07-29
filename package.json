@@ -1,6 +1,6 @@
 {
   "name": "tfjs-wechat",
-  "version": "0.0.1",
+  "version": "0.0.6",
   "scripts": {
     "build": "rimraf dist/ && tsc && ncp src/plugin dist --filter='^(((?!node_modules)(?!typings).)(?!\\.ts$))*$'",
     "build-demo": "cd demo && rimraf dist/ && cd posenet && tsc && cd .. && ncp posenet dist --filter='^(((?!node_modules)(?!typings).)(?!\\.ts$))*$'",
@@ -12,10 +12,10 @@
   "main": "dist/index.js",
   "license": "Apache-2.0",
   "dependencies": {
-    "abab": "2.0.0" 
+    "abab": "2.0.0"
   },
   "devDependencies": {
-    "@tensorflow/tfjs-core": "1.2.1",
+    "@tensorflow/tfjs-core": "1.2.6",
     "@types/jasmine": "~2.8.6",
     "clang-format": "1.2.4",
     "jasmine-core": "~3.1.0",

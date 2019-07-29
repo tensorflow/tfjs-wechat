@@ -17,6 +17,7 @@
 
 import * as tfjs from '@tensorflow/tfjs-core';
 import {atob, btoa} from 'abab';
+import {TextDecoderLite, TextEncoderLite} from 'text-encoder-lite';
 
 export interface SystemConfig {
   /**
@@ -38,9 +39,26 @@ export interface SystemConfig {
 
 // Implement the WeChat Platform for TFJS
 export class PlatformWeChat implements tfjs.Platform {
-  constructor(private fetchFunc: Function) {}
+  private textEncoder: TextEncoderLite;
+
+  constructor(private fetchFunc: Function) {
+    this.textEncoder = new TextEncoderLite();
+  }
   fetch(path: string, requestInits?: RequestInit): Promise<Response> {
     return this.fetchFunc(path, requestInits);
+  }
+  now(): number {
+    return Date.now();
+  }
+  encode(text: string, encoding: string): Uint8Array {
+    if (encoding !== 'utf-8' && encoding !== 'utf8') {
+      throw new Error(
+          `Browser's encoder only supports utf-8, but got ${encoding}`);
+    }
+    return this.textEncoder.encode(text);
+  }
+  decode(bytes: Uint8Array, encoding: string): string {
+    return new TextDecoderLite(encoding).decode(bytes);
   }
 }
 
