@@ -12,7 +12,8 @@
   "main": "dist/index.js",
   "license": "Apache-2.0",
   "dependencies": {
-    "abab": "2.0.0"
+    "abab": "2.0.0",
+    "text-encoder-lite": "1.0.1"
   },
   "devDependencies": {
     "@tensorflow/tfjs-core": "1.2.6",
