@@ -53,8 +53,6 @@ const config = {
   tf,
   canvas
 };
-// tslint:disable-next-line:no-any
-let systemInfo: any;
 
 function clearState() {
   platform = undefined;
@@ -67,8 +65,6 @@ function clearState() {
 describe('setupWechatPlatform', () => {
   beforeEach(() => {
     backends = {};
-    systemInfo = {platform: 'android'};
-    spyOn(wx, 'getSystemInfoSync').and.returnValue(systemInfo);
   });
 
   afterEach(() => clearState());
