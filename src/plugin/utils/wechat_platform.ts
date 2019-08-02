@@ -61,11 +61,10 @@ export function setupWechatPlatform(config: SystemConfig, debug = false): void {
   if (tf.getBackend() === WECHAT_WEBGL_BACKEND_NAME) {
     return;
   }
-  const systemInfo = wx.getSystemInfoSync();
   tf.ENV.setPlatform('wechat', new PlatformWeChat(config.fetchFunc));
   setBase64Methods(tf);
   if (config.canvas) {
-    initWebGL(tf, config.canvas, systemInfo.platform, debug);
+    initWebGL(tf, config.canvas, debug);
   }
 }
 
@@ -80,7 +79,7 @@ export function setBase64Methods(tf: typeof tfjs) {
 /**
  * Initialize webgl backend using the WebGLRenderingContext from the webgl
  * canvas node.
- * @param res: webgl canvas node container return from node selector.
+ * @param canvas: webgl canvas node container return from node selector.
  * @param platform: platform name where the mini app is running (ios, android,
  *     devtool).
  * @param debug: enable/disable debug logging.
@@ -88,7 +87,7 @@ export function setBase64Methods(tf: typeof tfjs) {
 const BACKEND_PRIORITY = 2;
 export function initWebGL(
     // tslint:disable-next-line:no-any
-    tf: typeof tfjs, canvas: any, platform: string, debug = false): void {
+    tf: typeof tfjs, canvas: any, debug = false): void {
   if (tf.findBackend(WECHAT_WEBGL_BACKEND_NAME) == null) {
     const WEBGL_ATTRIBUTES = {
       alpha: false,
