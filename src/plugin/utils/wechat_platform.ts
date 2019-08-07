@@ -18,7 +18,6 @@
 import * as tfjs from '@tensorflow/tfjs-core';
 import {atob, btoa} from 'abab';
 import {TextDecoderLite, TextEncoderLite} from 'text-encoder-lite';
-
 export interface SystemConfig {
   /**
    * A function used to override the `window.fetch` function.
@@ -37,15 +36,18 @@ export interface SystemConfig {
   canvas: any;
 }
 
+export let systemFetchFunc: Function;
+
 // Implement the WeChat Platform for TFJS
 export class PlatformWeChat implements tfjs.Platform {
   private textEncoder: TextEncoderLite;
 
-  constructor(private fetchFunc: Function) {
+  constructor(fetchFunc: Function) {
+    systemFetchFunc = fetchFunc;
     this.textEncoder = new TextEncoderLite();
   }
   fetch(path: string, requestInits?: RequestInit): Promise<Response> {
-    return this.fetchFunc(path, requestInits);
+    return systemFetchFunc(path, requestInits);
   }
   now(): number {
     return Date.now();

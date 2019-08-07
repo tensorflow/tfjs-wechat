@@ -11,7 +11,7 @@
     "text-encoder-lite": "^2.0.0"
   },
   "devDependencies": {
-    "@tensorflow/tfjs-core": "1.2.6",
+    "@tensorflow/tfjs-core": "1.2.7",
     "typescript": "^3.3.3333"
   }
 }
