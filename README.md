@@ -44,7 +44,7 @@ TensorFlow.js有一个联合包 - @tensorflow/tfjs，包含了四个分npm包：
   "license": "Apache-2.0",
   "dependencies": {
     "@tensorflow/tfjs-core": "1.2.6"，
-    "@tensorflow/tfjs-converter": "1.2.5"
+    "@tensorflow/tfjs-converter": "1.2.6"
   }
 }
 ```
@@ -67,16 +67,17 @@ __注意__
   "license": "Apache-2.0",
   "dependencies": {
     "@tensorflow/tfjs-core": "1.2.6"，
-    "@tensorflow/tfjs-converter": "1.2.5"，
+    "@tensorflow/tfjs-converter": "1.2.6"，
     "fetch-wechat": "0.0.3"
   }
 }
 ```
 
-也可以直接拷贝以下文件到你的javascript源目录：
+2. 也可以直接拷贝以下文件到你的javascript源目录：
 https://cdn.jsdelivr.net/npm/fetch-wechat@0.0.3/dist/fetch_wechat.min.js
 
-2. 在app.js的onLaunch里调用插件configPlugin函数
+
+### 在app.js的onLaunch里调用插件configPlugin函数
 
 ```
 var fetchWechat = require('fetch-wechat');
@@ -114,7 +115,9 @@ App({
 https://storage.googleapis.com/tfjs-models/savedmodel/posenet/mobilenet/float/050/model-stride16.json
 - 中国镜像的地址为 https://www.gstaticcnapps.cn/tfjs-models/savedmodel/posenet/mobilenet/float/050/model-stride16.json
 
-下面时加载posenet模型的例子：
+他们的 URL Path 都是 /tfjs-models/savedmodel/posenet/mobilenet/float/050/model-stride16.json
+
+下面是加载posenet模型的例子：
 
 ```
 import * as posenet from '@tensorflow-models/posenet';
