@@ -4357,10 +4357,10 @@ tar@^4:
     safe-buffer "^5.1.2"
     yallist "^3.0.2"
 
-text-encoder-lite@1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/text-encoder-lite/-/text-encoder-lite-1.0.1.tgz#121c5ee74dfeb307037770ec75748c6824ac0518"
-  integrity sha512-D+NrUlXDV6Ed9DgYkYqKOsUI/3QSCBzqGooxP2nt27yM7/bxdbEUO7DokP7R8Gwn4r2CNQon3A1Oehw7yAZBzA==
+text-encoder@0.0.4:
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/text-encoder/-/text-encoder-0.0.4.tgz#fbee4c6fb251dd02e2f40f9983ddd68c5c166e2c"
+  integrity sha512-12gllbNnC0Zdh9r+LCpEwpUdvncaE9hfUmCVm2ryCH1LEVUZbS6NdRq8omEgJI0zKgaGFTjwQVHbglGDCIbmNA==
 
 through2@3.0.0:
   version "3.0.0"

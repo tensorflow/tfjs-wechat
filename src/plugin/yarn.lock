@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@tensorflow/tfjs-core@1.2.6":
-  version "1.2.6"
-  resolved "https://registry.yarnpkg.com/@tensorflow/tfjs-core/-/tfjs-core-1.2.6.tgz#1baf883b6ae117c0749a255db478a83066339c8c"
-  integrity sha512-BMq209hba/bBRnjnEgMAtNCDBLVL0ZUB8ZhoXuEI1Kmu8K2PnynMNK35rmkl5rAGTs1fdRRYezG/VN40Sq9qzw==
+"@tensorflow/tfjs-core@1.2.7":
+  version "1.2.7"
+  resolved "https://registry.yarnpkg.com/@tensorflow/tfjs-core/-/tfjs-core-1.2.7.tgz#522328de16470aa9f7c15b91e4b68616f425002a"
+  integrity sha512-RsXavYKMc0MOcCmOyD7HE8am1tWlDGXl0nJbsdib7ubmvMuH6KnrZ302eTYV7k1RMq+/ukkioJmCcw13hopuHQ==
   dependencies:
     "@types/offscreencanvas" "~2019.3.0"
     "@types/seedrandom" "2.4.27"
@@ -49,10 +49,10 @@ seedrandom@2.4.3:
   resolved "https://registry.yarnpkg.com/seedrandom/-/seedrandom-2.4.3.tgz#2438504dad33917314bff18ac4d794f16d6aaecc"
   integrity sha1-JDhQTa0zkXMUv/GKxNeU8W1qrsw=
 
-text-encoder-lite@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/text-encoder-lite/-/text-encoder-lite-2.0.0.tgz#3c865dd6f3720b279c9e370f8f36c831d2cee175"
-  integrity sha512-bo08ND8LlBwPeU23EluRUcO3p2Rsb/eN5EIfOVqfRmblNDEVKK5IzM9Qfidvo+odT0hhV8mpXQcP/M5MMzABXw==
+text-encoder@0.0.4:
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/text-encoder/-/text-encoder-0.0.4.tgz#fbee4c6fb251dd02e2f40f9983ddd68c5c166e2c"
+  integrity sha512-12gllbNnC0Zdh9r+LCpEwpUdvncaE9hfUmCVm2ryCH1LEVUZbS6NdRq8omEgJI0zKgaGFTjwQVHbglGDCIbmNA==
 
 typescript@^3.3.3333:
   version "3.3.4000"

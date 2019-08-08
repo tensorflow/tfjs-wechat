@@ -17,7 +17,7 @@
 
 import * as tfjs from '@tensorflow/tfjs-core';
 import {atob, btoa} from 'abab';
-import {TextDecoderLite, TextEncoderLite} from 'text-encoder-lite';
+import {TextDecoder, TextEncoder} from 'text-encoder';
 export interface SystemConfig {
   /**
    * A function used to override the `window.fetch` function.
@@ -40,11 +40,8 @@ export let systemFetchFunc: Function;
 
 // Implement the WeChat Platform for TFJS
 export class PlatformWeChat implements tfjs.Platform {
-  private textEncoder: TextEncoderLite;
-
   constructor(fetchFunc: Function) {
     systemFetchFunc = fetchFunc;
-    this.textEncoder = new TextEncoderLite();
   }
   fetch(path: string, requestInits?: RequestInit): Promise<Response> {
     return systemFetchFunc(path, requestInits);
@@ -57,10 +54,10 @@ export class PlatformWeChat implements tfjs.Platform {
       throw new Error(
           `Browser's encoder only supports utf-8, but got ${encoding}`);
     }
-    return this.textEncoder.encode(text);
+    return new TextEncoder(encoding).encode(text);
   }
   decode(bytes: Uint8Array, encoding: string): string {
-    return new TextDecoderLite(encoding).decode(bytes);
+    return new TextDecoder(encoding).decode(bytes);
   }
 }
 
