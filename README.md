@@ -14,7 +14,7 @@ TensorFlow.js 微信小程序插件封装了TensorFlow.js库，用于提供给�
   ...
   "plugins": {
     "tfjsPlugin": {
-      "version": "0.0.5",
+      "version": "0.0.6",
       "provider": "wx6afed118d9e81df9"
     }
   }
@@ -43,8 +43,8 @@ TensorFlow.js有一个联合包 - @tensorflow/tfjs，包含了四个分npm包：
   "main": "dist/index.js",
   "license": "Apache-2.0",
   "dependencies": {
-    "@tensorflow/tfjs-core": "1.2.6"，
-    "@tensorflow/tfjs-converter": "1.2.6"
+    "@tensorflow/tfjs-core": "1.2.7"，
+    "@tensorflow/tfjs-converter": "1.2.7"
   }
 }
 ```
@@ -66,8 +66,8 @@ __注意__
   "main": "dist/index.js",
   "license": "Apache-2.0",
   "dependencies": {
-    "@tensorflow/tfjs-core": "1.2.6"，
-    "@tensorflow/tfjs-converter": "1.2.6"，
+    "@tensorflow/tfjs-core": "1.2.7"，
+    "@tensorflow/tfjs-converter": "1.2.7"，
     "fetch-wechat": "0.0.3"
   }
 }
@@ -146,3 +146,4 @@ tfjs API 使用实例。
 - 0.0.2 plugin不再映射TensorFlow.js API库，由小程序端提供。
 - 0.0.3 使用offscreen canvas，小程序无需加入plugin component。
 - 0.0.5 修改例子程序使用tfjs分包来降低小程序大小。
+- 0.0.6 支持 tfjs-core版本1.2.7。
