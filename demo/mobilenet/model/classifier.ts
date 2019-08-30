@@ -26,7 +26,7 @@ export interface CameraSize {
 
 export class Classifier {
   private mobileNet: MobileNet;
-  constructor(private page: Page.PageInstanceBaseProps) {}
+  constructor(private page: WechatMiniprogram.Page.Instance<any, any>) {}
   async load() {
     this.mobileNet = new MobileNet();
     this.page.setData({result: 'loading model...'});
