@@ -44,10 +44,10 @@ fetch-wechat@0.0.3:
   resolved "https://registry.yarnpkg.com/fetch-wechat/-/fetch-wechat-0.0.3.tgz#2789c332a24bf9f4114b580c02d2934646e74f12"
   integrity sha512-uEvCnHSaM53AjYmtiU8n7dB3RO4JX4RBxF3lXNf+cBHr5NRclmTAr5XiRtLL2lSdBcRwvLixhnjwCRJhyEKZgQ==
 
-miniprogram-api-typings@^2.6.5-2:
-  version "2.6.5-2"
-  resolved "https://registry.yarnpkg.com/miniprogram-api-typings/-/miniprogram-api-typings-2.6.5-2.tgz#990e3e5b91074ba4306bf6b8173cf38b632b4d3f"
-  integrity sha512-P0NdPNfaCYL7E7w1VHhpYCeu6WcN7h3xejqwWv5jmqdTTdHda+EJKby1VNc49rPn/w45NiNJD5gHgeMHGlb9xA==
+miniprogram-api-typings@^2.8.1:
+  version "2.8.1"
+  resolved "https://registry.yarnpkg.com/miniprogram-api-typings/-/miniprogram-api-typings-2.8.1.tgz#a56eec32eb03fc1517d27d04f7371745598798cc"
+  integrity sha512-SWM+lobQTOlbBnoW1fZN7Fmp7WcMEQfwxcBmQuuz92xoPXS3smALFecOcJ/Kwaup86SpR7ETYaZnMj6d30pdfQ==
 
 node-fetch@~2.1.2:
   version "2.1.2"

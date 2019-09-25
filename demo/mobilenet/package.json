@@ -8,7 +8,7 @@
   "license": "Apache-2.0",
   "devDependencies": {
     "typescript": "^3.3.3333",
-    "miniprogram-api-typings": "^2.6.5-2"
+    "miniprogram-api-typings": "^2.8.1"
   },
   "dependencies": {
     "@tensorflow/tfjs-core": "1.2.7",

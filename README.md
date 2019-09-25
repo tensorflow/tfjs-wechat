@@ -108,7 +108,7 @@ App({
 - 物体识别
 - 文字分类
 
-由于这些API默认模型文件都存储在谷歌云上，直接使用会导致中国用户无法直接读取。在小程序内使用模型API时要提供 modelUrl 的参数，可以指向我们在谷歌中国的影像服务器。
+由于这些API默认模型文件都存储在谷歌云上，直接使用会导致中国用户无法直接读取。在小程序内使用模型API时要提供 modelUrl 的参数，可以指向我们在谷歌中国的镜像服务器。
 谷歌云的base url是 https://storage.googleapis.com， 中国镜像的base url是https://www.gstaticcnapps.cn
 模型的url path是一致的，比如
 - posenet模型的谷歌云地址是：
