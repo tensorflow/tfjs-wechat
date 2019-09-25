@@ -144,7 +144,7 @@ tfjs API 使用实例。
 
 __注意__
 在微信开发者工具 v1.02.19070300 中，你需要在通用设置中打开硬件加速，从而在TensorFlow.js中启用WebGL加速。
-![setting](https://github.com/tensorflow/tfjs-wechat/tree/master/doc/setting.png)
+![setting](https://raw.githubusercontent.com/tensorflow/tfjs-wechat/master/doc/setting.png)
 ## 更新说明
 - 0.0.2 plugin不再映射TensorFlow.js API库，由小程序端提供。
 - 0.0.3 使用offscreen canvas，小程序无需加入plugin component。
