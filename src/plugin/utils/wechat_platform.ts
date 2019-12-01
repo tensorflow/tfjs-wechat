@@ -121,7 +121,7 @@ export function initWebGL(
     }
     tf.webgl.setWebGLContext(1, gl);
     try {
-      tf.registerBackend('wechat-webgl', () => {
+      tf.registerBackend(WECHAT_WEBGL_BACKEND_NAME, () => {
         const context = new tf.webgl.GPGPUContext(gl);
         return new tf.webgl.MathBackendWebGL(context);
       }, BACKEND_PRIORITY);
