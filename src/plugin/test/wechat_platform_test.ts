@@ -150,18 +150,13 @@ describe('setupWechatPlatform', () => {
     expect(tf.ENV.global.atob).toBeDefined();
   });
 
-  it('should set tf backend to test-webgl', () => {
+  it('should set tf backend to wechat-webgl', () => {
     setupWechatPlatform(config);
     expect(tf.getBackend()).toEqual(WECHAT_WEBGL_BACKEND_NAME);
   });
 
-  it('should set tf backend to wechat-webgl', () => {
-    const configWithBackendName = {
-      fetchFunc,
-      tf,
-      canvas,
-      backendName
-    };
+  it('should set tf backend to test-webgl', () => {
+    const configWithBackendName = {fetchFunc, tf, canvas, backendName};
     setupWechatPlatform(configWithBackendName);
     expect(tf.getBackend()).toEqual(backendName);
   });
