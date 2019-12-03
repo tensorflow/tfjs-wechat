@@ -98,6 +98,31 @@ App({
 });
 ```
 
+__注意__
+由于最新版本的WeChat的OffscreenCanvas会随页面跳转而失效，在app.js的 onLaunch 函数中设置 tfjs 会导致小程序退出或页面跳转之后操作出错。建议在使用tfjs的page的onload中调用 configPlugin 函数。
+WeChat的12月版本会修复这个问题。
+
+```
+var fetchWechat = require('fetch-wechat');
+var tf = require('@tensorflow/tfjs-core');
+var plugin = requirePlugin('tfjsPlugin');
+//index.js
+Page({
+  onLoad: function () {
+    plugin.configPlugin({
+      // polyfill fetch function
+      fetchFunc: fetchWechat.fetchFunc(),
+      // inject tfjs runtime
+      tf,
+      // provide webgl canvas
+      canvas: wx.createOffscreenCanvas(),
+      backendName: 'wechat-webgl-' + Math.random()
+    });
+    ...
+  }
+});
+```
+
 组件设置完毕就可以开始使用 TensorFlow.js库的[API](https://js.tensorflow.org/api/latest/)了。
 
 ### 使用 [tfjs-models](https://github.com/tensorflow/tfjs-models) 模型库注意事项
@@ -150,3 +175,4 @@ __注意__
 - 0.0.3 使用offscreen canvas，小程序无需加入plugin component。
 - 0.0.5 修改例子程序使用tfjs分包来降低小程序大小。
 - 0.0.6 支持 tfjs-core版本1.2.7。
+- 0.0.7 允许用户设置webgl backend name, 这可以解决小程序offscreen canvas会失效的问题。
