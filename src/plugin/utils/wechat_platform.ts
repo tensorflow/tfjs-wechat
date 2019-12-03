@@ -34,6 +34,12 @@ export interface SystemConfig {
    */
   // tslint:disable-next-line:no-any
   canvas: any;
+  /**
+   * Optional name of wechat webgl backend.
+   */
+  // tslint:disable-next-line:no-any
+  backendName?: string;
+
 }
 
 export let systemFetchFunc: Function;
@@ -71,17 +77,18 @@ export const WECHAT_WEBGL_BACKEND_NAME = 'wechat-webgl';
  */
 export function setupWechatPlatform(config: SystemConfig, debug = false): void {
   const tf = config.tf as typeof tfjs;
+  const backendName = config.backendName || WECHAT_WEBGL_BACKEND_NAME;
   if (debug) {
     console.log(tf);
   }
   // Skip initialization if the backend has been set.
-  if (tf.getBackend() === WECHAT_WEBGL_BACKEND_NAME) {
+  if (tf.getBackend() === backendName) {
     return;
   }
   tf.ENV.setPlatform('wechat', new PlatformWeChat(config.fetchFunc));
   setBase64Methods(tf);
   if (config.canvas) {
-    initWebGL(tf, config.canvas, debug);
+    initWebGL(tf, config.canvas, backendName, debug);
   }
 }
 
@@ -104,8 +111,9 @@ export function setBase64Methods(tf: typeof tfjs) {
 const BACKEND_PRIORITY = 2;
 export function initWebGL(
     // tslint:disable-next-line:no-any
-    tf: typeof tfjs, canvas: any, debug = false): void {
-  if (tf.findBackend(WECHAT_WEBGL_BACKEND_NAME) == null) {
+    tf: typeof tfjs, canvas: any, backendName = WECHAT_WEBGL_BACKEND_NAME,
+    debug = false): void {
+  if (tf.findBackend(backendName) == null) {
     const WEBGL_ATTRIBUTES = {
       alpha: false,
       antialias: false,
@@ -121,7 +129,7 @@ export function initWebGL(
     }
     tf.webgl.setWebGLContext(1, gl);
     try {
-      tf.registerBackend(WECHAT_WEBGL_BACKEND_NAME, () => {
+      tf.registerBackend(backendName, () => {
         const context = new tf.webgl.GPGPUContext(gl);
         return new tf.webgl.MathBackendWebGL(context);
       }, BACKEND_PRIORITY);
@@ -129,7 +137,7 @@ export function initWebGL(
       throw (new Error(`Failed to register Webgl backend: ${e.message}`));
     }
   }
-  tf.setBackend(WECHAT_WEBGL_BACKEND_NAME);
+  tf.setBackend(backendName);
   if (debug) {
     console.log('current backend = ', tf.getBackend());
   }

@@ -48,6 +48,7 @@ const gl = {};
 const canvas = {
   getContext: () => gl
 };
+const backendName = 'test-webgl';
 const config = {
   fetchFunc,
   tf,
@@ -152,6 +153,12 @@ describe('setupWechatPlatform', () => {
   it('should set tf backend to wechat-webgl', () => {
     setupWechatPlatform(config);
     expect(tf.getBackend()).toEqual(WECHAT_WEBGL_BACKEND_NAME);
+  });
+
+  it('should set tf backend to test-webgl', () => {
+    const configWithBackendName = {fetchFunc, tf, canvas, backendName};
+    setupWechatPlatform(configWithBackendName);
+    expect(tf.getBackend()).toEqual(backendName);
   });
 
   it('should set the WEBGL context', () => {
