@@ -99,7 +99,7 @@ App({
 ```
 
 __注意__
-由于最新版本的WeChat的OffscreenCanvas会随页面跳转而失效，在app.js的 onLaunch 函数中设置 tfjs 会导致小程序退出或页面跳转之后操作出错。建议在使用tfjs的page的onload中调用 configPlugin 函数。
+由于最新版本的WeChat的OffscreenCanvas会随页面跳转而失效，在app.js的 onLaunch 函数中设置 tfjs 会导致小程序退出或页面跳转之后操作出错。建议在使用tfjs的page的onLoad中调用 configPlugin 函数。
 WeChat的12月版本会修复这个问题。
 
 ```
@@ -116,7 +116,7 @@ Page({
       tf,
       // provide webgl canvas
       canvas: wx.createOffscreenCanvas(),
-      backendName: 'wechat-webgl-' + Math.random()
+      backendName: 'wechat-webgl-' + Date.now()
     });
     ...
   }
