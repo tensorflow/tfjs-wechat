@@ -12,6 +12,7 @@
   },
   "devDependencies": {
     "@tensorflow/tfjs-core": "1.2.7",
+    "miniprogram-api-typings": "2.10.0-1",
     "typescript": "^3.3.3333"
   }
 }
