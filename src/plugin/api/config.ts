@@ -14,7 +14,7 @@
  * limitations under the License.
  * =============================================================================
  */
-import {setupWechatPlatform, SystemConfig} from '../utils/wechat_platform';
+import { setupWechatPlatform, SystemConfig } from '../utils/wechat_platform';
 
 /**
  * @param config SystemConfig object that contains the Tensorflow.js runtime,

@@ -4,7 +4,7 @@
   ],
   "plugins": {
     "tfjsPlugin": {
-      "version": "0.0.6",
+      "version": "dev",
       "provider": "wx6afed118d9e81df9"
     }
   },
