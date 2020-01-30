@@ -14,5 +14,6 @@
  * limitations under the License.
  * =============================================================================
  */
-export {configPlugin} from './api/config';
-export {SystemConfig} from './utils/wechat_platform';
+export { configPlugin } from './api/config';
+export { SystemConfig } from './utils/wechat_platform';
+export { localStorageIO } from './utils/local_storage';

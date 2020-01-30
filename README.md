@@ -98,6 +98,45 @@ App({
 });
 ```
 
+### 支持模型localStorage缓存
+采用localStorage缓存可以减少模型下载耗费带宽和时间。由于微信小程序对于localStorage有10MB的限制，这个方法适用于小于10MB的模型。
+步骤如下：
+1. 在app.js中提供localStorageHandler函数.
+
+```
+var fetchWechat = require('fetch-wechat');
+var tf = require('@tensorflow/tfjs-core');
+var plugin = requirePlugin('tfjsPlugin');
+//app.js
+App({
+  // expose localStorage handler
+  globalData: {localStorageIO: plugin.localStorageIO},
+  ...
+});
+```
+
+2. 在模型加载时加入localStorageHandler逻辑。
+
+```
+const LOCAL_STORAGE_KEY = 'mobilenet_model';
+export class MobileNet {
+  private model: tfc.GraphModel;
+  constructor() { }
+
+  async load() {
+
+    const localStorageHandler = getApp().globalData.localStorageIO(LOCAL_STORAGE_KEY);
+    try {
+      this.model = await tfc.loadGraphModel(localStorageHandler);
+    } catch (e) {
+      this.model =
+        await tfc.loadGraphModel(MODEL_URL);
+      this.model.save(localStorageHandler);
+    }
+  }
+
+```
+
 __注意__
 由于最新版本的WeChat的OffscreenCanvas会随页面跳转而失效，在app.js的 onLaunch 函数中设置 tfjs 会导致小程序退出或页面跳转之后操作出错。建议在使用tfjs的page的onLoad中调用 configPlugin 函数。
 WeChat的12月版本会修复这个问题。
@@ -176,3 +215,4 @@ __注意__
 - 0.0.5 修改例子程序使用tfjs分包来降低小程序大小。
 - 0.0.6 支持 tfjs-core版本1.2.7。
 - 0.0.7 允许用户设置webgl backend name, 这可以解决小程序offscreen canvas会失效的问题。
+- 0.0.8 加入localStorage支持，允许小于10M模型在localStorage内缓存。

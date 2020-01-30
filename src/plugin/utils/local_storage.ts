@@ -15,13 +15,14 @@
  * =============================================================================
  */
 
-import {io} from '@tensorflow/tfjs-core';
-import {fromByteArray, toByteArray} from 'base64-js';
+import { io } from '@tensorflow/tfjs-core';
+import { fromByteArray, toByteArray } from 'base64-js';
 
 type StorageKeys = {
   info: string,
   modelArtifactsWithoutWeights: string,
   weightData: string,
+  weightDataChunkSize: string
 };
 
 const PATH_SEPARATOR = '/';
@@ -29,13 +30,16 @@ const PATH_PREFIX = 'tensorflowjs_models';
 const INFO_SUFFIX = 'info';
 const MODEL_SUFFIX = 'model_without_weight';
 const WEIGHT_DATA_SUFFIX = 'weight_data';
+const WEIGHT_DATA_SIZE_SUFFIX = 'weight_data_size';
 
 function getModelKeys(path: string): StorageKeys {
   return {
     info: [PATH_PREFIX, path, INFO_SUFFIX].join(PATH_SEPARATOR),
     modelArtifactsWithoutWeights:
-        [PATH_PREFIX, path, MODEL_SUFFIX].join(PATH_SEPARATOR),
+      [PATH_PREFIX, path, MODEL_SUFFIX].join(PATH_SEPARATOR),
     weightData: [PATH_PREFIX, path, WEIGHT_DATA_SUFFIX].join(PATH_SEPARATOR),
+    weightDataChunkSize:
+      [PATH_PREFIX, path, WEIGHT_DATA_SIZE_SUFFIX].join(PATH_SEPARATOR)
   };
 }
 /**
@@ -44,7 +48,7 @@ function getModelKeys(path: string): StorageKeys {
  * @returns A ModelArtifactsInfo object.
  */
 function getModelArtifactsInfoForJSON(modelArtifacts: io.ModelArtifacts):
-    io.ModelArtifactsInfo {
+  io.ModelArtifactsInfo {
   if (modelArtifacts.modelTopology instanceof ArrayBuffer) {
     throw new Error('Expected JSON model topology, received ArrayBuffer.');
   }
@@ -54,16 +58,25 @@ function getModelArtifactsInfoForJSON(modelArtifacts: io.ModelArtifacts):
     // TODO followup on removing this from the the interface
     modelTopologyType: 'JSON',
     weightDataBytes: modelArtifacts.weightData == null ?
-        0 :
-        modelArtifacts.weightData.byteLength,
+      0 :
+      modelArtifacts.weightData.byteLength,
   };
+}
+
+/**
+ * Split the string into array of substrings with the same size.
+ * @param str the str to be splitted
+ * @param size
+ */
+function splitString(str: string, size: number): string[] {
+  return str.match(new RegExp(`.{1,${size}}`, 'g'));
 }
 
 // tslint:disable-next-line:no-any
 function getStorage(key: string): Promise<any> {
   return new Promise((resolve, reject) => {
     wx.getStorage(
-        {key, success: (res) => resolve(res), fail: (res) => reject(res)});
+      { key, success: (res) => resolve(res.data), fail: (res) => reject(res) });
   });
 }
 class LocalStorageHandler implements io.IOHandler {
@@ -85,32 +98,42 @@ class LocalStorageHandler implements io.IOHandler {
   async save(modelArtifacts: io.ModelArtifacts): Promise<io.SaveResult> {
     if (modelArtifacts.modelTopology instanceof ArrayBuffer) {
       throw new Error(
-          'AsyncStorageHandler.save() does not support saving model topology ' +
-          'in binary format.');
+        'AsyncStorageHandler.save() does not support saving model topology ' +
+        'in binary format.');
     } else {
       // We save three items separately for each model,
       // a ModelArtifactsInfo, a ModelArtifacts without weights
       // and the model weights.
       const modelArtifactsInfo: io.ModelArtifactsInfo =
-          getModelArtifactsInfoForJSON(modelArtifacts);
-      const {weightData, ...modelArtifactsWithoutWeights} = modelArtifacts;
+        getModelArtifactsInfoForJSON(modelArtifacts);
+      const { weightData, ...modelArtifactsWithoutWeights } = modelArtifacts;
+      const weights = splitString(fromByteArray(new Uint8Array(weightData)),
+        800 * 1024);
 
       try {
         wx.setStorageSync(this.keys.info, JSON.stringify(modelArtifactsInfo));
         wx.setStorageSync(
-            this.keys.modelArtifactsWithoutWeights,
-            JSON.stringify(modelArtifactsWithoutWeights));
-        wx.setStorageSync(
-            this.keys.weightData, fromByteArray(new Uint8Array(weightData)));
-        return {modelArtifactsInfo};
+          this.keys.modelArtifactsWithoutWeights,
+          JSON.stringify(modelArtifactsWithoutWeights));
+        // split the weight string into 10M chunk, size local storage has a
+        // size limit.
+        wx.setStorageSync(this.keys.weightDataChunkSize, weights.length);
+        weights.forEach((value, index) => {
+          wx.setStorageSync(
+            `${this.keys.weightData}:${index}`, value);
+        });
+        return { modelArtifactsInfo };
       } catch (err) {
         // If saving failed, clean up all items saved so far.
         wx.removeStorageSync(this.keys.info);
-        wx.removeStorageSync(this.keys.weightData);
+        weights.forEach((value, index) => {
+          wx.removeStorageSync(`${this.keys.weightData}:${index}`);
+        });
+        wx.removeStorageSync(this.keys.weightDataChunkSize);
         wx.removeStorageSync(this.keys.modelArtifactsWithoutWeights);
 
         throw new Error(
-            `Failed to save model '${this.modelPath}' to local storage.
+          `Failed to save model '${this.modelPath}' to local storage.
             Error info ${err}`);
       }
     }
@@ -126,27 +149,32 @@ class LocalStorageHandler implements io.IOHandler {
    */
   async load(): Promise<io.ModelArtifacts> {
     const info =
-        JSON.parse(await getStorage(this.keys.info)) as io.ModelArtifactsInfo;
+      JSON.parse(await getStorage(this.keys.info)) as io.ModelArtifactsInfo;
     if (info == null) {
       throw new Error(
-          `In local storage, there is no model with name '${this.modelPath}'`);
+        `In local storage, there is no model with name '${this.modelPath}'`);
     }
 
     if (info.modelTopologyType !== 'JSON') {
       throw new Error(
-          'BrowserLocalStorage does not support loading non-JSON model ' +
-          'topology yet.');
+        'BrowserLocalStorage does not support loading non-JSON model ' +
+        'topology yet.');
     }
 
     const modelArtifacts: io.ModelArtifacts =
-        JSON.parse(await getStorage(this.keys.modelArtifactsWithoutWeights));
+      JSON.parse(await getStorage(this.keys.modelArtifactsWithoutWeights));
 
     // Load weight data.
-    const weightDataBase64 = await getStorage(this.keys.weightData);
-    if (weightDataBase64 == null) {
-      throw new Error(
+    const weightDataSize = await getStorage(this.keys.weightDataChunkSize);
+    let weightDataBase64 = '';
+    for (let i = 0; i < weightDataSize; i++) {
+      const partialData = await getStorage(`${this.keys.weightData}:${i}`);
+      if (partialData == null) {
+        throw new Error(
           `In local storage, the binary weight values of model ` +
           `'${this.modelPath}' are missing.`);
+      }
+      weightDataBase64 += partialData;
     }
     modelArtifacts.weightData = toByteArray(weightDataBase64).buffer;
 

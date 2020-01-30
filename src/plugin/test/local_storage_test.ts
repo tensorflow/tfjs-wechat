@@ -16,7 +16,7 @@
  */
 
 import * as tf from '@tensorflow/tfjs-core';
-import {localStorageIO} from '../utils/local_storage';
+import { localStorageIO } from '../utils/local_storage';
 
 describe('localStorageIO', () => {
   // Test data.
@@ -43,7 +43,7 @@ describe('localStorageIO', () => {
         'activation': 'linear',
         'trainable': true,
         'kernel_regularizer': null,
-        'bias_initializer': {'class_name': 'Zeros', 'config': {}},
+        'bias_initializer': { 'class_name': 'Zeros', 'config': {} },
         'units': 1,
         'batch_input_shape': [null, 3],
         'use_bias': true,
@@ -86,8 +86,8 @@ describe('localStorageIO', () => {
 
   beforeEach(() => {
     storage = {};
-    spyOn(wx, 'getStorage').and.callFake(({key, success, fail}) => {
-      success(storage[key]);
+    spyOn(wx, 'getStorage').and.callFake(({ key, success, fail }) => {
+      success({ data: storage[key] });
     });
     spyOn(wx, 'setStorageSync').and.callFake((key, value) => {
       storage[key] = value;
