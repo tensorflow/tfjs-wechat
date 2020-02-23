@@ -17,6 +17,7 @@
 
 import { io } from '@tensorflow/tfjs-core';
 import { fromByteArray, toByteArray } from 'base64-js';
+import { getModelArtifactsInfoForJSON } from './model_artifacts';
 
 type StorageKeys = {
   info: string,
@@ -40,26 +41,6 @@ function getModelKeys(path: string): StorageKeys {
     weightData: [PATH_PREFIX, path, WEIGHT_DATA_SUFFIX].join(PATH_SEPARATOR),
     weightDataChunkSize:
       [PATH_PREFIX, path, WEIGHT_DATA_SIZE_SUFFIX].join(PATH_SEPARATOR)
-  };
-}
-/**
- * Populate ModelArtifactsInfo fields for a model with JSON topology.
- * @param modelArtifacts
- * @returns A ModelArtifactsInfo object.
- */
-function getModelArtifactsInfoForJSON(modelArtifacts: io.ModelArtifacts):
-  io.ModelArtifactsInfo {
-  if (modelArtifacts.modelTopology instanceof ArrayBuffer) {
-    throw new Error('Expected JSON model topology, received ArrayBuffer.');
-  }
-
-  return {
-    dateSaved: new Date(),
-    // TODO followup on removing this from the the interface
-    modelTopologyType: 'JSON',
-    weightDataBytes: modelArtifacts.weightData == null ?
-      0 :
-      modelArtifacts.weightData.byteLength,
   };
 }
 
