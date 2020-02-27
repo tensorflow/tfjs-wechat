@@ -25,6 +25,8 @@ function getModelPaths(prefix: string): StoragePaths {
   };
 }
 
+// Make remove file as promise
+// This function will ignore removed error (file not existed)
 function removeFile(filePath: string): Promise<any> {
   return new Promise((resolve, reject) => {
     const fsm = wx.getFileSystemManager();
@@ -34,18 +36,10 @@ function removeFile(filePath: string): Promise<any> {
         resolve(res);
       },
       fail: (res) => {
-        reject(new Error(res.errMsg));
+        resolve(null)
       }
     });
   });
-}
-
-async function removeFileIfExist(filePath: string): Promise<any> {
-  try {
-    await removeFile(filePath);
-  } catch (e) {
-    // ignore error
-  }
 }
 
 function readFile(filePath: string, encoding?: any): Promise<any> {
@@ -70,17 +64,19 @@ function readFile(filePath: string, encoding?: any): Promise<any> {
 
 function writeFile(filePath: string, data: any, encoding: any = 'binary'): Promise<any> {
   return new Promise((resolve, reject) => {
-    const fsm = wx.getFileSystemManager();
-    fsm.writeFile({
-      filePath,
-      data,
-      encoding,
-      success: (res) => {
-        resolve(res);
-      },
-      fail: (res) => {
-        reject(new Error(res.errMsg));
-      }
+    removeFile(filePath).then(() => {
+      const fsm = wx.getFileSystemManager();
+      fsm.writeFile({
+        filePath,
+        data,
+        encoding,
+        success: (res) => {
+          resolve(res);
+        },
+        fail: (res) => {
+          reject(new Error(res.errMsg));
+        }
+      });
     });
   });
 }
@@ -144,22 +140,19 @@ class FileStorageHandler implements io.IOHandler {
 
       try {
         await mkdir(MODEL_PATH);
-        await removeFileIfExist(this.paths.info);
         await writeFile(this.paths.info, JSON.stringify(modelArtifactsInfo), 'utf-8');
-        await removeFileIfExist(this.paths.modelArtifactsWithoutWeights);
         await writeFile(
           this.paths.modelArtifactsWithoutWeights,
           JSON.stringify(modelArtifactsWithoutWeights),
           'utf-8'
         );
-        await removeFileIfExist(this.paths.weightData);
         await writeFile(this.paths.weightData, weightData);
         return { modelArtifactsInfo };
       } catch (err) {
         // If saving failed, clean up all items saved so far.
-        await removeFileIfExist(this.paths.info)
-        await removeFileIfExist(this.paths.modelArtifactsWithoutWeights)
-        await removeFileIfExist(this.paths.weightData)
+        await removeFile(this.paths.info)
+        await removeFile(this.paths.modelArtifactsWithoutWeights)
+        await removeFile(this.paths.weightData)
 
         throw new Error(err);
       }
