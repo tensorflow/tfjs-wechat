@@ -13,8 +13,16 @@ const INFO_SUFFIX = 'info.json';
 const MODEL_SUFFIX = 'model_without_weight.json';
 const WEIGHT_DATA_SUFFIX = 'weight_data';
 
-// @ts-ignore // wx.env not defined in wx type
-const MODEL_PATH = [wx.env.USER_DATA_PATH, PATH_PREFIX].join(PATH_SEPARATOR);
+function getUserDataPath() {
+  if (!wx.env) {
+    wx.env = {
+      USER_DATA_PATH: 'http://usr'
+    };
+  }
+  return wx.env.USER_DATA_PATH;
+}
+
+const MODEL_PATH = [getUserDataPath(), PATH_PREFIX].join(PATH_SEPARATOR);
 
 function getModelPaths(prefix: string): StoragePaths {
   return {
@@ -27,6 +35,7 @@ function getModelPaths(prefix: string): StoragePaths {
 
 // Make remove file as promise
 // This function will ignore removed error (file not existed)
+// tslint:disable-next-line:no-any
 function removeFile(filePath: string): Promise<any> {
   return new Promise((resolve, reject) => {
     const fsm = wx.getFileSystemManager();
@@ -36,12 +45,13 @@ function removeFile(filePath: string): Promise<any> {
         resolve(res);
       },
       fail: (res) => {
-        resolve(null)
+        resolve(null);
       }
     });
   });
 }
 
+// tslint:disable-next-line:no-any
 function readFile(filePath: string, encoding?: any): Promise<any> {
   return new Promise((resolve, reject) => {
     const fsm = wx.getFileSystemManager();
@@ -62,6 +72,7 @@ function readFile(filePath: string, encoding?: any): Promise<any> {
   });
 }
 
+// tslint:disable-next-line:no-any
 function writeFile(filePath: string, data: any, encoding: any = 'binary'): Promise<any> {
   return new Promise((resolve, reject) => {
     removeFile(filePath).then(() => {
@@ -81,6 +92,7 @@ function writeFile(filePath: string, data: any, encoding: any = 'binary'): Promi
   });
 }
 
+// tslint:disable-next-line:no-any
 function mkdir(dirPath: string): Promise<any> {
   return new Promise((resolve, reject) => {
     const fsm = wx.getFileSystemManager();
@@ -150,9 +162,9 @@ class FileStorageHandler implements io.IOHandler {
         return { modelArtifactsInfo };
       } catch (err) {
         // If saving failed, clean up all items saved so far.
-        await removeFile(this.paths.info)
-        await removeFile(this.paths.modelArtifactsWithoutWeights)
-        await removeFile(this.paths.weightData)
+        await removeFile(this.paths.info);
+        await removeFile(this.paths.modelArtifactsWithoutWeights);
+        await removeFile(this.paths.weightData);
 
         throw new Error(err);
       }
