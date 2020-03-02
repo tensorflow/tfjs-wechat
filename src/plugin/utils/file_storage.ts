@@ -1,3 +1,7 @@
+/**
+ *  Save and load model into miniprogram file system
+ *  FileSystemManager https://developers.weixin.qq.com/miniprogram/dev/api/file/wx.getFileSystemManager.html
+ */
 import { io } from '@tensorflow/tfjs-core';
 import { getModelArtifactsInfoForJSON } from './model_artifacts';
 
@@ -13,6 +17,8 @@ const INFO_SUFFIX = 'info.json';
 const MODEL_SUFFIX = 'model_without_weight.json';
 const WEIGHT_DATA_SUFFIX = 'weight_data';
 
+// get user path
+// https://developers.weixin.qq.com/miniprogram/dev/api/base/env/env.html
 function getUserDataPath() {
   if (!wx.env) {
     wx.env = {
@@ -21,7 +27,6 @@ function getUserDataPath() {
   }
   return wx.env.USER_DATA_PATH;
 }
-
 const MODEL_PATH = [getUserDataPath(), PATH_PREFIX].join(PATH_SEPARATOR);
 
 function getModelPaths(prefix: string): StoragePaths {
@@ -33,8 +38,12 @@ function getModelPaths(prefix: string): StoragePaths {
   };
 }
 
-// Make remove file as promise
-// This function will ignore removed error (file not existed)
+/**
+ * Make remove file
+ * This function will ignore removed error (file not existed)
+ * https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.unlink.html
+ * @param filePath the file path to be removed
+ */
 // tslint:disable-next-line:no-any
 function removeFile(filePath: string): Promise<any> {
   return new Promise((resolve, reject) => {
@@ -51,6 +60,12 @@ function removeFile(filePath: string): Promise<any> {
   });
 }
 
+/**
+ * Read file
+ * https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.readFile.html
+ * @param filePath the file path
+ * @param encoding the encoding, default reture ArrayBuffer if undefined
+ */
 // tslint:disable-next-line:no-any
 function readFile(filePath: string, encoding?: any): Promise<any> {
   return new Promise((resolve, reject) => {
@@ -72,6 +87,13 @@ function readFile(filePath: string, encoding?: any): Promise<any> {
   });
 }
 
+/**
+ * Write file
+ * https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.writeFile.html
+ * @param filePath the file path
+ * @param data data to save
+ * @param encoding  encoding
+ */
 // tslint:disable-next-line:no-any
 function writeFile(filePath: string, data: any, encoding: any = 'binary'): Promise<any> {
   return new Promise((resolve, reject) => {
@@ -147,8 +169,6 @@ class FileStorageHandler implements io.IOHandler {
       const modelArtifactsInfo =
         getModelArtifactsInfoForJSON(modelArtifacts);
       const { weightData, ...modelArtifactsWithoutWeights } = modelArtifacts;
-      // const weights = splitString(fromByteArray(new Uint8Array(weightData)),
-      //   800 * 1024);
 
       try {
         await mkdir(MODEL_PATH);

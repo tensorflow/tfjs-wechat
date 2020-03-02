@@ -137,6 +137,46 @@ export class MobileNet {
 
 ```
 
+### 支持模型保存为用户文件
+微信也支持保存模型为文件。同localStorage, 微信小程序对于本地文件也有10MB的限制，这个方法适用于小于10MB的模型。由于最终模型是按 binary 保存，较 localstorage 保存为 base64 string 更为节省空间。
+
+步骤如下：
+1. 在app.js中提供 fileStorageHandler 函数.
+
+```js
+var fetchWechat = require('fetch-wechat');
+var tf = require('@tensorflow/tfjs-core');
+var plugin = requirePlugin('tfjsPlugin');
+//app.js
+App({
+  // expose fileStorage handler
+  globalData: {fileStorageIO: plugin.fileStorageIO},
+  ...
+});
+```
+
+2. 在模型加载时加入 fileStorageHandler 逻辑。
+
+```js
+const FILE_STORAGE_PATH = 'mobilenet_model';
+export class MobileNet {
+  private model: tfc.GraphModel;
+  constructor() { }
+
+  async load() {
+
+    const fileStorageHandler = getApp().globalData.fileStorageIO(FILE_STORAGE_PATH);
+    try {
+      this.model = await tfc.loadGraphModel(fileStorageHandler);
+    } catch (e) {
+      this.model =
+        await tfc.loadGraphModel(MODEL_URL);
+      this.model.save(fileStorageHandler);
+    }
+  }
+}
+```
+
 __注意__
 由于最新版本的WeChat的OffscreenCanvas会随页面跳转而失效，在app.js的 onLaunch 函数中设置 tfjs 会导致小程序退出或页面跳转之后操作出错。建议在使用tfjs的page的onLoad中调用 configPlugin 函数。
 WeChat的12月版本会修复这个问题。
