@@ -39,9 +39,10 @@ base64-js@1.3.1:
   resolved "https://registry.yarnpkg.com/base64-js/-/base64-js-1.3.1.tgz#58ece8cb75dd07e71ed08c736abc5fac4dbf8df1"
   integrity sha512-mLQ4i2QO1ytvGWFWmcngKO//JXAQueZvwEKtjgQFM4jIK0kU+ytMfplL8j+n5mspOfjHwoAg+9yhb7BwAHm36g==
 
-miniprogram-api-typings@2.10.0-1:
-  version "2.10.0-1"
-  resolved "https://registry.yarnpkg.com/miniprogram-api-typings/-/miniprogram-api-typings-2.10.0-1.tgz#6abe6ce9221146c4c101f79d17b5f8de555078eb"
+miniprogram-api-typings@2.10.1-1:
+  version "2.10.1-1"
+  resolved "https://registry.npm.taobao.org/miniprogram-api-typings/download/miniprogram-api-typings-2.10.1-1.tgz#9a18404b5af370051eb78c24638dfeed0312c44d"
+  integrity sha1-mhhAS1rzcAUet4wkY43+7QMSxE0=
 
 node-fetch@~2.1.2:
   version "2.1.2"
