@@ -22,7 +22,10 @@ const plugin = requirePlugin('tfjsPlugin');
 const ENABLE_DEBUG = true;
 //app.js
 App({
-  globalData: {localStorageIO: plugin.localStorageIO},
+  globalData: {
+    localStorageIO: plugin.localStorageIO,
+    fileStorageIO: plugin.fileStorageIO,
+  },
   onLaunch: function () {
     plugin.configPlugin({
       fetchFunc: fetchWechat.fetchFunc(),

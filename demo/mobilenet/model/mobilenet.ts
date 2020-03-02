@@ -21,7 +21,8 @@ const GOOGLE_CLOUD_STORAGE_DIR =
   'https://tfhub.dev/google/tfjs-model/imagenet/';
 const MODEL_FILE_URL = 'mobilenet_v2_050_224/feature_vector/3/default/1';
 const PREPROCESS_DIVISOR = 255 / 2;
-const LOCAL_STORAGE_KEY = 'mobilenet_model';
+const STORAGE_KEY = 'mobilenet_model';
+
 export interface TopKValue {
   label: string;
   value: number;
@@ -31,14 +32,16 @@ export class MobileNet {
   constructor() { }
 
   async load() {
-    const localStorageHandler = getApp().globalData.localStorageIO(LOCAL_STORAGE_KEY);
+    // const storageHandler = getApp().globalData.localStorageIO(STORAGE_KEY); // save model into local storage as base64 string
+    const storageHandler = getApp().globalData.fileStorageIO(STORAGE_KEY); // save model into files (weight binary)
+
     try {
-      this.model = await tfc.loadGraphModel(localStorageHandler);
+      this.model = await tfc.loadGraphModel(storageHandler);
     } catch (e) {
       this.model =
         await tfc.loadGraphModel(GOOGLE_CLOUD_STORAGE_DIR + MODEL_FILE_URL,
           { fromTFHub: true });
-      this.model.save(localStorageHandler);
+      this.model.save(storageHandler);
     }
   }
 
