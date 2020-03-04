@@ -32,8 +32,10 @@ export class MobileNet {
   constructor() { }
 
   async load() {
-    // const storageHandler = getApp().globalData.localStorageIO(STORAGE_KEY); // save model into local storage as base64 string
-    const storageHandler = getApp().globalData.fileStorageIO(STORAGE_KEY); // save model into files (weight binary)
+    // save model into local storage as base64 string
+    // const storageHandler = getApp().globalData.localStorageIO(STORAGE_KEY);
+    // save model into files (weight binary)
+    const storageHandler = getApp().globalData.fileStorageIO(STORAGE_KEY);
 
     try {
       this.model = await tfc.loadGraphModel(storageHandler);

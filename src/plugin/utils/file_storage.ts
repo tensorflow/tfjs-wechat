@@ -1,6 +1,6 @@
 /**
  *  Save and load model into miniprogram file system
- *  FileSystemManager https://developers.weixin.qq.com/miniprogram/dev/api/file/wx.getFileSystemManager.html
+ *  https://developers.weixin.qq.com/miniprogram/dev/api/file/wx.getFileSystemManager.html
  */
 import { io } from '@tensorflow/tfjs-core';
 import { getModelArtifactsInfoForJSON } from './model_artifacts';
@@ -21,8 +21,9 @@ const WEIGHT_DATA_SUFFIX = 'weight_data';
 // https://developers.weixin.qq.com/miniprogram/dev/api/base/env/env.html
 function getUserDataPath() {
   if (!wx.env) {
+    // only for tests. If not, test failed in miniprogram-simulate compiler
     wx.env = {
-      USER_DATA_PATH: 'http://usr'
+      USER_DATA_PATH: 'http://usr', // value of wx.env.USER_DATA_PATH in simulate
     };
   }
   return wx.env.USER_DATA_PATH;
@@ -38,23 +39,27 @@ function getModelPaths(prefix: string): StoragePaths {
   };
 }
 
+/* tslint:disable:no-any */
 /**
  * Make remove file
  * This function will ignore removed error (file not existed)
  * https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.unlink.html
+ * @param fsm the file system manager
  * @param filePath the file path to be removed
  */
-// tslint:disable-next-line:no-any
-function removeFile(filePath: string): Promise<any> {
+function removeFile(
+  fsm: WechatMiniprogram.FileSystemManager,
+  filePath: string,
+): Promise<any> {
   return new Promise((resolve, reject) => {
-    const fsm = wx.getFileSystemManager();
     fsm.unlink({
       filePath,
       success: (res) => {
         resolve(res);
       },
       fail: (res) => {
-        resolve(null);
+        // ignore error as we don't care if file is removed failed
+        resolve(res);
       }
     });
   });
@@ -63,13 +68,16 @@ function removeFile(filePath: string): Promise<any> {
 /**
  * Read file
  * https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.readFile.html
+ * @param fsm the file system manager
  * @param filePath the file path
  * @param encoding the encoding, default reture ArrayBuffer if undefined
  */
-// tslint:disable-next-line:no-any
-function readFile(filePath: string, encoding?: any): Promise<any> {
+function readFile(
+  fsm: WechatMiniprogram.FileSystemManager,
+  filePath: string,
+  encoding?: any
+): Promise<any> {
   return new Promise((resolve, reject) => {
-    const fsm = wx.getFileSystemManager();
     fsm.readFile({
       filePath,
       encoding,
@@ -90,15 +98,19 @@ function readFile(filePath: string, encoding?: any): Promise<any> {
 /**
  * Write file
  * https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.writeFile.html
+ * @param fsm the file system manager
  * @param filePath the file path
  * @param data data to save
  * @param encoding  encoding
  */
-// tslint:disable-next-line:no-any
-function writeFile(filePath: string, data: any, encoding: any = 'binary'): Promise<any> {
+function writeFile(
+  fsm: WechatMiniprogram.FileSystemManager,
+  filePath: string,
+  data: any,
+  encoding: any = 'binary'
+): Promise<any> {
   return new Promise((resolve, reject) => {
-    removeFile(filePath).then(() => {
-      const fsm = wx.getFileSystemManager();
+    removeFile(fsm, filePath).then(() => {
       fsm.writeFile({
         filePath,
         data,
@@ -114,10 +126,16 @@ function writeFile(filePath: string, data: any, encoding: any = 'binary'): Promi
   });
 }
 
-// tslint:disable-next-line:no-any
-function mkdir(dirPath: string): Promise<any> {
+/**
+ * Create folder
+ * https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.mkdir.html
+ * @param fsm the file system manager
+ * @param dirPath the dir path
+ */
+function mkdir(
+  fsm: WechatMiniprogram.FileSystemManager, dirPath: string
+): Promise<any> {
   return new Promise((resolve, reject) => {
-    const fsm = wx.getFileSystemManager();
     fsm.access({
       path: dirPath,
       success: () => {
@@ -138,10 +156,12 @@ function mkdir(dirPath: string): Promise<any> {
     });
   });
 }
+// tslint:enable-next-line:no-any
 
 class FileStorageHandler implements io.IOHandler {
   protected readonly paths: StoragePaths;
   protected readonly prefix: string;
+  protected readonly fsm: WechatMiniprogram.FileSystemManager;
 
   constructor(prefix) {
     if (prefix == null || !prefix) {
@@ -149,6 +169,7 @@ class FileStorageHandler implements io.IOHandler {
     }
     this.prefix = prefix;
     this.paths = getModelPaths(this.prefix);
+    this.fsm = wx.getFileSystemManager();
   }
 
   /**
@@ -171,20 +192,23 @@ class FileStorageHandler implements io.IOHandler {
       const { weightData, ...modelArtifactsWithoutWeights } = modelArtifacts;
 
       try {
-        await mkdir(MODEL_PATH);
-        await writeFile(this.paths.info, JSON.stringify(modelArtifactsInfo), 'utf-8');
+        await mkdir(this.fsm, MODEL_PATH);
         await writeFile(
+          this.fsm, this.paths.info, JSON.stringify(modelArtifactsInfo), 'utf-8'
+        );
+        await writeFile(
+          this.fsm,
           this.paths.modelArtifactsWithoutWeights,
           JSON.stringify(modelArtifactsWithoutWeights),
           'utf-8'
         );
-        await writeFile(this.paths.weightData, weightData);
+        await writeFile(this.fsm, this.paths.weightData, weightData);
         return { modelArtifactsInfo };
       } catch (err) {
         // If saving failed, clean up all items saved so far.
-        await removeFile(this.paths.info);
-        await removeFile(this.paths.modelArtifactsWithoutWeights);
-        await removeFile(this.paths.weightData);
+        await removeFile(this.fsm, this.paths.info);
+        await removeFile(this.fsm, this.paths.modelArtifactsWithoutWeights);
+        await removeFile(this.fsm, this.paths.weightData);
 
         throw new Error(err);
       }
@@ -198,7 +222,7 @@ class FileStorageHandler implements io.IOHandler {
    */
   async load(): Promise<io.ModelArtifacts> {
     const info =
-      JSON.parse(await readFile(this.paths.info, 'utf-8'));
+      JSON.parse(await readFile(this.fsm, this.paths.info, 'utf-8'));
     if (info == null) {
       throw new Error(
         `In file storage, there is no model with name '${this.prefix}'`);
@@ -211,10 +235,12 @@ class FileStorageHandler implements io.IOHandler {
     }
 
     const modelArtifacts =
-      JSON.parse(await readFile(this.paths.modelArtifactsWithoutWeights, 'utf-8'));
+      JSON.parse(
+        await readFile(this.fsm, this.paths.modelArtifactsWithoutWeights, 'utf-8')
+      );
 
     // load weight data
-    modelArtifacts.weightData = await readFile(this.paths.weightData);
+    modelArtifacts.weightData = await readFile(this.fsm, this.paths.weightData);
     return modelArtifacts;
   }
 }
