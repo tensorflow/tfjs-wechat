@@ -3099,10 +3099,10 @@ minipass@^2.2.1, minipass@^2.3.4:
     safe-buffer "^5.1.2"
     yallist "^3.0.0"
 
-miniprogram-api-typings@^2.6.5-2:
-  version "2.6.5-2"
-  resolved "https://registry.yarnpkg.com/miniprogram-api-typings/-/miniprogram-api-typings-2.6.5-2.tgz#990e3e5b91074ba4306bf6b8173cf38b632b4d3f"
-  integrity sha512-P0NdPNfaCYL7E7w1VHhpYCeu6WcN7h3xejqwWv5jmqdTTdHda+EJKby1VNc49rPn/w45NiNJD5gHgeMHGlb9xA==
+miniprogram-api-typings@^2.10.1-1:
+  version "2.10.1-1"
+  resolved "https://registry.npm.taobao.org/miniprogram-api-typings/download/miniprogram-api-typings-2.10.1-1.tgz?cache=0&sync_timestamp=1581320186574&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fminiprogram-api-typings%2Fdownload%2Fminiprogram-api-typings-2.10.1-1.tgz#9a18404b5af370051eb78c24638dfeed0312c44d"
+  integrity sha1-mhhAS1rzcAUet4wkY43+7QMSxE0=
 
 miniprogram-compiler@latest:
   version "0.1.0"
