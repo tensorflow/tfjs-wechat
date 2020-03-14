@@ -39,7 +39,6 @@ function getModelPaths(prefix: string): StoragePaths {
   };
 }
 
-/* tslint:disable:no-any */
 /**
  * Make remove file
  * This function will ignore removed error (file not existed)
@@ -50,7 +49,7 @@ function getModelPaths(prefix: string): StoragePaths {
 function removeFile(
   fsm: WechatMiniprogram.FileSystemManager,
   filePath: string,
-): Promise<any> {
+): Promise<WechatMiniprogram.GeneralCallbackResult | WechatMiniprogram.UnlinkFailCallbackResult> {
   return new Promise((resolve, reject) => {
     fsm.unlink({
       filePath,
@@ -75,8 +74,8 @@ function removeFile(
 function readFile(
   fsm: WechatMiniprogram.FileSystemManager,
   filePath: string,
-  encoding?: any
-): Promise<any> {
+  encoding?: 'utf-8',
+): Promise<string | ArrayBuffer> {
   return new Promise((resolve, reject) => {
     fsm.readFile({
       filePath,
@@ -106,9 +105,9 @@ function readFile(
 function writeFile(
   fsm: WechatMiniprogram.FileSystemManager,
   filePath: string,
-  data: any,
-  encoding: any = 'binary'
-): Promise<any> {
+  data: string | ArrayBuffer,
+  encoding: 'binary' | 'utf-8' = 'binary'
+): Promise<WechatMiniprogram.GeneralCallbackResult> {
   return new Promise((resolve, reject) => {
     removeFile(fsm, filePath).then(() => {
       fsm.writeFile({
@@ -134,7 +133,7 @@ function writeFile(
  */
 function mkdir(
   fsm: WechatMiniprogram.FileSystemManager, dirPath: string
-): Promise<any> {
+): Promise<WechatMiniprogram.GeneralCallbackResult> {
   return new Promise((resolve, reject) => {
     fsm.access({
       path: dirPath,
@@ -156,7 +155,6 @@ function mkdir(
     });
   });
 }
-// tslint:enable-next-line:no-any
 
 class FileStorageHandler implements io.IOHandler {
   protected readonly paths: StoragePaths;
@@ -222,7 +220,7 @@ class FileStorageHandler implements io.IOHandler {
    */
   async load(): Promise<io.ModelArtifacts> {
     const info =
-      JSON.parse(await readFile(this.fsm, this.paths.info, 'utf-8'));
+      JSON.parse((await readFile(this.fsm, this.paths.info, 'utf-8')) as string);
     if (info == null) {
       throw new Error(
         `In file storage, there is no model with name '${this.prefix}'`);
@@ -236,7 +234,7 @@ class FileStorageHandler implements io.IOHandler {
 
     const modelArtifacts =
       JSON.parse(
-        await readFile(this.fsm, this.paths.modelArtifactsWithoutWeights, 'utf-8')
+        (await readFile(this.fsm, this.paths.modelArtifactsWithoutWeights, 'utf-8')) as string
       );
 
     // load weight data
