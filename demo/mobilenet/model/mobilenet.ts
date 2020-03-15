@@ -33,16 +33,16 @@ export class MobileNet {
 
   async load() {
     // save model into local storage as base64 string
-    // const storageHandler = getApp().globalData.localStorageIO(STORAGE_KEY);
+    //const storageHandler = getApp().globalData.localStorageIO(STORAGE_KEY);
     // save model into files (weight binary)
-    const storageHandler = getApp().globalData.fileStorageIO(STORAGE_KEY);
+    const storageHandler = getApp().globalData.fileStorageIO(
+      STORAGE_KEY, wx.getFileSystemManager());
 
     try {
       this.model = await tfc.loadGraphModel(storageHandler);
     } catch (e) {
-      this.model =
-        await tfc.loadGraphModel(GOOGLE_CLOUD_STORAGE_DIR + MODEL_FILE_URL,
-          { fromTFHub: true });
+      this.model = await tfc.loadGraphModel(
+        GOOGLE_CLOUD_STORAGE_DIR + MODEL_FILE_URL, { fromTFHub: true });
       this.model.save(storageHandler);
     }
   }

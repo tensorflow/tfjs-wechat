@@ -165,7 +165,8 @@ export class MobileNet {
 
   async load() {
 
-    const fileStorageHandler = getApp().globalData.fileStorageIO(FILE_STORAGE_PATH);
+    const fileStorageHandler = getApp().globalData.fileStorageIO(
+        FILE_STORAGE_PATH, wx.getFileSystemManager());
     try {
       this.model = await tfc.loadGraphModel(fileStorageHandler);
     } catch (e) {

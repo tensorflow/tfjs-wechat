@@ -39,7 +39,6 @@ export interface SystemConfig {
    */
   // tslint:disable-next-line:no-any
   backendName?: string;
-
 }
 
 export let systemFetchFunc: Function;
@@ -133,6 +132,13 @@ export function initWebGL(
         const context = new tf.webgl.GPGPUContext(gl);
         return new tf.webgl.MathBackendWebGL(context);
       }, BACKEND_PRIORITY);
+
+      // Register all the webgl kernels on the rn-webgl backend
+      const kernels = tf.getKernelsForBackend('webgl');
+      kernels.forEach(kernelConfig => {
+        const newKernelConfig = Object.assign({}, kernelConfig, {backendName});
+        tf.registerKernel(newKernelConfig);
+      });
     } catch (e) {
       throw (new Error(`Failed to register Webgl backend: ${e.message}`));
     }
