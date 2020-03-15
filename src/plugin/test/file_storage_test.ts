@@ -1,5 +1,5 @@
 import * as tf from '@tensorflow/tfjs-core';
-import { fileStorageIO } from '../utils/file_storage';
+import {fileStorageIO} from '../utils/file_storage';
 
 class FakeFileSystemManager {
   private _storage: {};
@@ -7,21 +7,21 @@ class FakeFileSystemManager {
     this._storage = storage;
   }
 
-  unlink({ filePath, success, fail }) {
+  unlink({filePath, success, fail}) {
     const res = delete this._storage[filePath];
-    success({ data: res });
+    success({data: res});
   }
 
-  readFile({ filePath, encoding, success, fail }) {
-    success({ data: this._storage[filePath] });
+  readFile({filePath, encoding, success, fail}) {
+    success({data: this._storage[filePath]});
   }
 
-  writeFile({ filePath, data, encoding, success, fail }) {
+  writeFile({filePath, data, encoding, success, fail}) {
     this._storage[filePath] = data;
-    success({ data: this._storage[filePath] });
+    success({data: this._storage[filePath]});
   }
 
-  access({ path, success, fail }) {
+  access({path, success, fail}) {
     if (this._storage[path]) {
       success();
     } else {
@@ -29,7 +29,7 @@ class FakeFileSystemManager {
     }
   }
 
-  mkdir({ dirPath, recursive, success, fail }) {
+  mkdir({dirPath, recursive, success, fail}) {
     success();
   }
 }
@@ -59,7 +59,7 @@ describe('fileStorageIO', () => {
         'activation': 'linear',
         'trainable': true,
         'kernel_regularizer': null,
-        'bias_initializer': { 'class_name': 'Zeros', 'config': {} },
+        'bias_initializer': {'class_name': 'Zeros', 'config': {}},
         'units': 1,
         'batch_input_shape': [null, 3],
         'use_bias': true,
@@ -99,13 +99,15 @@ describe('fileStorageIO', () => {
   };
 
   let storage = {};
+  // tslint:disable-next-line:no-any
   let fileSystemManager: any;
 
   beforeEach(() => {
     storage = {};
     fileSystemManager = new FakeFileSystemManager(storage);
     if (!wx.getFileSystemManager) {
-      wx.getFileSystemManager = () => null; // miniprogram-simulate don't have it
+      wx.getFileSystemManager = () =>
+          null;  // miniprogram-simulate don't have it
     }
   });
 
