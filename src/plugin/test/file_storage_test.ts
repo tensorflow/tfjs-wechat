@@ -1,5 +1,5 @@
 import * as tf from '@tensorflow/tfjs-core';
-import { fileStorageIO } from '../utils/file_storage';
+import {fileStorageIO} from '../utils/file_storage';
 
 class FakeFileSystemManager {
   private _storage: {};
@@ -7,21 +7,21 @@ class FakeFileSystemManager {
     this._storage = storage;
   }
 
-  unlink({ filePath, success, fail }) {
+  unlink({filePath, success, fail}) {
     const res = delete this._storage[filePath];
-    success({ data: res });
+    success({data: res});
   }
 
-  readFile({ filePath, encoding, success, fail }) {
-    success({ data: this._storage[filePath] });
+  readFile({filePath, encoding, success, fail}) {
+    success({data: this._storage[filePath]});
   }
 
-  writeFile({ filePath, data, encoding, success, fail }) {
+  writeFile({filePath, data, encoding, success, fail}) {
     this._storage[filePath] = data;
-    success({ data: this._storage[filePath] });
+    success({data: this._storage[filePath]});
   }
 
-  access({ path, success, fail }) {
+  access({path, success, fail}) {
     if (this._storage[path]) {
       success();
     } else {
@@ -29,7 +29,7 @@ class FakeFileSystemManager {
     }
   }
 
-  mkdir({ dirPath, recursive, success, fail }) {
+  mkdir({dirPath, recursive, success, fail}) {
     success();
   }
 }
@@ -59,7 +59,7 @@ describe('fileStorageIO', () => {
         'activation': 'linear',
         'trainable': true,
         'kernel_regularizer': null,
-        'bias_initializer': { 'class_name': 'Zeros', 'config': {} },
+        'bias_initializer': {'class_name': 'Zeros', 'config': {}},
         'units': 1,
         'batch_input_shape': [null, 3],
         'use_bias': true,
@@ -99,27 +99,26 @@ describe('fileStorageIO', () => {
   };
 
   let storage = {};
-  let fileSystemManager: FakeFileSystemManager;
+  // tslint:disable-next-line:no-any
+  let fileSystemManager: any;
 
   beforeEach(() => {
     storage = {};
     fileSystemManager = new FakeFileSystemManager(storage);
     if (!wx.getFileSystemManager) {
-      wx.getFileSystemManager = () => null; // miniprogram-simulate don't have it
+      wx.getFileSystemManager = () =>
+          null;  // miniprogram-simulate don't have it
     }
-    spyOn(wx, 'getFileSystemManager').and.callFake(() => {
-      return fileSystemManager;
-    });
   });
 
   it('constructs an IOHandler', async () => {
-    const handler = fileStorageIO('foo');
+    const handler = fileStorageIO('foo', fileSystemManager);
     expect(typeof handler.load).toBe('function');
     expect(typeof handler.save).toBe('function');
   });
 
   it('save returns a SaveResult', async () => {
-    const handler = fileStorageIO('FooModel');
+    const handler = fileStorageIO('FooModel', fileSystemManager);
     const result = await handler.save(artifacts1);
     expect(result.modelArtifactsInfo).toBeDefined();
     expect(result.modelArtifactsInfo).not.toBeNull();
@@ -129,10 +128,10 @@ describe('fileStorageIO', () => {
   });
 
   it('Save-load round trip succeeds', async () => {
-    const handler = fileStorageIO('FooModel');
+    const handler = fileStorageIO('FooModel', fileSystemManager);
     await handler.save(artifacts1);
 
-    const handler2 = fileStorageIO('FooModel');
+    const handler2 = fileStorageIO('FooModel', fileSystemManager);
     const loaded = await handler2.load();
 
     expect(loaded.modelTopology).toEqual(modelTopology1);
@@ -144,10 +143,10 @@ describe('fileStorageIO', () => {
   });
 
   it('Save-load round trip succeeds: v0 format', async () => {
-    const handler1 = fileStorageIO('FooModel');
+    const handler1 = fileStorageIO('FooModel', fileSystemManager);
     await handler1.save(artifactsV0);
 
-    const handler2 = fileStorageIO('FooModel');
+    const handler2 = fileStorageIO('FooModel', fileSystemManager);
     const loaded = await handler2.load();
 
     expect(loaded.modelTopology).toEqual(modelTopology1);

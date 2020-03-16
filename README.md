@@ -165,7 +165,8 @@ export class MobileNet {
 
   async load() {
 
-    const fileStorageHandler = getApp().globalData.fileStorageIO(FILE_STORAGE_PATH);
+    const fileStorageHandler = getApp().globalData.fileStorageIO(
+        FILE_STORAGE_PATH, wx.getFileSystemManager());
     try {
       this.model = await tfc.loadGraphModel(fileStorageHandler);
     } catch (e) {
@@ -257,3 +258,4 @@ __注意__
 - 0.0.6 支持 tfjs-core版本1.2.7。
 - 0.0.7 允许用户设置webgl backend name, 这可以解决小程序offscreen canvas会失效的问题。
 - 0.0.8 加入localStorage支持，允许小于10M模型在localStorage内缓存。
+- 0.0.9 加入fileSystem支持，允许小于10M模型在local file system内缓存。fixed missing kernel bug.

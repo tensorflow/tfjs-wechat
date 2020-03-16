@@ -26,7 +26,12 @@ let platform: Platform;
 let currentBackend: string;
 // tslint:disable-next-line:no-any
 let global: any = {};
+const kernelFunc = () => true;
+const kernelName = 'div';
 const tf = {
+  getKernelsForBackend:
+      (backend) => [{kernelName, backendName: backend, kernelFunc}],
+  registerKernel: (kernel) => true,
   getBackend: () => currentBackend,
   findBackend: (name: string) => backends[name],
   registerBackend: (name: string, callback: {}, priority: number) => {
@@ -165,5 +170,13 @@ describe('setupWechatPlatform', () => {
     spyOn(tf.webgl, 'setWebGLContext');
     setupWechatPlatform(config);
     expect(tf.webgl.setWebGLContext).toHaveBeenCalledWith(1, gl);
+  });
+
+  it('should register kernel for new backend', () => {
+    spyOn(tf, 'registerKernel');
+    setupWechatPlatform(config);
+    expect(tf.registerKernel)
+        .toHaveBeenCalledWith(
+            {kernelName, backendName: WECHAT_WEBGL_BACKEND_NAME, kernelFunc});
   });
 });
