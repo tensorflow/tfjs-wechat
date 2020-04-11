@@ -7,7 +7,7 @@
     "build-mobilenet": "cd demo && rimraf dist/ && cd mobilenet && tsc && cd .. && ncp mobilenet dist --filter='^(((?!node_modules)(?!typings).)(?!\\.ts$))*$'",
     "test": "karma start",
     "test-ci": "yarn lint && yarn run-browserstack",
-    "run-browserstack": "karma start --singleRun --browsers='bs_firefox_mac,bs_chrome_mac' --reporters='dots,karma-typescript,BrowserStack'",
+    "run-browserstack": "karma start --singleRun --browsers='bs_chrome_mac' --reporters='dots,karma-typescript,BrowserStack'",
     "lint": "tslint -p . -t verbose"
   },
   "main": "dist/index.js",
