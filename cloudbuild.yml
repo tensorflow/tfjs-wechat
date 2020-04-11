@@ -14,7 +14,7 @@ steps:
   entrypoint: 'yarn'
   id: 'test-js'
   args: ['test-ci']
-  waitFor: ['yarn-common']
+  waitFor: ['yarn']
   env: ['NIGHTLY=$_NIGHTLY']
 timeout: 1800s
 logsBucket: 'gs://tfjs-build-logs'
