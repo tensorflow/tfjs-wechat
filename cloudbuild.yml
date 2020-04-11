@@ -8,17 +8,14 @@ steps:
   id: 'build'
   args: ['build']
   waitFor: ['yarn']
+# Run javascript tests.
 - name: 'node:10'
+  dir: 'tfjs-wechat'
   entrypoint: 'yarn'
-  id: 'test'
+  id: 'test-js'
   args: ['test-ci']
-  waitFor: ['build']
-  env: ['BROWSERSTACK_USERNAME=deeplearnjs1']
-  secretEnv: ['BROWSERSTACK_KEY']
-secrets:
-- kmsKeyName: projects/learnjs-174218/locations/global/keyRings/tfjs/cryptoKeys/enc
-  secretEnv:
-    BROWSERSTACK_KEY: CiQAkwyoIW0LcnxymzotLwaH4udVTQFBEN4AEA5CA+a3+yflL2ASPQAD8BdZnGARf78MhH5T9rQqyz9HNODwVjVIj64CTkFlUCGrP1B2HX9LXHWHLmtKutEGTeFFX9XhuBzNExA=
+  waitFor: ['yarn-common']
+  env: ['NIGHTLY=$_NIGHTLY']
 timeout: 1800s
 logsBucket: 'gs://tfjs-build-logs'
 substitutions:
