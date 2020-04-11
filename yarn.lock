@@ -3061,10 +3061,10 @@ minipass@^2.2.1, minipass@^2.3.4:
     safe-buffer "^5.1.2"
     yallist "^3.0.0"
 
-miniprogram-api-typings@^2.10.1-1:
-  version "2.10.3"
-  resolved "https://registry.yarnpkg.com/miniprogram-api-typings/-/miniprogram-api-typings-2.10.3.tgz#68597092d88176c95674ff20c09816f63b329089"
-  integrity sha512-1YQlAnqTggbQrNGaAl5ydlt3p+IiNawO+uNumcJCi16iLh0UQDAKp1F3h5+Wsk34YZbMHNwVMjbW5vJXGz8kdQ==
+miniprogram-api-typings@^2.10.3-1:
+  version "2.10.3-1"
+  resolved "https://registry.yarnpkg.com/miniprogram-api-typings/-/miniprogram-api-typings-2.10.3-1.tgz#520d074c96b6aca6e15f75b6a4f22058af59b3be"
+  integrity sha512-s5xJzJQMeK2WibXJX/tOG5RqthBE6qXCN1gW/Bk7UQkLzE18+Iws/Lpd9TkH73DEQ/fhLXdJrIJjtTuFDlhT8w==
 
 miniprogram-compiler@^0.1.2, miniprogram-compiler@latest:
   version "0.1.2"
@@ -3079,7 +3079,7 @@ miniprogram-exparser@0.0.6:
   resolved "https://registry.yarnpkg.com/miniprogram-exparser/-/miniprogram-exparser-0.0.6.tgz#817721e9cf306d426b9ea6d1ca795b7c267e3cb5"
   integrity sha512-iPkZfl41nPE6lnYDV/Mnj6DIPPN0JGjWapvtueCaAAchZJ/CHgIGA1Qyy34PF4Fq+YQeWbbxW+S7Y+JxzCHe7w==
 
-miniprogram-simulate@^1.0.1:
+miniprogram-simulate@^1.1.6:
   version "1.1.6"
   resolved "https://registry.yarnpkg.com/miniprogram-simulate/-/miniprogram-simulate-1.1.6.tgz#336fd4fcc87e568fc8ae071269d246c94fe7d8b6"
   integrity sha512-czPdasRU2Xakam4w1vO+TykRxc3LjvMkoZKryB8YWeZI1DfL4iK5o4H+eRDWisAQlTfauY4YfapgBSP1Q0qQSQ==
