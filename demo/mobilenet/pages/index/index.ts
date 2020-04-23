@@ -15,24 +15,24 @@
  * =============================================================================
  */
 
-import {Classifier} from '../../model/classifier';
+import { Classifier } from '../../model/classifier';
 Page({
-  data: {result: ''},
+  data: { result: '' },
   mobilenetModel: undefined,
   mobilenet() {
     if (this.mobilenetModel == null) {
       const model = new Classifier(this);
       model.load().then(() => {
-        this.setData({result: 'loading mobilenet model...'});
+        this.setData({ result: 'loading mobilenet model...' });
         this.mobilenetModel = model;
-        this.setData({result: 'model loaded.'});
+        this.setData({ result: 'model loaded.' });
       });
     }
   },
   executeMobilenet(frame) {
     if (this.mobilenetModel) {
       this.mobilenetModel.classify(
-          frame.data, {width: frame.width, height: frame.height});
+        frame.data, { width: frame.width, height: frame.height });
     }
   },
   async onReady() {
@@ -40,7 +40,7 @@ Page({
 
     // Start the camera API to feed the captured images to the models.
     // @ts-ignore the ts definition for this method is worng.
-    const context = wx.createCameraContext(this);
+    const context = wx.createCameraContext();
     let count = 0;
     const listener = (context as any).onCameraFrame((frame) => {
       count++;

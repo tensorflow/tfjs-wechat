@@ -43,8 +43,8 @@ TensorFlow.js有一个联合包 - @tensorflow/tfjs，包含了四个分npm包：
   "main": "dist/index.js",
   "license": "Apache-2.0",
   "dependencies": {
-    "@tensorflow/tfjs-core": "1.2.7"，
-    "@tensorflow/tfjs-converter": "1.2.7"
+    "@tensorflow/tfjs-core": "1.7.3"，
+    "@tensorflow/tfjs-converter": "1.7.3"
   }
 }
 ```
@@ -177,6 +177,42 @@ export class MobileNet {
   }
 }
 ```
+
+### 使用 WebAssembly backend
+微信小程序在 Android 手机上提供 WebAssembly的支持。TensorFlow.js的WASM backend非常适合在中低端Android手机上使用。
+中低端手机的GPU往往相对CPU要弱一些，而WASM backend是跑在CPU上的，这就为中低端手机提供了另一个加速平台。而且WASM的能耗一般会更低。
+使用WASM backend需要修改package.json文件：
+
+```
+{
+  "name": "yourProject",
+  "version": "0.0.1",
+  "main": "dist/index.js",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@tensorflow/tfjs-core": "1.7.3"，
+    "@tensorflow/tfjs-converter": "1.7.3",
+    "@tensorflow/tfjs-backend-wasm": "1.7.3",
+    ...
+  }
+}
+```
+
+然后在app.js中设置 wasm backend, 你可以自行host wasm file以提高下载速度, 下面例子中的 `wasmUrl`可以替代成你host的URL。
+```
+    const info = wx.getSystemInfoSync();
+    const wasmUrl = 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@1.7.3/wasm-out/tfjs-backend-wasm.wasm';
+    const usePlatformFetch = true;
+    console.log(info.platform);
+    if (info.platform == 'android') {
+      setWasmPath(wasmUrl, usePlatformFetch);
+      tf.setBackend('wasm').then(() => console.log('set wasm backend'));
+    }
+```
+
+__注意__
+使用WASM需要导入>= 1.7.3的tfjs库。
+
 
 __注意__
 由于最新版本的WeChat的OffscreenCanvas会随页面跳转而失效，在app.js的 onLaunch 函数中设置 tfjs 会导致小程序退出或页面跳转之后操作出错。建议在使用tfjs的page的onLoad中调用 configPlugin 函数。
