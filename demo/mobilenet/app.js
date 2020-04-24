@@ -17,6 +17,8 @@
 
 const fetchWechat = require('fetch-wechat');
 import * as tf from '@tensorflow/tfjs-core';
+import '@tensorflow/tfjs-backend-wasm';
+import { setWasmPath } from '@tensorflow/tfjs-backend-wasm';
 
 const plugin = requirePlugin('tfjsPlugin');
 const ENABLE_DEBUG = true;
@@ -29,6 +31,13 @@ App({
   onLaunch: function () {
     plugin.configPlugin({
       fetchFunc: fetchWechat.fetchFunc(),
-      tf, canvas: wx.createOffscreenCanvas()}, ENABLE_DEBUG);
+      tf, canvas: wx.createOffscreenCanvas()
+    }, ENABLE_DEBUG);
+    const info = wx.getSystemInfoSync();
+    console.log(info.platform);
+    if (info.platform == 'android') {
+      setWasmPath('https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@1.7.3/wasm-out/tfjs-backend-wasm.wasm', true);
+      tf.setBackend('wasm').then(() => console.log('set wasm as backend'));
+    }
   }
 })

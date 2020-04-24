@@ -39,7 +39,7 @@
 		"beforePreview": "",
 		"beforeUpload": ""
 	},
-	"libVersion": "2.10.3",
+	"libVersion": "2.10.4",
 	"simulatorType": "wechat",
 	"simulatorPluginLibVersion": {},
 	"condition": {}
