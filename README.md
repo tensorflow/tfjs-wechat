@@ -220,7 +220,7 @@ export class MobileNet {
 ```
 
 __注意__
-使用WASM需要导入>= 2.0.0的tfjs库。2.0.1 版本wasm有和WeChat兼容性问题。
+使用WASM暂时只能导入 2.0.0的tfjs库。因为2.0.1 版本wasm有和WeChat兼容性问题。
 
 
 __注意__
