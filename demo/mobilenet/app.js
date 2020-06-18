@@ -18,26 +18,32 @@
 const fetchWechat = require('fetch-wechat');
 import * as tf from '@tensorflow/tfjs-core';
 import '@tensorflow/tfjs-backend-wasm';
-import { setWasmPath } from '@tensorflow/tfjs-backend-wasm';
+import {setWasmPath} from '@tensorflow/tfjs-backend-wasm';
 
 const plugin = requirePlugin('tfjsPlugin');
 const ENABLE_DEBUG = true;
-//app.js
+// app.js
 App({
   globalData: {
     localStorageIO: plugin.localStorageIO,
     fileStorageIO: plugin.fileStorageIO,
   },
-  onLaunch: function () {
-    plugin.configPlugin({
-      fetchFunc: fetchWechat.fetchFunc(),
-      tf, canvas: wx.createOffscreenCanvas()
-    }, ENABLE_DEBUG);
+  onLaunch: async function() {
+    plugin.configPlugin(
+        {
+          fetchFunc: fetchWechat.fetchFunc(),
+          tf,
+          canvas: wx.createOffscreenCanvas()
+        },
+        ENABLE_DEBUG);
     const info = wx.getSystemInfoSync();
     console.log(info.platform);
     if (info.platform == 'android') {
-      setWasmPath('https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@1.7.3/wasm-out/tfjs-backend-wasm.wasm', true);
-      tf.setBackend('wasm').then(() => console.log('set wasm as backend'));
+      setWasmPath(
+          'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@2.0.0/wasm-out/tfjs-backend-wasm.wasm',
+          true);
+      await tf.setBackend('wasm');
+      console.log('set wasm as backend');
     }
   }
 })

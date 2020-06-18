@@ -11,9 +11,9 @@
     "miniprogram-api-typings": "^2.8.1"
   },
   "dependencies": {
-    "@tensorflow/tfjs-core": "1.7.3",
-    "@tensorflow/tfjs-converter": "1.7.3",
-    "@tensorflow/tfjs-backend-wasm": "1.7.3",
+    "@tensorflow/tfjs-core": "2.0.0",
+    "@tensorflow/tfjs-converter": "2.0.0",
+    "@tensorflow/tfjs-backend-wasm": "2.0.0",
     "fetch-wechat": "0.0.3"
   }
 }
