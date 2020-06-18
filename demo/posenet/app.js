@@ -17,14 +17,19 @@
 
 const fetchWechat = require('fetch-wechat');
 import * as tf from '@tensorflow/tfjs-core';
-
+import * as webgl from '@tensorflow/tfjs-backend-webgl';
 const plugin = requirePlugin('tfjsPlugin');
 const ENABLE_DEBUG = true;
-//app.js
+// app.js
 App({
-  onLaunch: function () {
-    plugin.configPlugin({
-      fetchFunc: fetchWechat.fetchFunc(),
-      tf, canvas: wx.createOffscreenCanvas()}, ENABLE_DEBUG);
+  onLaunch: function() {
+    plugin.configPlugin(
+        {
+          fetchFunc: fetchWechat.fetchFunc(),
+          tf,
+          webgl,
+          canvas: wx.createOffscreenCanvas()
+        },
+        ENABLE_DEBUG);
   }
 })

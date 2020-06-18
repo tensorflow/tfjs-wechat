@@ -38,9 +38,6 @@ const tf = {
     backends[name] = callback;
   },
   setBackend: (name: string) => currentBackend = name,
-  webgl: {
-    setWebGLContext: () => {},
-  },
   ENV: {
     global,
     setPlatform: (name, p) => {
@@ -48,6 +45,9 @@ const tf = {
       platform = p;
     }
   }
+};
+const webgl = {
+  setWebGLContext: () => {},
 };
 const gl = {};
 const canvas = {
@@ -57,6 +57,7 @@ const backendName = 'test-webgl';
 const config = {
   fetchFunc,
   tf,
+  webgl,
   canvas
 };
 
@@ -161,15 +162,15 @@ describe('setupWechatPlatform', () => {
   });
 
   it('should set tf backend to test-webgl', () => {
-    const configWithBackendName = {fetchFunc, tf, canvas, backendName};
+    const configWithBackendName = {fetchFunc, tf, webgl, canvas, backendName};
     setupWechatPlatform(configWithBackendName);
     expect(tf.getBackend()).toEqual(backendName);
   });
 
   it('should set the WEBGL context', () => {
-    spyOn(tf.webgl, 'setWebGLContext');
+    spyOn(webgl, 'setWebGLContext');
     setupWechatPlatform(config);
-    expect(tf.webgl.setWebGLContext).toHaveBeenCalledWith(1, gl);
+    expect(webgl.setWebGLContext).toHaveBeenCalledWith(1, gl);
   });
 
   it('should register kernel for new backend', () => {

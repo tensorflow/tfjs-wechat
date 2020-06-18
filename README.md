@@ -24,18 +24,20 @@ TensorFlow.js 微信小程序插件封装了TensorFlow.js库，用于提供给�
 ### 引入TensorFlow.js npm
 TensorFlow.js 最新版本是以npm包的形式发布，小程序需要使用npm或者yarn来载入TensorFlow.js npm包。也可以手动修改 package.json 文件来加入。
 
-
-TensorFlow.js有一个联合包 - @tensorflow/tfjs，包含了四个分npm包：
+TensorFlow.js v2.0 有一个联合包 - @tensorflow/tfjs，包含了六个分npm包：
 - tfjs-core: 基础包
 - tfjs-converter: GraphModel 导入和执行包
 - tfjs-layers: LayersModel 创建，导入和执行包
-- tfjs-data：数据流工具包
+- tfjs-backend-webgl: webgl 后端
+- tfjs-backend-cpu: cpu 后端
+- tfjs-data：数据流
+
 
 对于小程序而言，由于有2M的app大小限制，不建议直接使用联合包，而是按照需求加载分包。
-- 如果小程序只需要导入和运行GraphModel模型的的话，建议只加入tfjs-core和tfjs-converter包。这样可以尽量减少导入包的大小。
+- 如果小程序只需要导入和运行GraphModel模型的的话，建议至少加入tfjs-core， tfjs-converter， tfjs-backend-webgl 和tfjs-backend-cpu包。这样可以尽量减少导入包的大小。
 - 如果需要创建,导入或训练LayersModel模型，需要再加入 tfjs-layers包。
 
-下面的例子是只用到tfjs-core和tfjs-converter包。代码示例：
+下面的例子是只用到tfjs-core， tfjs-converter，tfjs-backend-webgl 和tfjs-backend-cpu包。代码示例：
 ```
 {
   "name": "yourProject",
@@ -43,8 +45,10 @@ TensorFlow.js有一个联合包 - @tensorflow/tfjs，包含了四个分npm包：
   "main": "dist/index.js",
   "license": "Apache-2.0",
   "dependencies": {
-    "@tensorflow/tfjs-core": "1.7.3"，
-    "@tensorflow/tfjs-converter": "1.7.3"
+    "@tensorflow/tfjs-core": "2.0.1"，
+    "@tensorflow/tfjs-converter": "2.0.1"，
+    "@tensorflow/tfjs-backend-webgl": "2.0.1"，
+    "@tensorflow/tfjs-backend-cpu": "2.0.1"
   }
 }
 ```
@@ -66,8 +70,10 @@ __注意__
   "main": "dist/index.js",
   "license": "Apache-2.0",
   "dependencies": {
-    "@tensorflow/tfjs-core": "1.2.7"，
-    "@tensorflow/tfjs-converter": "1.2.7"，
+    "@tensorflow/tfjs-core": "2.0.1"，
+    "@tensorflow/tfjs-converter": "2.0.1"，
+    "@tensorflow/tfjs-backend-webgl": "2.0.1"，
+    "@tensorflow/tfjs-backend-cpu": "2.0.1"，
     "fetch-wechat": "0.0.3"
   }
 }
@@ -82,6 +88,7 @@ https://cdn.jsdelivr.net/npm/fetch-wechat@0.0.3/dist/fetch_wechat.min.js
 ```
 var fetchWechat = require('fetch-wechat');
 var tf = require('@tensorflow/tfjs-core');
+var webgl = require('@tensorflow/tfjs-backend-webgl');
 var plugin = requirePlugin('tfjsPlugin');
 //app.js
 App({
@@ -91,6 +98,8 @@ App({
       fetchFunc: fetchWechat.fetchFunc(),
       // inject tfjs runtime
       tf,
+      // inject webgl backend
+      webgl,
       // provide webgl canvas
       canvas: wx.createOffscreenCanvas()
     });
@@ -190,9 +199,9 @@ export class MobileNet {
   "main": "dist/index.js",
   "license": "Apache-2.0",
   "dependencies": {
-    "@tensorflow/tfjs-core": "1.7.3"，
-    "@tensorflow/tfjs-converter": "1.7.3",
-    "@tensorflow/tfjs-backend-wasm": "1.7.3",
+    "@tensorflow/tfjs-core": "2.0.1"，
+    "@tensorflow/tfjs-converter": "2.0.1"，
+    "@tensorflow/tfjs-backend-wasm": "2.0.1",
     ...
   }
 }
@@ -201,7 +210,7 @@ export class MobileNet {
 然后在app.js中设置 wasm backend, 你可以自行host wasm file以提高下载速度, 下面例子中的 `wasmUrl`可以替代成你host的URL。
 ```
     const info = wx.getSystemInfoSync();
-    const wasmUrl = 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@1.7.3/wasm-out/tfjs-backend-wasm.wasm';
+    const wasmUrl = 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@2.0.1/wasm-out/tfjs-backend-wasm.wasm';
     const usePlatformFetch = true;
     console.log(info.platform);
     if (info.platform == 'android') {
@@ -211,7 +220,7 @@ export class MobileNet {
 ```
 
 __注意__
-使用WASM需要导入>= 1.7.3的tfjs库。
+使用WASM需要导入>= 2.0.1的tfjs库。
 
 
 __注意__
