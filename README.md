@@ -199,9 +199,9 @@ export class MobileNet {
   "main": "dist/index.js",
   "license": "Apache-2.0",
   "dependencies": {
-    "@tensorflow/tfjs-core": "2.0.1"，
-    "@tensorflow/tfjs-converter": "2.0.1"，
-    "@tensorflow/tfjs-backend-wasm": "2.0.1",
+    "@tensorflow/tfjs-core": "2.0.0"，
+    "@tensorflow/tfjs-converter": "2.0.0"，
+    "@tensorflow/tfjs-backend-wasm": "2.0.0",
     ...
   }
 }
@@ -304,3 +304,4 @@ __注意__
 - 0.0.7 允许用户设置webgl backend name, 这可以解决小程序offscreen canvas会失效的问题。
 - 0.0.8 加入localStorage支持，允许小于10M模型在localStorage内缓存。
 - 0.0.9 加入fileSystem支持，允许小于10M模型在local file system内缓存。fixed missing kernel bug.
+- 0.1.0 支持 tfjs版本2.0.x。
