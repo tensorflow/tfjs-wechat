@@ -11,10 +11,10 @@
   },
   "dependencies": {
     "@tensorflow-models/posenet": "2.2.1",
-    "@tensorflow/tfjs-core": "2.0.1",
-    "@tensorflow/tfjs-converter": "2.0.1",
-    "@tensorflow/tfjs-backend-webgl": "2.0.1",
-    "@tensorflow/tfjs-backend-cpu": "2.0.1",
+    "@tensorflow/tfjs-backend-cpu": "2.8.6",
+    "@tensorflow/tfjs-backend-webgl": "2.8.6",
+    "@tensorflow/tfjs-converter": "2.8.6",
+    "@tensorflow/tfjs-core": "2.8.6",
     "fetch-wechat": "0.0.3"
   }
 }
