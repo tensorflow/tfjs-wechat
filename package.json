@@ -40,7 +40,7 @@
     "tslint": "~5.8.0",
     "tslint-no-circular-imports": "~0.5.0",
     "typescript": "^3.3.3333",
-    "yalc": "^1.0.0-pre.27"
+    "yalc": "^1.0.0-pre.50"
   },
   "resolutions": {
     "**/**/set-value": "3.0.1",
