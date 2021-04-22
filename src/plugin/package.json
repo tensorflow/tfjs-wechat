@@ -1,6 +1,6 @@
 {
   "name": "tfjs-wechat",
-  "version": "0.0.6",
+  "version": "0.2.0",
   "scripts": {
     "build": "tsc"
   },
