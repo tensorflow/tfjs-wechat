@@ -15,12 +15,12 @@
  * =============================================================================
  */
 
-import {Platform} from '@tensorflow/tfjs-core/dist/platforms/platform';
+import { Platform } from '@tensorflow/tfjs-core/dist/platforms/platform';
 
-import {setupWechatPlatform, WECHAT_WEBGL_BACKEND_NAME} from '../utils/wechat_platform';
+import { setupWechatPlatform, WECHAT_WEBGL_BACKEND_NAME } from '../utils/wechat_platform';
 
-const fetchFunc = () => {};
-let backends: {[key: string]: {}} = {};
+const fetchFunc = () => { };
+let backends: { [key: string]: {} } = {};
 let platformName: string;
 let platform: Platform;
 let currentBackend: string;
@@ -30,7 +30,7 @@ const kernelFunc = () => true;
 const kernelName = 'div';
 const tf = {
   getKernelsForBackend:
-      (backend) => [{kernelName, backendName: backend, kernelFunc}],
+    (backend) => [{ kernelName, backendName: backend, kernelFunc }],
   registerKernel: (kernel) => true,
   getBackend: () => currentBackend,
   findBackend: (name: string) => backends[name],
@@ -40,6 +40,7 @@ const tf = {
   setBackend: (name: string) => currentBackend = name,
   ENV: {
     global,
+    set: () => { },
     setPlatform: (name, p) => {
       platformName = name;
       platform = p;
@@ -47,7 +48,7 @@ const tf = {
   }
 };
 const webgl = {
-  setWebGLContext: () => {},
+  setWebGLContext: () => { },
 };
 const gl = {};
 const canvas = {
@@ -101,7 +102,7 @@ describe('setupWechatPlatform', () => {
     const bytes = platform.encode('hello\x00world', 'utf-8');
     expect(bytes.length).toBe(11);
     expect(bytes).toEqual(
-        new Uint8Array([104, 101, 108, 108, 111, 0, 119, 111, 114, 108, 100]));
+      new Uint8Array([104, 101, 108, 108, 111, 0, 119, 111, 114, 108, 100]));
   });
 
   it('encodeUTF8 cyrillic', () => {
@@ -109,13 +110,13 @@ describe('setupWechatPlatform', () => {
     const bytes = platform.encode('Здраво', 'utf-8');
     expect(bytes.length).toBe(12);
     expect(bytes).toEqual(new Uint8Array(
-        [208, 151, 208, 180, 209, 128, 208, 176, 208, 178, 208, 190]));
+      [208, 151, 208, 180, 209, 128, 208, 176, 208, 178, 208, 190]));
   });
 
   it('decode single string', () => {
     setupWechatPlatform(config);
     const s =
-        platform.decode(new Uint8Array([104, 101, 108, 108, 111]), 'utf-8');
+      platform.decode(new Uint8Array([104, 101, 108, 108, 111]), 'utf-8');
     expect(s.length).toBe(5);
     expect(s).toEqual('hello');
   });
@@ -123,8 +124,8 @@ describe('setupWechatPlatform', () => {
   it('decode two strings delimited', () => {
     setupWechatPlatform(config);
     const s = platform.decode(
-        new Uint8Array([104, 101, 108, 108, 111, 0, 119, 111, 114, 108, 100]),
-        'utf-8');
+      new Uint8Array([104, 101, 108, 108, 111, 0, 119, 111, 114, 108, 100]),
+      'utf-8');
     expect(s.length).toBe(11);
     expect(s).toEqual('hello\x00world');
   });
@@ -132,9 +133,9 @@ describe('setupWechatPlatform', () => {
   it('decode cyrillic', () => {
     setupWechatPlatform(config);
     const s = platform.decode(
-        new Uint8Array(
-            [208, 151, 208, 180, 209, 128, 208, 176, 208, 178, 208, 190]),
-        'utf-8');
+      new Uint8Array(
+        [208, 151, 208, 180, 209, 128, 208, 176, 208, 178, 208, 190]),
+      'utf-8');
     expect(s.length).toBe(6);
     expect(s).toEqual('Здраво');
   });
@@ -162,7 +163,7 @@ describe('setupWechatPlatform', () => {
   });
 
   it('should set tf backend to test-webgl', () => {
-    const configWithBackendName = {fetchFunc, tf, webgl, canvas, backendName};
+    const configWithBackendName = { fetchFunc, tf, webgl, canvas, backendName };
     setupWechatPlatform(configWithBackendName);
     expect(tf.getBackend()).toEqual(backendName);
   });
@@ -177,7 +178,7 @@ describe('setupWechatPlatform', () => {
     spyOn(tf, 'registerKernel');
     setupWechatPlatform(config);
     expect(tf.registerKernel)
-        .toHaveBeenCalledWith(
-            {kernelName, backendName: WECHAT_WEBGL_BACKEND_NAME, kernelFunc});
+      .toHaveBeenCalledWith(
+        { kernelName, backendName: WECHAT_WEBGL_BACKEND_NAME, kernelFunc });
   });
 });
