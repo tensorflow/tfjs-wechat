@@ -38,7 +38,7 @@ export interface CanvasNode {
 export async function detectPoseInRealTime(image, net, mirror) {
   const video: tf.Tensor = tf.tidy(() => {
     const temp = tf.tensor(new Uint8Array(image.data), [image.height, image.width, 4]);
-    return temp.slice([0, 0, 0], [-1, -1, 3]);
+    return tf.slice(temp, [0, 0, 0], [-1, -1, 3]);
   });
 
   // since images are being fed from a webcam

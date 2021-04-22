@@ -45,10 +45,9 @@ TensorFlow.js v2.0 有一个联合包 - @tensorflow/tfjs，包含了六个分npm
   "main": "dist/index.js",
   "license": "Apache-2.0",
   "dependencies": {
-    "@tensorflow/tfjs-core": "2.0.1"，
-    "@tensorflow/tfjs-converter": "2.0.1"，
-    "@tensorflow/tfjs-backend-webgl": "2.0.1"，
-    "@tensorflow/tfjs-backend-cpu": "2.0.1"
+    "@tensorflow/tfjs-core": "3.5.0"，
+    "@tensorflow/tfjs-converter": "3.5.0"，
+    "@tensorflow/tfjs-backend-webgl": "3.5.0"
   }
 }
 ```
@@ -70,10 +69,9 @@ __注意__
   "main": "dist/index.js",
   "license": "Apache-2.0",
   "dependencies": {
-    "@tensorflow/tfjs-core": "2.0.1"，
-    "@tensorflow/tfjs-converter": "2.0.1"，
-    "@tensorflow/tfjs-backend-webgl": "2.0.1"，
-    "@tensorflow/tfjs-backend-cpu": "2.0.1"，
+    "@tensorflow/tfjs-core": "3.5.0"，
+    "@tensorflow/tfjs-converter": "3.5.0"，
+    "@tensorflow/tfjs-backend-webgl": "3.5.0"
     "fetch-wechat": "0.0.3"
   }
 }
@@ -220,7 +218,7 @@ export class MobileNet {
 ```
 
 __注意__
-使用WASM暂时只能导入 2.0.0的tfjs库。因为2.0.1 版本wasm有和WeChat兼容性问题。
+WASM backend is broken due to bundle imcompatible with WeChat npm loader, will update here when it is fixed.
 
 
 __注意__
@@ -305,3 +303,4 @@ __注意__
 - 0.0.8 加入localStorage支持，允许小于10M模型在localStorage内缓存。
 - 0.0.9 加入fileSystem支持，允许小于10M模型在local file system内缓存。fixed missing kernel bug.
 - 0.1.0 支持 tfjs版本2.0.x。
+- 0.2.0 支持 tfjs版本3.x。
