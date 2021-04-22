@@ -10,11 +10,10 @@
     "typescript": "^3.3.3333"
   },
   "dependencies": {
-    "@tensorflow-models/posenet": "2.2.1",
-    "@tensorflow/tfjs-backend-cpu": "2.8.6",
-    "@tensorflow/tfjs-backend-webgl": "2.8.6",
-    "@tensorflow/tfjs-converter": "2.8.6",
-    "@tensorflow/tfjs-core": "2.8.6",
+    "@tensorflow-models/posenet": "2.2.2",
+    "@tensorflow/tfjs-backend-webgl": "3.5.0",
+    "@tensorflow/tfjs-converter": "3.5.0",
+    "@tensorflow/tfjs-core": "3.5.0",
     "fetch-wechat": "0.0.3"
   }
 }

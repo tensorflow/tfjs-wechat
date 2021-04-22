@@ -1,6 +1,6 @@
 {
   "name": "tfjs-wechat",
-  "version": "0.0.6",
+  "version": "0.2.0",
   "scripts": {
     "build": "rimraf dist/ && tsc && ncp src/plugin dist --filter='^(((?!node_modules)(?!typings).)(?!\\.ts$))*$'",
     "build-demo": "cd demo && rimraf dist/ && cd posenet && tsc && cd .. && ncp posenet dist --filter='^(((?!node_modules)(?!typings).)(?!\\.ts$))*$'",
@@ -17,8 +17,8 @@
     "text-encoder": "0.0.4"
   },
   "devDependencies": {
-    "@tensorflow/tfjs-core": "2.8.6",
-    "@tensorflow/tfjs-backend-webgl": "2.8.6",
+    "@tensorflow/tfjs-core": "3.5.0",
+    "@tensorflow/tfjs-backend-webgl": "3.5.0",
     "@types/jasmine": "~2.8.6",
     "clang-format": "1.2.4",
     "jasmine-core": "~3.1.0",
