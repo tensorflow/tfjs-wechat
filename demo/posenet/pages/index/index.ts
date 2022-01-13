@@ -16,46 +16,46 @@
  */
 
 import * as posenet from '@tensorflow-models/posenet';
-import {detectPoseInRealTime, drawPoses} from '../../posenet/posenet';
+import { detectPoseInRealTime, drawPoses } from '../../posenet/posenet';
 const CANVAS_ID = 'image';
-const POSENET_URL =
-    'https://www.gstaticcnapps.cn/tfjs-models/savedmodel/posenet/mobilenet/float/050/model-stride16.json';
+const POSENET_URL = 'https://storage.googleapis.com/tfjs-models/savedmodel/posenet/mobilenet/float/050/model-stride16.json';
+// 'https://www.gstaticcnapps.cn/tfjs-models/savedmodel/posenet/mobilenet/float/050/model-stride16.json';
 Page({
-  data: {result: ''},
+  data: { result: '' },
   posenetModel: undefined,
   canvas: undefined,
   poses: undefined,
   ctx: undefined,
   posenet() {
     if (this.posenetModel == null) {
-      this.setData({result: 'loading posenet model...'});
+      this.setData({ result: 'loading posenet model...' });
       posenet
-          .load({
-            architecture: 'MobileNetV1',
-            outputStride: 16,
-            inputResolution: 193,
-            multiplier: 0.5,
-            modelUrl: POSENET_URL
-          })
-          .then((model) => {
-            this.posenetModel = model;
-            this.setData({result: 'model loaded.'});
-          });
+        .load({
+          architecture: 'MobileNetV1',
+          outputStride: 16,
+          inputResolution: 193,
+          multiplier: 0.5,
+          modelUrl: POSENET_URL
+        })
+        .then((model) => {
+          this.posenetModel = model;
+          this.setData({ result: 'model loaded.' });
+        });
     }
   },
   executePosenet(frame) {
     if (this.posenetModel) {
       const start = Date.now();
       detectPoseInRealTime(frame, this.posenetModel, false)
-          .then((poses) => {
-            this.poses = poses;
-            drawPoses(this);
-            const result = `${Date.now() - start}ms`;
-            this.setData({result});
-          })
-          .catch((err) => {
-            console.log(err, err.stack);
-          });
+        .then((poses) => {
+          this.poses = poses;
+          drawPoses(this);
+          const result = `${Date.now() - start}ms`;
+          this.setData({ result });
+        })
+        .catch((err) => {
+          console.log(err, err.stack);
+        });
     }
   },
   async onReady() {

@@ -18,7 +18,7 @@ import * as tfc from '@tensorflow/tfjs-converter';
 import * as tf from '@tensorflow/tfjs-core';
 
 const GOOGLE_CLOUD_STORAGE_DIR =
-    'https://tfhub.dev/google/tfjs-model/imagenet/';
+  'https://tfhub.dev/google/tfjs-model/imagenet/';
 const MODEL_FILE_URL = 'mobilenet_v2_050_224/feature_vector/3/default/1';
 const PREPROCESS_DIVISOR = 255 / 2;
 const STORAGE_KEY = 'mobilenet_model';
@@ -29,20 +29,20 @@ export interface TopKValue {
 }
 export class MobileNet {
   private model: tfc.GraphModel;
-  constructor() {}
+  constructor() { }
 
   async load() {
     // save model into local storage as base64 string
     // const storageHandler = getApp().globalData.localStorageIO(STORAGE_KEY);
     // save model into files (weight binary)
     const storageHandler = getApp().globalData.fileStorageIO(
-        STORAGE_KEY, wx.getFileSystemManager());
+      STORAGE_KEY, wx.getFileSystemManager());
 
     try {
       this.model = await tfc.loadGraphModel(storageHandler);
     } catch (e) {
       this.model = await tfc.loadGraphModel(
-          GOOGLE_CLOUD_STORAGE_DIR + MODEL_FILE_URL, {fromTFHub: true});
+        GOOGLE_CLOUD_STORAGE_DIR + MODEL_FILE_URL, { fromTFHub: true });
       this.model.save(storageHandler);
     }
   }
@@ -62,10 +62,10 @@ export class MobileNet {
    */
   predict(input: tf.Tensor) {
     const preprocessedInput = tf.div(
-        tf.sub(input.asType('float32'), PREPROCESS_DIVISOR),
-        PREPROCESS_DIVISOR);
+      tf.sub(tf.cast(input, 'float32'), PREPROCESS_DIVISOR),
+      PREPROCESS_DIVISOR);
     const reshapedInput =
-        preprocessedInput.reshape([1, ...preprocessedInput.shape]);
+      tf.reshape(preprocessedInput, [1, ...preprocessedInput.shape]);
     return this.model.predict(reshapedInput);
   }
 }
