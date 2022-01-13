@@ -17,7 +17,7 @@
 
 import * as tf from '@tensorflow/tfjs-core';
 
-import {MobileNet} from './mobilenet';
+import { MobileNet } from './mobilenet';
 
 export interface CameraSize {
   width: number;
@@ -26,14 +26,14 @@ export interface CameraSize {
 
 export class Classifier {
   private mobileNet: MobileNet;
-  constructor(private page: WechatMiniprogram.Page.Instance<any, any>) {}
+  constructor(private page: WechatMiniprogram.Page.Instance<any, any>) { }
   async load() {
     this.mobileNet = new MobileNet();
-    this.page.setData({result: 'loading model...'});
+    this.page.setData({ result: 'loading model...' });
     const start = Date.now();
     await this.mobileNet.load();
     const result = `model loaded: ${Date.now() - start}ms\n`;
-    this.page.setData({result});
+    this.page.setData({ result });
   }
 
   classify(ab: ArrayBuffer, size: CameraSize) {
@@ -41,17 +41,17 @@ export class Classifier {
     let result = '';
     const start = Date.now();
     tf.tidy(() => {
-      const temp = tf.browser.fromPixels({data, ...size}, 4);
+      const temp = tf.browser.fromPixels({ data, ...size }, 4);
       const pixels =
-          temp.slice([0, 0, 0], [-1, -1, 3]).resizeBilinear([224, 224]);
+        tf.image.resizeBilinear(tf.slice(temp, [0, 0, 0], [-1, -1, 3]), [224, 224]);
       const tensor = this.mobileNet.predict(pixels) as tf.Tensor;
 
-      const topIndex = tensor.argMax().dataSync()[0];
+      const topIndex = tf.argMax(tensor).dataSync()[0];
       result += `prediction: ${Date.now() - start}ms\n`;
       result += `${tensor.dataSync()[topIndex]}`;
       return result;
     });
-    this.page.setData({result});
+    this.page.setData({ result });
   }
   dispose() {
     this.mobileNet.dispose();
