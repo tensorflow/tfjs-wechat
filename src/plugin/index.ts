@@ -15,6 +15,6 @@
  * =============================================================================
  */
 export { configPlugin } from './api/config';
+export { SystemConfig } from './utils/wechat_platform';
 export { fileStorageIO } from './utils/file_storage';
 export { localStorageIO } from './utils/local_storage';
-export { SystemConfig } from './utils/wechat_platform';
